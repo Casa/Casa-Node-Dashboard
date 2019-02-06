@@ -140,6 +140,13 @@
 
       <update-notice v-if="system.updatesAvailable">A software update is available for your Casa Node. Click here to begin the update, or run it later from the Settings panel.</update-notice>
 
+      <template v-else-if="displayPromo">
+        <div class="extension-promo">
+          <a href="https://chrome.google.com/webstore/detail/casa-extension/lnaedehiikghclgaikolambpbpeknpef/" target="_blank" rel="noopener"></a>
+          <div class="close" @click="dismissPromo"></div>
+        </div>
+      </template>
+
       <section class="footer-links">
         <div class="container is-fluid">
           <div class="columns is-mobile is-centered">
@@ -212,6 +219,7 @@ export default {
       loadingTimeout: false,
       loadingSpinner: false,
       warningTimeout: false,
+      displayPromo: false,
       alerted: {},
       preloaded: {},
 
@@ -323,6 +331,12 @@ export default {
 
       EventBus.$emit('load-bitcoin-transactions', {autoupdate: false});
       EventBus.$emit('load-lightning-transactions', {autoupdate: false});
+
+      // Check if the extension promo has ever been displayed
+      if(!localStorage.getItem('promo-displayed')) {
+        this.displayPromo = true;
+        localStorage.setItem('promo-displayed', true);
+      }
     }
   },
 
@@ -448,6 +462,10 @@ export default {
           console.log('dismissed')
         }
       })
+    },
+
+    dismissPromo() {
+      this.displayPromo = false;
     },
   }
 };

@@ -1744,6 +1744,37 @@ input[type=number]::-webkit-outer-spin-button {
   min-width: 30px;
 }
 
+.extension-promo {
+  width: 629px;
+  height: 135px;
+  background-color: #000;
+  border-radius: 10px;
+  background-image: url('~assets/extension-promo.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  margin: 3em auto 0;
+  position: relative;
+}
+
+.extension-promo a {
+  width: 629px;
+  height: 135px;
+  display: inline-block;
+}
+
+.extension-promo .close {
+  position: absolute;
+  right: 0.5em;
+  top: 0.5em;
+  cursor: pointer;
+  background-image: url('~assets/icon-close.svg');
+  background-repeat: no-repeat;
+  background-size: 0.75em 0.75em;
+  background-position: center;
+  padding: 1em;
+  box-sizing: border-box;
+}
+
 .field.toggle-settings.danger-sync.is-horizontal label,
 .field.toggle-settings.danger-sync.is-horizontal .field-body * {
   color: #f0649e;
