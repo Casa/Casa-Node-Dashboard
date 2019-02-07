@@ -35,7 +35,6 @@
       </div><hr>
 
       <section class="app-settings">
-
         <div class="field toggle-settings menu-navigation is-horizontal">
           <div class="field-label is-normal">
             <label class="label">
@@ -78,6 +77,28 @@
             </span>
           </a>
         </b-field><hr>
+
+        <div class="field toggle-settings menu-navigation is-horizontal">
+          <div class="field-label is-normal">
+            <label class="label">
+              <img src="~assets/logo-casa-extension.svg" alt="Casa Extension">
+            </label>
+
+            <p>Unlock your Casa Node with the Casa Extension.</p>
+          </div>
+
+          <div class="field-body">
+            <div class="field">
+              <a class="button is-rounded" href="https://chrome.google.com/webstore/detail/casa-extension/lnaedehiikghclgaikolambpbpeknpef/" target="_blank" rel="noopener">
+                <span>Download Now</span>
+                <span class="icon is-small">
+                  <font-awesome-icon :icon="['fas', 'chevron-right']"/>
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <hr>
 
         <b-field class="toggle-settings danger-sync" horizontal label="Danger Zone">
           <a class="button is-rounded" @click="confirmFactoryReset()">
