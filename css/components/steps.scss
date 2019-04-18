@@ -1,0 +1,380 @@
+.steps-content {
+  width: 250px!important;
+  text-align: right;
+}
+
+.steps-segment:nth-child(1) .step-heading {
+  color: #2fb4b5;
+}
+
+.steps-segment:nth-child(2) .step-heading {
+  color: #3e3b53;
+}
+
+.steps-segment:nth-child(3) .step-heading {
+  color: #f7bd00;
+}
+
+.steps-segment:nth-child(4) .step-heading {
+  color: #f0649e;
+}
+
+/* Reset size of timeline */
+.steps.is-small .steps-marker {
+  height: 1.25rem!important;
+  width: 1.25rem!important;
+}
+
+.steps-marker {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  cursor: pointer;
+}
+
+.fast {
+  background-image: url('~assets/fee-fast.svg');
+}
+
+.std {
+  background-image: url('~assets/fee-default.svg');
+}
+
+.slow {
+  background-image: url('~assets/fee-slow.svg');
+}
+
+.cheap {
+  background-image: url('~assets/fee-cheap.svg');
+}
+
+.steps.is-small.is-vertical .steps-segment:not(:last-child):after,
+.steps.is-vertical .steps-segment:not(:last-child):after {
+  right: calc(.62rem - (.2em))!important;
+}
+
+/* BULMA CUSTOM STEPS EXTENSION */
+
+.steps {
+  font-size: 1rem
+}
+
+.steps:not(:last-child) {
+  margin-bottom: 1.5rem
+}
+
+.steps .steps-segment {
+  position: relative
+}
+
+.steps .steps-marker {
+  height: 2rem;
+  width: 2rem;
+  align-items: center;
+  display: flex;
+  border-radius: 50%;
+  font-weight: 700;
+  justify-content: center;
+  position: relative;
+  z-index: 10
+}
+
+.steps .steps-segment:not(:last-child):after {
+  content: " ";
+  display: block;
+  position: absolute
+}
+
+@media screen and (max-width: 768px) {
+  .steps:not(.is-horizontal) .steps-segment {
+    display:block
+  }
+
+  .steps:not(.is-horizontal) .steps-segment:not(:last-child) {
+    min-height: 4em
+  }
+}
+
+.steps.is-vertical .steps-segment {
+  display: block
+}
+
+.steps.is-vertical .steps-segment:not(:last-child) {
+  min-height: 4em
+}
+
+@media screen and (max-width: 768px) {
+  .steps:not(.is-horizontal) .steps-segment:not(:last-child):after {
+    bottom:-.24rem;
+    left: calc(1rem - (.2em));
+    top: 1.76rem;
+    width: .4em
+  }
+
+  .steps:not(.is-horizontal) .steps-content {
+    margin-left: calc(1rem + .5em);
+    margin-top: -2rem;
+    padding-left: 1em;
+    padding-bottom: 1em
+  }
+
+  .steps:not(.is-horizontal) .steps-content.is-divider-content {
+    margin-top: 0;
+    padding-bottom: 0
+  }
+
+  .steps:not(.is-horizontal).has-content-centered .steps-content {
+    padding-top: calc(1rem - .5em)
+  }
+
+  .steps:not(.is-horizontal):not(.is-thin).has-gaps .steps-segment:not(:last-child):after,.steps:not(.is-horizontal):not(.is-thin) .steps-segment.has-gaps:not(:last-child):after {
+    top: 2.3rem;
+    bottom: .3rem
+  }
+}
+
+.steps.is-vertical .steps-segment:not(:last-child):after {
+  bottom: -.24rem;
+  top: 1.76rem;
+  width: .4em;
+}
+
+.steps.is-vertical .steps-content {
+  margin-left: calc(1rem + .5em);
+  margin-top: -2rem;
+  padding-left: 1em;
+  padding-bottom: 1em
+}
+
+.steps.is-vertical .steps-content.is-divider-content {
+  margin-top: 0;
+  padding-bottom: 0
+}
+
+.steps.is-vertical.has-content-centered .steps-content {
+  padding-top: calc(1rem - .5em)
+}
+
+.steps.is-vertical:not(.is-thin).has-gaps .steps-segment:not(:last-child):after,.steps.is-vertical:not(.is-thin) .steps-segment.has-gaps:not(:last-child):after {
+  top: 2.3rem;
+  bottom: .3rem
+}
+
+.steps.is-small {
+  font-size: .75rem
+}
+
+.steps.is-small .steps-marker {
+  height: 1.5rem;
+  width: 1.5rem
+}
+
+@media screen and (max-width: 768px) {
+  .steps.is-small:not(.is-horizontal) .steps-segment:not(:last-child):after {
+      bottom:-.24rem;
+      left: calc(.75rem - (.2em));
+      top: 1.26rem;
+      width: .4em
+  }
+
+  .steps.is-small:not(.is-horizontal) .steps-content {
+      margin-left: calc(.75rem + .5em);
+      margin-top: -1.5rem;
+      padding-left: 1em;
+      padding-bottom: 1em
+  }
+
+  .steps.is-small:not(.is-horizontal) .steps-content.is-divider-content {
+      margin-top: 0;
+      padding-bottom: 0
+  }
+
+  .steps.is-small:not(.is-horizontal).has-content-centered .steps-content {
+      padding-top: calc(.75rem - .5em)
+  }
+
+  .steps.is-small:not(.is-horizontal):not(.is-thin).has-gaps .steps-segment:not(:last-child):after,.steps.is-small:not(.is-horizontal):not(.is-thin) .steps-segment.has-gaps:not(:last-child):after {
+      top: 1.8rem;
+      bottom: .3rem
+  }
+}
+
+.steps.is-small.is-vertical .steps-segment:not(:last-child):after {
+  bottom: -.24rem;
+  top: 1.26rem;
+  width: .4em
+}
+
+.steps.is-small.is-vertical .steps-content {
+  margin-left: calc(.75rem + .5em);
+  margin-top: -1.5rem;
+  padding-left: 1em;
+  padding-bottom: 1em
+}
+
+.steps.is-small.is-vertical .steps-content.is-divider-content {
+  margin-top: 0;
+  padding-bottom: 0
+}
+
+.steps.is-small.is-vertical.has-content-centered .steps-content {
+  padding-top: calc(.75rem - .5em)
+}
+
+.steps.is-small.is-vertical:not(.is-thin).has-gaps .steps-segment:not(:last-child):after,.steps.is-small.is-vertical:not(.is-thin) .steps-segment.has-gaps:not(:last-child):after {
+  top: 1.8rem;
+  bottom: .3rem
+}
+
+.steps-segment:after {
+  background-color: #EEEEEE
+}
+
+.steps-segment.is-active:after {
+    background-color: #dbdbdb
+}
+
+.steps-segment.is-active ~ .steps-segment:after {
+    background-color: #dbdbdb
+}
+
+.steps:not(.is-hollow) .steps-marker:not(.is-hollow) {
+    background-color: #EEEEEE;
+    color: #fff
+}
+
+.steps:not(.is-hollow) .steps-segment.is-active .steps-marker:not(.is-hollow) {
+    background-color: #EEEEEE;
+    color: #fff
+}
+
+.steps:not(.is-hollow) .steps-segment.is-active ~ .steps-segment .steps-marker:not(.is-hollow) {
+    background-color: #dbdbdb;
+    color: rgba(0,0,0,0.7)
+}
+
+.steps.is-hollow .steps-marker,.steps-marker.is-hollow {
+    border: .3em solid #EEEEEE
+}
+
+.steps.is-hollow .is-active .steps-marker,.steps .is-active .steps-marker.is-hollow {
+    border-color: #EEEEEE
+}
+
+.steps.is-hollow .steps-segment.is-active ~ .steps-segment .steps-marker,.steps-segment.is-active ~ .steps-segment .steps-marker.is-hollow {
+    border-color: #dbdbdb
+}
+
+.steps:not(.is-hollow) .steps-marker:not(.is-hollow).is-white {
+    background-color: #fff !important;
+    color: #0a0a0a !important
+}
+
+.steps.is-hollow .steps-marker.is-white,.steps .steps-marker.is-hollow.is-white {
+    border-color: #fff !important
+}
+
+.steps:not(.is-hollow) .steps-marker:not(.is-hollow).is-black {
+    background-color: #0a0a0a !important;
+    color: #fff !important
+}
+
+.steps.is-hollow .steps-marker.is-black,.steps .steps-marker.is-hollow.is-black {
+    border-color: #0a0a0a !important
+}
+
+.steps:not(.is-hollow) .steps-marker:not(.is-hollow).is-light {
+    background-color: #f5f5f5 !important;
+    color: #363636 !important
+}
+
+.steps.is-hollow .steps-marker.is-light,.steps .steps-marker.is-hollow.is-light {
+    border-color: #f5f5f5 !important
+}
+
+.steps:not(.is-hollow) .steps-marker:not(.is-hollow).is-dark {
+    background-color: #363636 !important;
+    color: #f5f5f5 !important
+}
+
+.steps.is-hollow .steps-marker.is-dark,.steps .steps-marker.is-hollow.is-dark {
+    border-color: #363636 !important
+}
+
+.steps:not(.is-hollow) .steps-marker:not(.is-hollow).is-primary {
+    background-color: #EEEEEE !important;
+    color: #fff !important
+}
+
+.steps.is-hollow .steps-marker.is-primary,.steps .steps-marker.is-hollow.is-primary {
+    border-color: #EEEEEE !important
+}
+
+.steps:not(.is-hollow) .steps-marker:not(.is-hollow).is-info {
+    background-color: #3273dc !important;
+    color: #fff !important
+}
+
+.steps.is-hollow .steps-marker.is-info,.steps .steps-marker.is-hollow.is-info {
+    border-color: #3273dc !important
+}
+
+.steps:not(.is-hollow) .steps-marker:not(.is-hollow).is-success {
+    background-color: #23d160 !important;
+    color: #fff !important
+}
+
+.steps.is-hollow .steps-marker.is-success,.steps .steps-marker.is-hollow.is-success {
+    border-color: #23d160 !important
+}
+
+.steps:not(.is-hollow) .steps-marker:not(.is-hollow).is-warning {
+    background-color: #ffdd57 !important;
+    color: rgba(0,0,0,0.7) !important
+}
+
+.steps.is-hollow .steps-marker.is-warning,.steps .steps-marker.is-hollow.is-warning {
+    border-color: #ffdd57 !important
+}
+
+.steps:not(.is-hollow) .steps-marker:not(.is-hollow).is-danger {
+    background-color: #ff3860 !important;
+    color: #fff !important
+}
+
+.steps.is-hollow .steps-marker.is-danger,.steps .steps-marker.is-hollow.is-danger {
+    border-color: #ff3860 !important
+}
+
+.steps.is-small.is-vertical .steps-segment:not(:last-child):after,
+.steps.is-vertical .steps-segment:not(:last-child):after {
+  right: calc(.75rem - (.2em));
+}
+
+.steps.is-small.is-vertical .steps-content {
+  margin-right: calc(.75rem + .5em);
+  margin-top: -1.5rem;
+  padding-right: 1em;
+  padding-bottom: 1em;
+}
+
+.steps.is-vertical .steps-segment:not(:last-child) {
+  min-height: 6.5em;
+}
+
+.steps.is-vertical .steps-content {
+  margin-right: calc(1rem + .5em);
+  margin-top: -2rem;
+}
+
+.steps.is-vertical .steps-segment {
+  display: flex;
+}
+
+.steps.is-small.is-vertical .steps-content {
+  margin-right: calc(.75rem + .5em);
+  margin-top: -10px;
+  padding-right: 0;
+  padding-bottom: 0;
+}

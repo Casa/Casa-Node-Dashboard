@@ -1,0 +1,79 @@
+.lightning-menu {
+  .transaction-list-wrap {
+    height: calc(100vh - 395px);
+    overflow: auto;
+  }
+
+  .transactions {
+    .stats {
+      padding: 0;
+    }
+
+    .stats-col {
+      display: flex;
+      justify-content: space-between;
+      margin: 0 0.25em;
+
+      h1, h2 {
+        font-size: 17px;
+      }
+    }
+  }
+
+  .tx-actions {
+    display: block;
+
+    a.button {
+      margin: 0;
+      margin-top: 0.75em;
+      width: 100%;
+    }
+  }
+
+  /* Tablet */
+  @media screen and (min-width: 769px) {
+    .transaction-list-wrap {
+      height: calc(100vh - 410px);
+    }
+
+    .transactions {
+      .stats {
+        padding: 0;
+      }
+
+      .stats-col {
+        display: block;
+      }
+    }
+  }
+
+  /* Desktop */
+  @media screen and (min-width: 1088px) {
+    .transaction-list-wrap {
+      height: calc(100vh - 440px);
+    }
+
+    .transactions {
+      .stats-col {
+        margin-bottom: 2em;
+
+        h1 {
+          font-size: 25px;
+        }
+
+        h2 {
+          font-size: 20px;
+        }
+      }
+    }
+
+    .tx-actions {
+      display: flex;
+
+      a.button {
+        margin: 0 1em;
+        width: auto;
+      }
+    }
+  }
+}

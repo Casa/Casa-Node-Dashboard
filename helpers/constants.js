@@ -1,0 +1,8 @@
+const contants = {
+  MAX_CHANNELS: 40,
+  MAX_CHANNEL_SIZE_BTC: 0.16777216,
+  TOAST_DURATION_SHORT: 3000,
+  TOAST_DURATION_LONG: 10000,
+};
+
+export default contants;
