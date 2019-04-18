@@ -5,7 +5,7 @@
           <p class="modal-card-title">Are You Sure?</p>
         </header>
         <section class="modal-card-body">
-          <p>Your Lightning Node will automatically restart to apply the settings changes.</p>
+          <p>Your Node will automatically restart to apply the settings changes.</p>
         </section>
         <footer class="modal-card-foot">
           <a class="button cancel" type="button" @click="$parent.close()">Go Back</a>

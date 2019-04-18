@@ -11,22 +11,22 @@
     </div>
 
     <div class="app-slideout channel">
-      <div class="toggle-switch">
-        <div class="field light-grey">
-          Autopilot
-          <span v-if="settings.lnd.autopilot">On</span>
-          <span v-else>Off</span>
-        </div>
-        <div class="field">
-          <b-switch v-model="settings.lnd.autopilot" type="is-info" size="is-medium" @input="toggleAutopilot"></b-switch>
-        </div>
-      </div>
-
       <div class="app-title">
         <img src="~assets/lightning.png" alt="Lightning">
         <h2>
           Manage Autopilot
         </h2>
+      </div>
+
+      <div class="autopilot-toggle">
+        <div class="field light-grey">
+          Autopilot
+          <span v-if="system.settings.lnd.autopilot">On</span>
+          <span v-else>Off</span>
+        </div>
+        <div class="field">
+          <b-switch v-model="system.settings.lnd.autopilot" type="is-info" size="is-medium" @input="toggleAutopilot"></b-switch>
+        </div>
       </div>
 
       <p class="description">
@@ -36,7 +36,7 @@
 
       <hr>
 
-      <template v-if="settings.lnd.autopilot">
+      <template v-if="system.settings.lnd.autopilot">
         <!-- Lightning Stats Section -->
         <div class="stats">
           <div class="stats-col">
@@ -85,7 +85,7 @@
             <ul class="pending-tx">
               <li class="tx-item" v-for="(ch, index) in channelList" :key="index">
                 <div class="tx-row" @click="manageChannel(ch)">
-                  <div class="tx-col-1">
+                  <div class="tx-col-1 desktop-only">
                     <div class="channel-icon">
                       <img src="~assets/channel.svg" alt="channel">
                     </div>
@@ -131,6 +131,8 @@
 import axios from 'axios';
 import EventBus from '@/helpers/event-bus';
 import LightningData from '@/data/lightning';
+import SystemData from '@/data/system';
+import {satsToBtc, btcToSats} from '@/helpers/units';
 
 import ManageChannel from '@/components/Lightning/Modals/Channels/ManageChannel';
 import OpenChannel from '@/components/Lightning/Modals/Channels/OpenChannel';
@@ -138,7 +140,6 @@ import AutopilotSettings from '@/components/Lightning/Modals/AutopilotSettings';
 
 export default {
   name: 'Autopilot',
-  props: ['settings'],
 
   async created() {
     EventBus.$emit('load-lightning-stats');
@@ -155,6 +156,7 @@ export default {
   data() {
     return {
       lightning: LightningData,
+      system: SystemData,
       channelList: [],
     }
   },
@@ -172,9 +174,8 @@ export default {
       this.$destroy();
     },
     manageChannel(data) {
-      // TODO: move these transformation inside ManageChannel.vue.
-      data.localBalanceSats = (data.localBalance / 100000000).toFixed(4);
-      data.remoteBalanceSats = (data.remoteBalance / 100000000).toFixed(4);
+      data.localBalanceBtc = satsToBtc(data.localBalance);
+      data.remoteBalanceBtc = satsToBtc(data.remoteBalance);
 
       // Number of blocks * average block time in minutes / minutes per hour
       if (data.csvDelay) {
@@ -287,8 +288,12 @@ export default {
     },
 
     toggleAutopilot() {
-      const data = {autopilot: this.settings.lnd.autopilot};
-      const message = this.settings.lnd.autopilot ? 'Autopilot enabled' : 'Autopilot disabled';
+      const message = this.system.settings.lnd.autopilot ? 'Autopilot enabled' : 'Autopilot disabled';
+      const data = {
+        autopilot: this.system.settings.lnd.autopilot,
+        maxChannels: parseInt(this.system.settings.lnd.maxChannels) || 0,
+        maxChanSize: parseInt(this.system.settings.lnd.maxChanSize) || 0,
+      };
 
       this.saveSettings(data, message);
     },

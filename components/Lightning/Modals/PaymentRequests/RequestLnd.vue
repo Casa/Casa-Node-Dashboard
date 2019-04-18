@@ -39,6 +39,7 @@
 <script>
 import axios from 'axios';
 import EventBus from '@/helpers/event-bus';
+import {satsToBtc, btcToSats} from '@/helpers/units';
 
 export default {
   name: 'RequestLnd',
@@ -70,7 +71,7 @@ export default {
     async newInvoice() {
       EventBus.$emit('loading-start');
 
-      var invoiceData = {amt: Math.floor(this.invoice.amount * 100000000), memo: this.invoice.memo};
+      var invoiceData = {amt: btcToSats(this.invoice.amount), memo: this.invoice.memo};
       try {
         var {data} = await this.$axios.post(`${this.$env.API_LND}/v1/lnd/lightning/addInvoice`, invoiceData);
         var paymentRequest = {...data, ...invoiceData};

@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section class="lightning-menu">
     <div class="slideout-header">
       <a @click.prevent="closePanel">
         <span class="icon">
@@ -35,35 +35,6 @@
 
       <!-- Lightning Settings -->
       <section class="app-settings">
-
-        <!-- Connection Status -->
-        <div class="field toggle-settings menu-navigation is-horizontal">
-          <div class="field-label is-normal">
-            <label class="label">
-              Connection Status
-
-              <b-tooltip label="Check if your node is publicly visible by explorers and nodes connecting via autopilot." type="is-dark" multilined>
-                 <span class="icon is-small"><img src="~assets/icon-info-blue.svg" alt="info"></span>
-              </b-tooltip>
-            </label>
-
-            <div v-if="lightning.isOnline" class="button no-hover is-success is-rounded">Online</div>
-            <div v-else class="button no-hover is-danger is-rounded">Offline</div>
-          </div>
-
-          <div class="field-body">
-            <div class="field">
-              <a class="button is-rounded" @click="codeModal">
-                <span>Details</span>
-                <span class="icon is-small">
-                  <font-awesome-icon :icon="['fas', 'chevron-right']"/>
-                </span>
-              </a>
-            </div>
-          </div>
-        </div>
-        <hr>
-
         <!-- Autopilot Settings -->
         <div class="field toggle-settings menu-navigation is-horizontal">
           <div class="field-label is-normal">
@@ -235,10 +206,6 @@
         this.$modal.open({parent: this, component: Unlock, hasModalCard: true});
       },
 
-      codeModal() {
-        this.$modal.open({parent: this, component: ConnectionCode, hasModalCard: true, props: {lnAddress: this.lightning.address}});
-      },
-
       showErrorMessage(err) {
         this.$snackbar.open({
           duration: 5000,
@@ -270,7 +237,7 @@
         EventBus.$emit('loading-start');
 
         const data = {
-          nickName: this.system.settings.lnd.nickName
+          nickName: this.system.settings.lnd.nickName,
         };
 
         try {
@@ -288,7 +255,7 @@
       async showAutopilotMenu() {
         await vueSlideoutPanelService.show({
           component: Autopilot,
-          width: '860px',
+          width: '100%',
           cssClass: 'casa-sld',
           props: {settings: this.system.settings}
         })
@@ -297,17 +264,16 @@
       async showChannelMenu() {
         await vueSlideoutPanelService.show({
           component: Channels,
-          width: '860px',
+          width: '100%',
           cssClass: 'casa-sld',
           props: {data: {panel: 'open'}}
         })
       },
 
       async showBitcoinTransactions() {
-        await vueSlideoutPanelService.show({component: BitcoinTransactions, width: '860px'});
+        await vueSlideoutPanelService.show({component: BitcoinTransactions, width: '100%'});
         this.$emit('closePanel');
       },
-
     }
   };
   </script>

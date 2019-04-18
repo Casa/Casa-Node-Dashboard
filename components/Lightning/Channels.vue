@@ -69,6 +69,7 @@ import axios from 'axios';
 import EventBus from '@/helpers/event-bus';
 import ManageChannel from '@/components/Lightning/Modals/Channels/ManageChannel';
 import OpenChannel from '@/components/Lightning/Modals/Channels/OpenChannel';
+import {satsToBtc, btcToSats} from '@/helpers/units';
 
 export default {
   name: 'Channels',
@@ -99,9 +100,8 @@ export default {
       this.$destroy();
     },
     manageChannel(data) {
-      // TODO: move these transformation inside ManageChannel.vue.
-      data.localBalanceSats = (data.localBalance / 100000000).toFixed(4);
-      data.remoteBalanceSats = (data.remoteBalance / 100000000).toFixed(4);
+      data.localBalanceBtc = satsToBtc(data.localBalance);
+      data.remoteBalanceBtc = satsToBtc(data.remoteBalance);
 
       // Number of blocks * average block time in minutes / minutes per hour
       if (data.csvDelay) {

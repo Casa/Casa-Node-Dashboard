@@ -12,7 +12,7 @@
       <div class="columns is-desktop">
         <!-- Bitcoin Launcher -->
         <div class="column">
-          <div class="card bitcoin rounded">
+          <div class="card rounded">
             <header class="card-header">
               <h2 class="card-header-title has-text-centered">
                 <img src="~assets/bitcoin.svg" alt="Bitcoin">
@@ -26,9 +26,9 @@
                 <h3 class="is-center syncing" v-else-if="system.resync">Downloading <i class="status-circle status-syncing"></i></h3>
                 <h3 class="is-center syncing" v-else-if="bitcoin.isStarting">Starting <i class="status-circle status-syncing"></i></h3>
                 <h3 class="is-center syncing" v-else-if="bitcoin.isSyncing || bitcoin.isRollingForward">Syncing <i class="status-circle status-syncing"></i></h3>
-                <h3 class="is-center synced" v-if="bitcoin.isSynced">Synced <i class="status-circle status-synced"></i></h3>
+                <h3 class="is-center synced" v-else-if="bitcoin.isSynced">Synced <i class="status-circle status-synced"></i></h3>
 
-                <h4 class="is-center muted">
+                <h4 class="is-center muted" v-if="!bitcoin.isLoading">
                   <span v-if="bitcoin.isRollingForward">Rolling Forward</span>
                   <span v-else-if="system.resync && system.status.downloadedAmount">{{system.status.downloadedAmount}} {{system.status.downloadedAmountUnit}} / {{system.status.totalAmount}} {{system.status.totalAmountUnit}}</span>
                   <span v-else-if="bitcoin.percent == 1">100%</span>
@@ -37,18 +37,18 @@
               </div>
             </div>
 
-            <footer class="card-footer" @click="showBitcoinTransactions">
-              <p class="card-footer-title">Transactions</p>
-              <a class="card-header-icon" aria-label="transactions">
+            <footer class="card-footer" @click="showBitcoinMenu">
+              <p class="card-footer-title">Manage</p>
+              <a class="card-header-icon" aria-label="more options">
                 <span class="icon">
                   <img src="~assets/chevron.svg" alt="open">
                 </span>
               </a>
             </footer>
 
-            <footer class="card-footer" @click="showBitcoinMenu">
-              <p class="card-footer-title">Manage Node</p>
-              <a class="card-header-icon" aria-label="more options">
+            <footer class="card-footer" @click="showBitcoinTransactions">
+              <p class="card-footer-title">Transactions</p>
+              <a class="card-header-icon" aria-label="transactions">
                 <span class="icon">
                   <img src="~assets/chevron.svg" alt="open">
                 </span>
@@ -59,7 +59,7 @@
 
         <!-- Lightning Launcher -->
         <div class="column">
-          <div class="card lightning rounded">
+          <div class="card rounded">
             <header class="card-header">
               <h2 class="card-header-title has-text-centered">
                 <img src="~assets/lightning.png" alt="Lightning">
@@ -87,18 +87,18 @@
               </div>
             </div>
 
-            <footer class="card-footer" @click="showLightningTransactions">
-              <p class="card-footer-title">Transactions</p>
-              <a href="#" class="card-header-icon" aria-label="transactions">
+            <footer class="card-footer" @click="showLightningMenu">
+              <p class="card-footer-title">Manage</p>
+              <a href="#" class="card-header-icon" aria-label="manage node">
                 <span class="icon">
                   <img src="~assets/chevron.svg" alt="open">
                 </span>
               </a>
             </footer>
 
-            <footer class="card-footer" @click="showLightningMenu">
-              <p class="card-footer-title">Manage Node</p>
-              <a href="#" class="card-header-icon" aria-label="manage node">
+            <footer class="card-footer" @click="showLightningTransactions">
+              <p class="card-footer-title">Transactions</p>
+              <a href="#" class="card-header-icon" aria-label="transactions">
                 <span class="icon">
                   <img src="~assets/chevron.svg" alt="open">
                 </span>
@@ -126,14 +126,24 @@
                 </template>
               </div>
             </div>
-            <footer class="card-footer" @click="showSettings">
-                <p class="card-footer-title">View Settings</p>
-                <a href="#" class="card-header-icon" aria-label="more options">
-                  <span class="icon">
-                    <img src="~assets/chevron.svg" alt="open">
-                  </span>
-                </a>
-              </footer>
+
+            <footer class="card-footer" @click="showConnectionsMenu">
+              <p class="card-footer-title">Connections</p>
+              <a href="#" class="card-header-icon" aria-label="more options">
+                <span class="icon">
+                  <img src="~assets/chevron.svg" alt="open">
+                </span>
+              </a>
+            </footer>
+
+            <footer class="card-footer" @click="showSettingsMenu">
+              <p class="card-footer-title">Settings</p>
+              <a href="#" class="card-header-icon" aria-label="more options">
+                <span class="icon">
+                  <img src="~assets/chevron.svg" alt="open">
+                </span>
+              </a>
+            </footer>
           </div>
         </div>
       </div>
@@ -141,7 +151,7 @@
       <update-notice v-if="system.updatesAvailable">A software update is available for your Casa Node. Click here to begin the update, or run it later from the Settings panel.</update-notice>
 
       <template v-else-if="displayPromo">
-        <div class="extension-promo">
+        <div class="extension-promo desktop-only">
           <a href="https://chrome.google.com/webstore/detail/casa-extension/lnaedehiikghclgaikolambpbpeknpef/" target="_blank" rel="noopener"></a>
           <div class="close" @click="dismissPromo"></div>
         </div>
@@ -186,6 +196,7 @@ import BitcoinTransactions from '@/components/Bitcoin/Transactions';
 import LightningMenu from '@/components/Lightning/index';
 import LightningTransactions from '@/components/Lightning/Transactions';
 import Settings from '@/components/Settings/index';
+import Connections from '@/components/Settings/Connections';
 
 // Conditional Modals
 import Welcome from '@/components/Lightning/Alerts/Welcome';
@@ -201,16 +212,11 @@ export default {
   computed: {
     ...mapGetters(['isAuthenticated'])
   },
+
   components: {
     'update-notice': UpdateNotice
   },
-  mounted() {
-    var vm = this;
-    // force confirmation before updating device
-    EventBus.$on('update', () => vm.update());
-    EventBus.$on('loading-start', this.showLoadingSpinner);
-    EventBus.$on('loading-stop', this.hideLoadingSpinner);
-  },
+
   data() {
     return {
       // UI application state
@@ -230,14 +236,25 @@ export default {
     }
   },
 
-  beforeCreate() { // perform runtime injection
-    this.$env.API_MANAGER = `${this.$env.DEVICE_HOST}:3000`;
-    this.$env.API_LND = `${this.$env.DEVICE_HOST}:3002`;
-    this.$env.UPDATE_MANAGER = `${this.$env.DEVICE_HOST}:3001`;
+  beforeMount() { // perform runtime injection
+    let url = this.$env.DEVICE_HOST;
+    if (window.location.href.includes('.onion')) {
+      url = this.$env.CASA_NODE_HIDDEN_SERVICE;
+    }
+    this.$env.API_MANAGER = `${url}:3000`;
+
+    this.$env.API_LND = `${url}:3002`;
+    this.$env.UPDATE_MANAGER = `${url}:3001`;
   },
 
   // once view exists and data is observed
-  async created () {
+  async mounted () {
+    // force confirmation before updating device
+    EventBus.$on('update', this.update);
+    EventBus.$on('loading-start', this.showLoadingSpinner);
+    EventBus.$on('loading-stop', this.hideLoadingSpinner);
+    EventBus.$on('refresh-dashboard', this.$forceUpdate);
+
     // Display a loading indicator if none of the API calls return anything within a couple seconds
     this.loadingTimeout = setTimeout(() => {
       this.isLoading = true;
@@ -251,6 +268,12 @@ export default {
 
     // Check to see if the user is registered. If the user is not registered, redirect them to the intro page.
     const data = await API.get(axios, `${this.$env.API_MANAGER}/v1/accounts/registered`);
+
+    // If the registered route is unavailable, redirect the user to the login page and handle further errors there.
+    if (data === false) {
+      this.$router.push('/login');
+      return;
+    }
 
     if (data.registered === false) {
       this.$router.push('/intro');
@@ -296,10 +319,14 @@ export default {
     if(!this.system.resync) {
       // If the bitcoin container is running, but bitcoind is not operational, we must be rolling forward
       if(this.system.container.bitcoind === 'running' && this.bitcoin.operational === false && !this.alerted.rollingForward) {
-        this.alerted.rollingForward = true;
+        // If tor is being started, suppress this notification
+        if(this.system.startingTor) {
+          return;
+        }
 
         // Display a message to explain what rolling forward is
         this.$snackbar.open({message: "Your Bitcoin node is currently Rolling Forward after a restart. Your node is temporarily unusable during this time, so you may see errors or inconsistent data when viewing the Bitcoin and Lightning screens. This process can take up to 60 minutes, then everything will be back to normal.", type:'is-success', position:'is-top', indefinite: true});
+        this.alerted.rollingForward = true;
       }
 
       // If bitcoind needs to sync at least 50 blocks, display a welcome message
@@ -340,8 +367,8 @@ export default {
     }
   },
 
-  // Clear timeouts when redirected to the intro / loading page
   destroyed() {
+    // Clear timeouts when redirected to the intro / loading page
     clearTimeout(this.loadingTimeout);
     clearTimeout(this.warningTimeout);
 
@@ -352,6 +379,9 @@ export default {
     BitcoinTeardown();
     LightningTeardown();
     SystemTeardown();
+
+    // Remove slideout panel class from body when redirected to login
+    document.body.classList.remove('slideout-panel-open');
   },
 
   methods: {
@@ -405,29 +435,37 @@ export default {
 
     async showBitcoinTransactions() {
       if(this.nodeIsRunning('transactions')) {
-        await vueSlideoutPanelService.show({component: BitcoinTransactions, width: '860px'});
+        await vueSlideoutPanelService.show({component: BitcoinTransactions, width: '100%'});
       }
     },
 
     async showBitcoinMenu() {
       // Check if the node is running to display warnings, but don't prevent this menu from being opened
       this.nodeIsRunning('index');
-      await vueSlideoutPanelService.show({component: BitcoinMenu, width: '860px'});
+      await vueSlideoutPanelService.show({component: BitcoinMenu, width: '100%'});
     },
 
     async showLightningTransactions() {
       if(this.nodeIsRunning('transactions')) {
-        await vueSlideoutPanelService.show({component: LightningTransactions, width: '860px'});
+        await vueSlideoutPanelService.show({component: LightningTransactions, width: '100%'});
       }
     },
 
     async showLightningMenu() {
       this.nodeIsRunning('index');
-      await vueSlideoutPanelService.show({component: LightningMenu, width: '860px'});
+      await vueSlideoutPanelService.show({component: LightningMenu, width: '100%'});
     },
 
-    async showSettings() {
-      await vueSlideoutPanelService.show({component: Settings, props: {updateAvailable: this.system.updatesAvailable}});
+    async showSettingsMenu() {
+      await vueSlideoutPanelService.show({component: Settings, width: '100%', props: {updateAvailable: this.system.updatesAvailable}});
+    },
+
+    async showConnectionsMenu() {
+      await vueSlideoutPanelService.show({
+        component: Connections,
+        width: '100%',
+        cssClass: 'casa-sld',
+      })
     },
 
     async update() {

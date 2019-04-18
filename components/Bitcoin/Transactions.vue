@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section class="bitcoin-menu">
     <div class="slideout-header">
       <a @click.prevent="closePanel">
         <span class="icon">
@@ -55,7 +55,7 @@
                       <span class="day">{{ (new Date(transaction.timeStamp*1000)).toISOString() | moment("D") }}</span>
                     </div>
                   </div>
-                  <div class="tx-col-2">
+                  <div class="tx-col-2 desktop-only">
                     <h2 v-if="transaction.type === 'ON_CHAIN_TRANSACTION_SENT'">Sending Bitcoin</h2>
                     <h2 v-else>Receiving Bitcoin</h2>
                     <h3>
@@ -64,8 +64,16 @@
                   </div>
                   <div class="tx-col-3">
                     <h2><span>{{transaction.amount | btc}}</span> BTC</h2>
-                    <h3>${{ ((parseInt(transaction.amount)/100000000) * bitcoin.price).toFixed(2)}}</h3>
+                    <h3>${{ transaction.amount | usd }}</h3>
                   </div>
+                </div>
+
+                <div class="tx-info mobile-only">
+                  <h2 v-if="transaction.type === 'ON_CHAIN_TRANSACTION_SENT'">Sending Bitcoin</h2>
+                  <h2 v-else>Receiving Bitcoin</h2>
+                  <h3>
+                    {{transaction.destAddresses[0]}}
+                  </h3>
                 </div>
               </a>
               <hr>
@@ -86,7 +94,7 @@
                       <span class="day">{{ (new Date(transaction.timeStamp*1000)).toISOString() | moment("D") }}</span>
                     </div>
                   </div>
-                  <div class="tx-col-2">
+                  <div class="tx-col-2 desktop-only">
                     <h2 v-if="transaction.type === 'ON_CHAIN_TRANSACTION_SENT'">Sent Bitcoin</h2>
                     <h2 v-else>Received Bitcoin</h2>
                     <h3>
@@ -95,8 +103,16 @@
                   </div>
                   <div class="tx-col-3">
                     <h2><span>{{transaction.amount | btc}}</span> BTC</h2>
-                    <h3>${{ ((parseInt(transaction.amount)/100000000) * bitcoin.price).toFixed(2)}}</h3>
+                    <h3>${{ transaction.amount | usd }}</h3>
                   </div>
+                </div>
+
+                <div class="tx-info mobile-only">
+                  <h2 v-if="transaction.type === 'ON_CHAIN_TRANSACTION_SENT'">Sent Bitcoin</h2>
+                  <h2 v-else>Received Bitcoin</h2>
+                  <h3>
+                    {{transaction.destAddresses[0]}}
+                  </h3>
                 </div>
               </a>
               <hr>

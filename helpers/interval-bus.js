@@ -18,12 +18,14 @@ let intervalScope = false;
 
 // Call every function in the array on each interval
 function processInterval(seconds) {
-  intervalFunctions[seconds].forEach(function(callback) {
-    if(intervalScope) {
-      callback.call(intervalScope);
-    } else {
-      callback();
-    }
+  intervalFunctions[seconds].forEach(function(callback, index) {
+    setTimeout(function() {
+      if(intervalScope) {
+        callback.call(intervalScope);
+      } else {
+        callback();
+      }
+    }, index * 1000); // Add a slight delay between each function call
   });
 }
 
@@ -84,7 +86,7 @@ const IntervalBus = {
     let bestInterval = Math.max(...supportedIntervals);
 
     // Loop through supported intervals in descending order, without reorganzing the original array
-    [].concat(supportedIntervals).sort(function(a, b) {return b - a}).forEach(function(interval) {
+    [...supportedIntervals].sort(function(a, b) {return b - a}).forEach(function(interval) {
       if(seconds < interval) {
         bestInterval = interval;
       }
