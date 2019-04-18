@@ -5,6 +5,7 @@
         <p class="modal-card-title">
           <span>Withdraw BTC</span>
         </p>
+        <hr class="mobile-only">
         <p class="modal-title-right">
           <span class="amount">{{balance.lnd | btc}} BTC</span><br>
           <span class="amount-description">In Lightning Network</span>
@@ -21,7 +22,7 @@
         <br>
         <div class="withdrawal-amount">
           <h2>Amount to Withdraw</h2>
-          <p>You have {{balance.btc | btc}} BTC available immediately from your wallet and {{balance.lnd | btc}} BTC in the Lightning Network.</p>
+          <p class="desktop-only">You have {{balance.btc | btc}} BTC available immediately from your wallet and {{balance.lnd | btc}} BTC in the Lightning Network.</p>
           <b-field grouped>
             <b-field label="btc" expanded>
               <b-input type="text" v-model="txData.amount" placeholder="BTC" required></b-input>
@@ -43,6 +44,7 @@
 <script>
 import axios from 'axios';
 import EventBus from '@/helpers/event-bus';
+import {satsToBtc, btcToSats} from '@/helpers/units';
 
 export default {
   name: 'Withdraw',
@@ -95,7 +97,7 @@ export default {
     save() {
       const data = {
         addr: this.txData.address,
-        amt: this.txData.amount * 100000000, // Convert BTC to Sats
+        amt: btcToSats(this.txData.amount),
       };
       this.$emit('close');
       EventBus.$emit('withdraw', data);

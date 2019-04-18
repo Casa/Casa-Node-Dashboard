@@ -1,20 +1,16 @@
 import Vue from 'vue';
 import VueNumeric from 'vue-numeric'
-import {BigNumber} from 'bignumber.js';
+import {satsToBtc, btcToSats} from '@/helpers/units';
+import BitcoinData from '@/data/bitcoin';
 
 // Convert Satoshis to Bitcoin
-Vue.filter('btc', val => {
-  // Never display numbers as exponents
-  BigNumber.config({ EXPONENTIAL_AT: 1e+9 });
-  const sats = new BigNumber(val);
-  const btc = sats.dividedBy(100000000);
+Vue.filter('btc', value => satsToBtc(value));
 
-  if(isNaN(btc)) {
-    return 0;
-  }
+// Convert Bitcoin to Satoshis
+Vue.filter('sats', value => btcToSats(value));
 
-  return btc.decimalPlaces(8).toString();
-});
+// Convert Satoshis to USD
+Vue.filter('usd', value => (satsToBtc(value) * BitcoinData.price).toFixed(2));
 
 /**
  * Vue filter to convert the given value to percent.

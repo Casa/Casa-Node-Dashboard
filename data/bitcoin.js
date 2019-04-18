@@ -10,7 +10,7 @@ const BitcoinData = {
   operational: null,
   currentBlock: 0,
   blockHeight: 0,
-  externalIP: null,
+  address: {},
   connections: {},
   wallet: {},
   transactions: [],
@@ -41,11 +41,11 @@ const populate = {
       IntervalBus.set(populate.status, bestInterval);
 
       // Check the syncing status immediately since bitcoin is operational
-      if(BitcoinData.operational && BitcoinData.percent !== '1.0000') {
+      if(BitcoinData.operational && (BitcoinData.percent !== '1.0000' || BitcoinData.isLoading)) {
         populate.sync.call(this);
       }
     } else {
-      IntervalBus.set(populate.status, 60);
+      IntervalBus.set(populate.status, 30);
     }
   },
 
@@ -94,14 +94,20 @@ const populate = {
     }
   },
 
-  async ip() {
+  async addresses() {
     if(!initialized) return;
 
     if(BitcoinData.operational) {
-      const ip = await API.get(this.$axios, `${this.$env.API_LND}/v1/bitcoind/info/ip`);
+      const addresses = await API.get(this.$axios, `${this.$env.API_LND}/v1/bitcoind/info/addresses`);
 
-      if(ip) {
-        BitcoinData.externalIP = ip.externalIP;
+      if(addresses) {
+        addresses.forEach(address => {
+          if(address.includes('.onion')) {
+            BitcoinData.address.tor = address;
+          } else {
+            BitcoinData.address.external = address;
+          }
+        });
       }
     }
   },
@@ -177,11 +183,12 @@ function BitcoinSetup(scope) {
 
   // Bind event handlers
   EventBus.$on('load-bitcoin-stats', (options = {autoupdate: true}) => {
-    populate.ip.call(scope);
+    populate.addresses.call(scope);
     populate.connections.call(scope);
 
     if(options.autoupdate) {
-      IntervalBus.set(populate.connections, 60);
+      IntervalBus.set(populate.addresses, 30);
+      IntervalBus.set(populate.connections, 30);
     }
   });
 
@@ -214,7 +221,7 @@ function BitcoinTeardown() {
   // Make sure every function stops auto-updating
   IntervalBus.clear(populate.status);
   IntervalBus.clear(populate.sync);
-  IntervalBus.clear(populate.ip);
+  IntervalBus.clear(populate.addresses);
   IntervalBus.clear(populate.connections);
   IntervalBus.clear(populate.transactions);
 

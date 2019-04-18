@@ -1,22 +1,28 @@
 <template>
   <form class="deposit" action="">
     <div class="alert alert-status modal-card">
-      <header class="modal-card-head">Deposit BTC</header>
+      <header class="modal-card-head">
+        <p class="modal-card-title">
+          Deposit BTC
+        </p>
+      </header>
       <section class="modal-card-body">
-        <div class="address-info">
+        <div class="address-info"
+          v-clipboard:copy="address"
+          v-clipboard:success="onCopy"
+          v-clipboard:error="onError">
           <div class="address-info-left">
             <strong>Your BTC Address</strong>
             <span class="address">{{address}}</span>
           </div>
           <!-- Display loading status -->
-          <a type="button" class="button cancel"
-            v-clipboard:copy="address"
-            v-clipboard:success="onCopy"
-            v-clipboard:error="onError">Copy</a>
+          <span class="desktop-only"><a type="button" class="button cancel">Copy</a></span>
           <br>
         </div>
         <b-loading :is-full-page="false" :active.sync="isLoading"></b-loading>
-        <qr-code :text="address"></qr-code>
+        <div class="clear">
+          <qr-code :text="address"></qr-code>
+        </div>
       </section>
       <footer class="modal-card-foot">
         <a class="button is-casa is-fullwidth" type="button" @click="$parent.close()">

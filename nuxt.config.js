@@ -1,9 +1,11 @@
 require('dotenv').config();
 const HOST_IP = process.env.DEVICE_HOST;
+const CASA_NODE_HIDDEN_SERVICE = process.env.CASA_NODE_HIDDEN_SERVICE;
 
 module.exports = {
   env: {
     DEVICE_HOST: HOST_IP,
+    CASA_NODE_HIDDEN_SERVICE: CASA_NODE_HIDDEN_SERVICE,
 
     // Default to mainnet explorers
     BITCOIN_EXPLORER: process.env.BITCOIN_EXPLORER || 'https://blockstream.info/tx/',
@@ -28,7 +30,7 @@ module.exports = {
   loading: { color: '#572bf9' },
 
   /* Global CSS */
-  css: ['~/css/main.css'],
+  css: ['~/css/main.scss'],
 
   /* Plugins to load before mounting the App */
   plugins: [
@@ -45,7 +47,7 @@ module.exports = {
   /* Load Modules */
   modules: [
     // Docs: https://github.com/samtgarson/nuxt-env
-    ['nuxt-env', {keys: ['DEVICE_HOST']}],
+    ['nuxt-env', {keys: ['DEVICE_HOST', 'CASA_NODE_HIDDEN_SERVICE']}],
     // Docs: https://auth.nuxtjs.org/middleware.html
     '@nuxtjs/auth',
     // Doc: https://github.com/nuxt-community/axios-module#usage
@@ -110,5 +112,6 @@ module.exports = {
   /* Register middleware */
   router: {
     // middleware: ['user-agent']
-  }
+  },
+
 }

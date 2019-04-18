@@ -88,6 +88,7 @@
 <script>
 import axios from 'axios';
 import EventBus from '@/helpers/event-bus';
+import {satsToBtc, btcToSats} from '@/helpers/units';
 
 export default {
   name: 'OpenChannel',
@@ -133,7 +134,7 @@ export default {
       EventBus.$emit('loading-start');
 
       var data = {
-        amt: Math.floor(this.fundingAmount * 100000000), // convert from btc to sats
+        amt: btcToSats(this.fundingAmount),
         name: this.name,
         purpose: this.purpose
       };

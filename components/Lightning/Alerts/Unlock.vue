@@ -13,7 +13,7 @@
         <p v-if="isError && !unlockReady">
           <strong class="has-text-danger">Lightning is syncing. Please wait a few minutes and refresh your page to try again.</strong><br><br>
         </p>
-        <b-field label="Password">
+        <b-field label="This unlocks your Lightning Node, so it can make and route transactions. You will only need to do this once per node restart.">
           <b-input type="password" v-model="data.password" placeholder="Enter password" required></b-input>
         </b-field>
       </section>

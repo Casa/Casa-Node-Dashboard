@@ -7,10 +7,15 @@
 <script>
 export default {
   name: 'intro',
-  beforeCreate() { // perform runtime injection
-    this.$env.API_MANAGER = `${this.$env.DEVICE_HOST}:3000`;
-    this.$env.API_LND = `${this.$env.DEVICE_HOST}:3002`;
-    this.$env.UPDATE_MANAGER = `${this.$env.DEVICE_HOST}:3001`;
+  beforeMount() { // perform runtime injection
+    let url = this.$env.DEVICE_HOST;
+    if (window.location.href.includes('.onion')) {
+      url = this.$env.CASA_NODE_HIDDEN_SERVICE;
+    }
+
+    this.$env.API_MANAGER = `${url}:3000`;
+    this.$env.API_LND = `${url}:3002`;
+    this.$env.UPDATE_MANAGER = `${url}:3001`;
     this.$auth.strategies.local.options.endpoints.login = {
       url: `${this.$env.API_MANAGER}/v1/accounts/login`,
       method: 'post',
@@ -42,7 +47,8 @@ html, body {
   position: absolute;
   z-index: 9;
   top: 2em;
-  right: 3em;
+  width: 100%;
+  text-align: center;
 }
 
 .intro-sync-status span:first-child {
@@ -66,6 +72,13 @@ html, body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-top: -2em;
+}
+
+.intro-container.tall {
+  height: auto;
+  margin-top: 0;
+  margin-bottom: 1.5em;
 }
 
 .intro-icon img {
@@ -73,16 +86,12 @@ html, body {
 }
 
 .intro-form {
-  max-width: 750px;
+  max-width: 100vw;
   margin: 0 auto;
 }
 
-.intro-form.wide {
-  max-width: 880px;
-}
-
 .intro-form .intro-heading {
-  font-size: 52px;
+  font-size: 40px;
   font-weight: bold;
   text-align: center;
   color: #ffffff;
@@ -91,11 +100,13 @@ html, body {
 }
 
 .intro-form .intro-text {
-  font-size: 34px;
+  font-size: 24px;
   font-weight: 500;
   line-height: 1.33;
   text-align: center;
   color: #8d8e8e;
+  display: inline-block;
+  margin: 0 0.5em;
 }
 
 .intro-form .intro-text.small {
@@ -103,17 +114,17 @@ html, body {
   line-height: 32px;
 }
 
-.intro-form .intro-text.is-danger {
+.intro-form span.is-danger {
   color: #f0649e;
 }
 
-.input.is-danger {
+.input.is-danger,
+.seed-phrase .word.is-danger {
   border-color: #f0649e;
 }
 
 .seed-phrase {
-  width: 1080px;
-  margin-left: -100px;
+  margin: 0 auto;
   margin-top: 2em;
 }
 
@@ -122,7 +133,7 @@ html, body {
   background: none;
   border: 1px solid #d7d8d9;
   border-radius: 4px;
-  width: 250px;
+  width: 85vw;
   height: 60px;
   color: #fff;
   padding: 0 1em;
@@ -131,7 +142,7 @@ html, body {
 }
 
 .init-password {
-  max-width: 500px;
+  max-width: 85vw;
   margin: 1.75em auto 0;
 }
 
@@ -167,6 +178,8 @@ html, body {
 }
 
 .seed-card {
+  max-width: 90vw;
+  margin: 0 auto;
   width: 500px;
   height: 159px;
   border-radius: 10px;
@@ -182,6 +195,7 @@ html, body {
 }
 
 .button.is-casa {
+  max-width: 85vw;
   width: 355px;
   height: 60px;
   font-size: 1em;
@@ -191,6 +205,7 @@ html, body {
 }
 
 .button.is-back {
+  max-width: 85vw;
   width: 355px;
   height: 60px;
   margin-top: .5em;
@@ -255,6 +270,10 @@ li span {
   text-align: center;
   font-size: 20px;
   transition: all .5s cubic-bezier(.55,0,.1,1);
+}
+
+.margin-top {
+  margin-top: 3em;
 }
 
 /*
@@ -380,4 +399,60 @@ Tween & Cubic Bezier for Seed Phrase Animation
   max-width: 30em;
   text-align: center;
 }
+
+
+/*
+==============================================
+Mobile / Responsive styles
+==============================================
+*/
+
+/* Tablet */
+@media screen and (min-width: 769px) {
+  .intro-form .intro-heading {
+    font-size: 52px;
+  }
+
+  .intro-form .intro-text {
+    font-size: 34px;
+  }
+
+  .intro-sync-status {
+    right: 3em;
+  }
+
+  .seed-phrase {
+    width: 760px;
+  }
+
+  .seed-phrase .word {
+    width: 360px;
+  }
+
+  .init-password {
+    max-width: 500px;
+  }
+}
+
+/* Desktop */
+@media screen and (min-width: 1088px) {
+  .intro-form {
+    max-width: 750px;
+    margin: 0 auto;
+  }
+
+  .intro-form.wide {
+    max-width: 880px;
+  }
+
+  .seed-phrase {
+    width: 1080px;
+    margin-left: -100px;
+  }
+
+  .seed-phrase .word {
+    width: 250px;
+  }
+}
+
 </style>

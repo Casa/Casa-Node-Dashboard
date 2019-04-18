@@ -36,9 +36,14 @@
                         <input class="input is-medium" v-model="password" type="password" placeholder="Password">
                       </div>
                       <!-- Error Message Component -->
-                      <div v-if="this.error" class="auth-error level">
+                      <div v-if="this.wrongPassword" class="auth-error">
                         <div class="level-item">
-                          <img src="~/assets/icon-circle-warning.svg" alt="error"> <p> Wrong password</p>
+                          <img src="~/assets/icon-circle-warning.svg" alt="error"> <p>Wrong password</p>
+                        </div>
+                      </div>
+                      <div v-if="this.error" class="auth-error">
+                        <div class="level-item">
+                          <img src="~/assets/icon-circle-warning.svg" alt="error"> <div>Your node's internal IP address has changed. Please restart the device to continue.</div>
                         </div>
                       </div>
                     </div>
@@ -67,8 +72,14 @@
       </div>
     </section>
   </div>
-
 </template>
+
+<style>
+.auth-error {
+  display: block;
+  height: auto;
+}
+</style>
 
 
 <script>
@@ -78,15 +89,21 @@ import { mapGetters } from 'vuex'
 export default {
   layout: 'login',
 
-  beforeCreate() { // perform runtime injection
-    this.$env.API_MANAGER = `${this.$env.DEVICE_HOST}:3000`;
-    this.$env.API_LND = `${this.$env.DEVICE_HOST}:3002`;
-    this.$env.UPDATE_MANAGER = `${this.$env.DEVICE_HOST}:3001`;
+  beforeMount() { // perform runtime injection
+    let url = this.$env.DEVICE_HOST;
+    if (window.location.href.includes('.onion')) {
+      url = this.$env.CASA_NODE_HIDDEN_SERVICE;
+    }
+
+    this.$env.API_MANAGER = `${url}:3000`;
+    this.$env.API_LND = `${url}:3002`;
+    this.$env.UPDATE_MANAGER = `${url}:3001`;
   },
 
   data() {
     return {
       password: '',
+      wrongPassword: false,
       error: false
     };
   },
@@ -99,8 +116,13 @@ export default {
         await this.$auth.loginWith('local', {auth: {password: this.password, username: 'user'}});
         this.$router.push('/');
       } catch (err) {
-        this.error = true;
-        console.log(err.response);
+        if(err && err.response && err.response.status === 401) {
+          this.wrongPassword = true;
+          this.error = false;
+        } else {
+          this.wrongPassword = false;
+          this.error = true;
+        }
       }
     }
   }

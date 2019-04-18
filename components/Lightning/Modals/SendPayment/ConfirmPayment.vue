@@ -93,7 +93,7 @@ export default {
       if(parseInt(this.payment.numSatoshis) > 0) {
         return parseInt(this.lightning.balance.confirmed) - parseInt(this.payment.numSatoshis);
       } else {
-        return parseInt(this.lightning.balance.confirmed) - (this.customAmount * 100000000);
+        return parseInt(this.lightning.balance.confirmed) - btcToSats(this.customAmount);
       }
     },
   },
@@ -126,7 +126,7 @@ export default {
         var payload = {paymentRequest: this.invoice}
 
         if(this.customAmount > 0) {
-          payload.amt = Math.round(this.customAmount * 100000000);
+          payload.amt = btcToSats(this.customAmount);
         }
 
         var pay = await this.$axios.post(`${this.$env.API_LND}/v1/lnd/lightning/payInvoice`, payload);

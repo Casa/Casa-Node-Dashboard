@@ -116,10 +116,6 @@
 </template>
 
 <script>
-// Handle Non-SSR Components
-if (process.browser) {
-  var {vueSlideoutPanelService} = require('vue2-slideout-panel');
-}
 import axios from 'axios';
 import EventBus from '@/helpers/event-bus';
 import ConfirmUpdate from '@/components/Settings/Alerts/ConfirmUpdate';
@@ -200,6 +196,14 @@ export default {
         this.closePanel();
       }
     },
+
+    onCopy: function(e) {
+      this.$toast.open({duration: 3000, message:`Copied ${e.text}`});
+    },
+
+    onError: function(e) {
+      console.log('Failed to copy address text', e);
+    }
   }
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section class="lightning-menu">
     <div class="slideout-header">
       <a @click.prevent="closePanel">
         <span class="icon">
@@ -29,9 +29,11 @@
           <h2>
             Max Incoming Payment
 
-            <b-tooltip label="Based on the largest amount of BTC in the other side of a channel opened with you. Multiple channels currently can't be combined to make larger payments." type="is-dark" position="is-left" multilined>
-               <span class="icon is-small"><img src="~assets/icon-info-blue.svg" alt="info"></span>
-            </b-tooltip>
+            <span class="desktop-only">
+              <b-tooltip label="Based on the largest amount of BTC in the other side of a channel opened with you. Multiple channels currently can't be combined to make larger payments." type="is-dark" position="is-left" multilined>
+                 <span class="icon is-small"><img src="~assets/icon-info-blue.svg" alt="info"></span>
+              </b-tooltip>
+            </span>
           </h2>
         </div>
 
@@ -40,9 +42,11 @@
           <h2>
             Max Outgoing Payment
 
-            <b-tooltip label="Based on the largest amount of BTC in your side of a channel. Multiple channels currently can't be combined to make larger payments." type="is-dark" position="is-left" multilined>
-               <span class="icon is-small"><img src="~assets/icon-info-blue.svg" alt="info"></span>
-            </b-tooltip>
+            <span class="desktop-only">
+              <b-tooltip label="Based on the largest amount of BTC in your side of a channel. Multiple channels currently can't be combined to make larger payments." type="is-dark" position="is-left" multilined>
+                 <span class="icon is-small"><img src="~assets/icon-info-blue.svg" alt="info"></span>
+              </b-tooltip>
+            </span>
           </h2>
         </div>
       </div>
@@ -83,7 +87,7 @@
                 </div>
                 <div class="tx-col-3">
                   <h2><span>{{transaction.value | btc}}</span> BTC</h2>
-                  <h3>${{ ((parseInt(transaction.value) / 100000000) * bitcoin.price).toFixed(2)}}</h3>
+                  <h3>${{ transaction.value | usd }}</h3>
                 </div>
               </div>
               <hr>
@@ -110,7 +114,7 @@
                 </div>
                 <div class="tx-col-3">
                   <h2><span>{{transaction.value | btc}}</span> BTC</h2>
-                  <h3>${{ ((parseInt(transaction.value)/100000000) * bitcoin.price).toFixed(2)}}</h3>
+                  <h3>${{ transaction.value | usd}}</h3>
                 </div>
               </div>
               <hr>
@@ -128,6 +132,7 @@ import axios from 'axios';
 import EventBus from '@/helpers/event-bus';
 import BitcoinData from '@/data/bitcoin';
 import LightningData from '@/data/lightning';
+import {satsToBtc, btcToSats} from '@/helpers/units';
 
 import Send from '@/components/Lightning/Modals/SendPayment/Send';
 import ConfirmPayment from '@/components/Lightning/Modals/SendPayment/ConfirmPayment';
@@ -202,7 +207,6 @@ export default {
     showErrorMessage(err) {
       this.$toast.open({duration: 4000, message: `Error: ${err.response.data}`, type: 'is-danger'});
     }
-  }
-
+  },
 };
 </script>

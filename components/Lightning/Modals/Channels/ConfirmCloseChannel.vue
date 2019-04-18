@@ -12,18 +12,18 @@
       <section class="modal-card-body">
         <span class="info-light">The <strong>{{chData.name}}</strong> channel will be closed.</span>
 
-        <div class="request-amount" v-if="chData.localBalanceSats">
+        <div class="request-amount" v-if="chData.localBalanceBtc">
           <br>
           <div class="field is-grouped">
             <div class="field is-expanded input-wrapper">
               <p class="control is-expanded">
-                <input class="input" type="number" v-model="chData.localBalanceSats">
+                <input class="input" type="number" v-model="chData.localBalanceBtc">
               </p>
               <p class="help">BTC ON YOUR SIDE</p>
             </div>
             <div class="field is-expanded input-wrapper">
               <p class="control is-expanded">
-                <input class="input" type="number" v-model="chData.remoteBalanceSats">
+                <input class="input" type="number" v-model="chData.remoteBalanceBtc">
               </p>
               <p class="help">BTC ON OTHER SIDE OF CHANNEL</p>
             </div>

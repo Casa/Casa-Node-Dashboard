@@ -6,9 +6,11 @@ const SystemData = {
   isLoading: true,
   updatesAvailable: 0,
   container: {},
-  settings: {},
+  settings: {bitcoind: {}, lnd: {}},
   resync: null,
   status: {},
+  localAddress: false,
+  torAddress: false,
 };
 
 // Variable to prevent requests from being made before setup and after teardown
@@ -111,6 +113,22 @@ const populate = {
       }
     }
   },
+
+  async addresses() {
+    if(!initialized) return;
+
+    const addresses = await API.get(this.$axios, `${this.$env.API_MANAGER}/v1/telemetry/addresses`);
+
+    if(addresses) {
+      addresses.forEach(address => {
+        if(address.includes('.onion')) {
+          SystemData.torAddress = address;
+        } else {
+          SystemData.localAddress = address;
+        }
+      });
+    }
+  },
 };
 
 // We need the scope of a Vue component to get the JWT for making API calls
@@ -124,6 +142,7 @@ function SystemSetup(scope) {
   populate.updates.call(scope);
   populate.settings.call(scope);
   populate.status.call(scope);
+  populate.addresses.call(scope);
 
   // Set a timeout to avoid race condition
   setTimeout(() => {
@@ -145,6 +164,18 @@ function SystemSetup(scope) {
     IntervalBus.clear(populate.status);
     IntervalBus.clear(populate.disk);
   });
+
+  EventBus.$on('load-system-addresses', (options = {autoupdate: true}) => {
+    populate.addresses.call(scope);
+
+    if(options.autoupdate) {
+      IntervalBus.set(populate.addresses, 30);
+    }
+  });
+
+  EventBus.$on('stop-system-addresses', () => {
+    IntervalBus.clear(populate.addresses);
+  });
 }
 
 function SystemTeardown() {
@@ -157,6 +188,8 @@ function SystemTeardown() {
   // Remove event bindings
   EventBus.$off('load-system-stats');
   EventBus.$off('stop-system-stats');
+  EventBus.$off('stop-system-addresses');
+  EventBus.$off('stop-system-addresses');
 }
 
 export default SystemData;

@@ -7,7 +7,7 @@
 
     &nbsp; <!-- We need a non breaking space here to fix an animation glitch in firefox... -->
 
-    <div class="intro-container container">
+    <div class="intro-container container" :class="{tall: isTall}">
       <div class="intro-form" v-if="step === 'hello'">
         <span class="intro-heading">Hello there.</span><br>
         <span class="intro-text">Let's set up your Casa Node.</span><br>
@@ -80,12 +80,18 @@
 
         <div class="seed-phrase">
           <template v-for="count in 24">
-            <input class="word" type="text" v-bind:key="count" v-model="setup.seed[count - 1]" v-bind:placeholder="count">
+            <input type="text" class="word" :class="{ 'is-danger': seedError[count - 1] }" @input="removeError(count)" v-bind:key="count" v-model="setup.seed[count - 1]" v-bind:placeholder="count">
           </template>
-        </div><br>
+        </div>
+        <br>
+
+        <span class="is-danger" v-if="isError">
+          {{ errorMessage }}
+          <br><br>
+        </span>
 
         <nuxt-link :to="'?step=lets-talk'" class="button is-back horizontal">Cancel and Go Back</nuxt-link>
-        <nuxt-link :to="{ query: { step: 'password' }, params: { seed: setup.seed }}" class="button is-casa horizontal">Next</nuxt-link>
+        <a @click="checkSeed()" class="button is-casa horizontal">Next</a>
       </div>
 
       <!--  Register with Password -->
@@ -131,7 +137,7 @@
         <nuxt-link :to="'?step=fine-print'" class="button is-casa">Continue</nuxt-link><br>
       </div>
 
-      <div class="intro-form" v-if="step === 'fine-print'">
+      <div class="intro-form margin-top" v-if="step === 'fine-print'">
         <span class="intro-heading">Don't be <i>too</i> reckless.</span><br><br>
         <span class="intro-text">
           Just one last thing to remember. The Lightning Network and the Casa Node are experimental technology.
@@ -186,6 +192,8 @@ export default {
       isLoading: false,
       loadingComponent: false,
       isError: false,
+      seedError: [],
+      errorMessage: '',
       isTrezor: false, // Trezor not currently supported
       isStdAuth: true, // Temporarily force password auth
       isSyncing: false,
@@ -194,18 +202,28 @@ export default {
     }
   },
 
-  beforeCreate() { // perform runtime injection
-    this.$env.API_MANAGER = `${this.$env.DEVICE_HOST}:3000`;
-    this.$env.API_LND = `${this.$env.DEVICE_HOST}:3002`;
-    this.$env.UPDATE_MANAGER = `${this.$env.DEVICE_HOST}:3001`;
+  beforeMount() { // perform runtime injection
+    let url = this.$env.DEVICE_HOST;
+    if (window.location.href.includes('.onion')) {
+      url = this.$env.CASA_NODE_HIDDEN_SERVICE;
+    }
+
+    this.$env.API_MANAGER = `${url}:3000`;
+    this.$env.API_LND = `${url}:3002`;
+    this.$env.UPDATE_MANAGER = `${url}:3001`;
   },
 
-  async created() {
+  async mounted() {
     // Get seed from the route parameters, since local variables are cleared between pages
     if(this.$route.params.seed !== undefined) {
       this.setup.seed = this.$route.params.seed;
       this.setup.progress = this.setup.seed.length - 1;
       this.seedInit = false;
+    }
+
+    // Check if there was an error with the provided seed phrase
+    if(this.$route.params.seedError !== undefined) {
+      this.handleSeedError(this.$route.params.seedError);
     }
 
     // We can't get the syncing status until after the user is registered
@@ -232,6 +250,16 @@ export default {
   computed: {
     transitionName() {
       return 'x-' + (this.setup.direction > 0 ? 'r' : 'l');
+    },
+
+    isTall() {
+      let tall = ['import-seed', 'password', 'fine-print'];
+
+      if(tall.indexOf(this.step) > -1) {
+        return true;
+      }
+
+      return false;
     }
   },
 
@@ -301,6 +329,57 @@ export default {
 
     },
 
+    checkSeed() {
+      let error = false;
+      this.seedError = [];
+
+      // Loop through seed phrase to make sure no fields are empty
+      for(let i = 0; i < 24; i++) {
+        if(!this.setup.seed[i]) {
+          this.seedError[i] = true;
+          error = true;
+        }
+      }
+
+      if(error) {
+        this.isError = true;
+        this.errorMessage = "It looks like you didn't fill out all of the seed words!";
+      } else {
+        this.$router.push({ query: { step: 'password' }, params: { seed: this.setup.seed }});
+      }
+    },
+
+    // Parse the error message from LND to determine what kind of wallet failure occured
+    parseWalletError(error) {
+      let errorMessage = error.response.data || 'Wallet Creation Failed';
+      let seedError = errorMessage.match(/^Unable to initialize wallet, word (.*) isn't a part of default word list$/);
+
+      if(seedError) {
+        this.$router.push({ query: { step: 'import-seed' }, params: { seed: this.setup.seed, seedError }});
+      } else {
+        this.$toast.open({duration: 10000, message: errorMessage, type: 'is-danger'});
+      }
+    },
+
+    // Display error message when user entered an invalid seed word
+    handleSeedError(seedError) {
+      this.isError = true;
+      this.errorMessage = seedError[0];
+      this.seedError = [];
+
+      // Loop through seed words to determine which ones are invalid
+      for(let i = 0; i < 24; i++) {
+        if(this.setup.seed[i] == seedError[1]) {
+          this.seedError[i] = true;
+        }
+      }
+    },
+
+    removeError(index) {
+      this.seedError[index - 1] = false;
+      this.isError = false;
+    },
+
     async initWalletAndRegister() {
       if(!this.walletCreated) {
         // Check password length
@@ -318,8 +397,8 @@ export default {
         try {
           let {data} = await axios.post(`${this.$env.API_LND}/v1/lnd/wallet/init`, payload);
           this.walletCreated = true;
-        } catch (err) {
-          this.$toast.open({duration: 3000, message: `Wallet Creation Failed`, type: 'is-danger'});
+        } catch (error) {
+          this.parseWalletError(error);
           this.isLoading = false;
           return false;
         }
@@ -341,10 +420,6 @@ export default {
       }
 
       this.$router.push({path: 'intro', query: {step: 'got-it'}});
-    },
-
-    async getSyncProgress() {
-      this.$router.push({path: 'intro', query: {step: '6'}});
     },
 
     // Simulates synchronous sleep function.

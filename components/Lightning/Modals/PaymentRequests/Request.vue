@@ -1,19 +1,25 @@
 <template>
   <form class="deposit" action="">
     <div class="alert alert-status modal-card">
-      <header class="modal-card-head">Lightning Request Generated</header>
+      <header class="modal-card-head">
+        <p class="modal-card-title">
+          Lightning Request Generated
+        </p>
+      </header>
       <section class="modal-card-body">
-        <div class="address-info">
+        <div class="address-info"
+          v-clipboard:copy="invoice.paymentRequest"
+          v-clipboard:success="onCopy"
+          v-clipboard:error="onError">
           <div class="address-info-left">
             <span class="address payment-request">{{invoice.paymentRequest}}</span>
           </div>
-          <a type="button" class="button cancel"
-            v-clipboard:copy="invoice.paymentRequest"
-            v-clipboard:success="onCopy"
-            v-clipboard:error="onError">Copy</a>
-          <br>
+          <a type="button" class="button cancel desktop-only">Copy</a>
         </div>
-        <qr-code :text="invoice.paymentRequest" error-level="L"></qr-code>
+
+        <div class="qr-code">
+          <qr-code :text="invoice.paymentRequest" error-level="L"></qr-code>
+        </div>
       </section>
       <footer class="modal-card-foot">
         <a class="button is-casa is-fullwidth" type="button" @click="qrContinue()">

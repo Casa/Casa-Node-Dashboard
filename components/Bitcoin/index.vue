@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section class="bitcoin-menu">
     <div class="slideout-header">
       <a @click.prevent="closePanel">
         <span class="icon">
@@ -19,7 +19,7 @@
       <div class="stats">
         <div class="stats-col">
           <h1>Online</h1>
-          <h2>IP {{bitcoin.externalIP}}</h2>
+          <h2>{{bitcoin.address.external}}</h2>
           <h3>Node Status</h3>
         </div>
         <div class="stats-col">
@@ -38,11 +38,7 @@
       <b-loading :is-full-page="false" :active.sync="isLoading"></b-loading><hr>
 
       <section class="app-settings">
-        <b-field class="toggle-settings" horizontal label="Tor Mode" v-if="features.tor">
-          <span>Tor Mode<span v-if="settings.hasTor"> On</span><span v-else> Off</span></span>
-          <b-switch v-model="settings.hasTor" type="is-info"></b-switch>
-        </b-field><hr v-if="features.tor">
-
+        <!-- Incoming Connections -->
         <b-field class="toggle-settings" horizontal label="Allow Incoming Connections">
           <span>Incoming Connections<span v-if="system.settings.bitcoind.bitcoindListen"> Allowed</span><span v-else> Disabled</span></span>
           <b-switch v-model="system.settings.bitcoind.bitcoindListen" type="is-info"></b-switch>
@@ -113,10 +109,6 @@
 </template>
 
 <script>
-// Handle Non-SSR Components
-if (process.browser) {
-  var {vueSlideoutPanelService} = require('vue2-slideout-panel');
-}
 import axios from 'axios';
 import EventBus from '@/helpers/event-bus';
 import BitcoinData from '@/data/bitcoin';
@@ -134,11 +126,9 @@ export default {
     return {
       isLoading: true,
       features: {
-        tor: false,
         syncStop: true
       },
       settings: {
-        hasTor: false,
         canSync: true
       },
       bitcoin: BitcoinData,
@@ -152,7 +142,7 @@ export default {
   },
 
   updated() {
-    if(this.bitcoin.externalIP && Object.keys(this.bitcoin.connections).length) {
+    if(this.bitcoin.address.external && Object.keys(this.bitcoin.connections).length) {
       this.isLoading = false;
     }
   },

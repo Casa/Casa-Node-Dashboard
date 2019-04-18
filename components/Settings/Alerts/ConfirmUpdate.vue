@@ -6,7 +6,7 @@
         </header>
         <section class="modal-card-body">
           <b-loading :is-full-page="true" :active.sync="data.isLoading"></b-loading>
-          <p>Your device will restart while it updates. You will not be able to connect to your node while it's updating. Please enter your password to confirm the update.</p><br>
+          <p>You can <a href="https://github.com/Casa/Casa-Node-Dashboard/blob/master/CHANGELOG.md" target="_blank">view the list of changes here</a>. Your device will restart while it updates. You will not be able to connect to your node while it's updating. Please enter your password to confirm the update.</p><br>
           <b-field>
             <b-input type="password" v-model="data.password" placeholder="Enter password" required></b-input>
           </b-field>
