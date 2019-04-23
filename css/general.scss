@@ -354,6 +354,12 @@ input[type=number]::-webkit-outer-spin-button {
   }
 }
 
+.copyable.locked {
+  &:after {
+    content: '' !important;
+  }
+}
+
 .loading-dots {
   border-radius: 22px;
   border: 2px dashed #8d8e8e;
