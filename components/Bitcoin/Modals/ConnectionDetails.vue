@@ -59,7 +59,7 @@ export default {
 
     async save() {
       const data = {
-        bitcoindPort: this.port
+        bitcoindPort: parseInt(this.port)
       };
 
       try {

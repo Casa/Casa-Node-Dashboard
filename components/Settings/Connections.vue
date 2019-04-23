@@ -203,17 +203,28 @@
                 <div class="loading-dots"></div>
               </template>
 
-              <template v-else>
+              <template v-else-if="system.torAddress">
                 <div class="copyable" :class="{ copied: lastCopy === 'localTor'}"
                     v-clipboard:copy="system.torAddress"
                     @click="clickedCopy('localTor')">
                   {{ system.torAddress }}
                 </div>
+
+                <p class="description">
+                  To access your dashboard from outside your home network, download the Tor browser <a href="https://www.torproject.org/" class="blue" target="_blank" rel="noopener">here</a> and navigate to your Tor address listed above.
+                </p>
               </template>
 
-              <p class="description">
-                To access your dashboard from outside your home network, download the Tor browser <a href="https://www.torproject.org/" class="blue" target="_blank" rel="noopener">here</a> and navigate to your Tor address listed above.
-              </p>
+              <template v-else>
+                <div class="copyable locked">
+                  Restart Needed
+                </div>
+
+                <p class="description">
+                  To fully activate your dashboard Tor address, we need to restart your node.
+                  <a class="blue" @click="confirmShutdown()">Shutdown Now</a>
+                </p>
+              </template>
             </template>
 
             <template v-else>
@@ -239,6 +250,7 @@ import SystemData from '@/data/system';
 import LightningConnectionCode from '@/components/Lightning/Modals/ConnectionCode';
 import LightningConnectionDetails from '@/components/Lightning/Modals/ConnectionDetails';
 import BitcoinConnectionDetails from '@/components/Bitcoin/Modals/ConnectionDetails';
+import ConfirmShutdown from '@/components/Settings/Alerts/ConfirmShutdown';
 
 export default {
   name: 'Connections',
@@ -391,7 +403,11 @@ export default {
       if(this.loading.lnd || this.loading.bitcoind) {
         this.$toast.open({duration: 10000, message: "Your Bitcoin and Lightning nodes are currently restarting. Please wait for both to come back online before changing this setting.", type: 'is-danger'});
       }
-    }
+    },
+
+    confirmShutdown() {
+      this.$modal.open({parent: this, component: ConfirmShutdown, hasModalCard: true});
+    },
   }
 };
 </script>
