@@ -1,0 +1,14 @@
+.dockerignore
+node_modules
+npm-debug.log
+README.md
+.git
+.gitignore
+.idea
+Dockerfile
+.eslintrc
+.eslintrc.js
+.eslintignore
+.editorconfig
+.nuxt
+dist/
