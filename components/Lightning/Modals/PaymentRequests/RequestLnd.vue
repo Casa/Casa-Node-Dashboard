@@ -13,7 +13,7 @@
             <div class="field is-expanded">
               <p class="control is-expanded has-icons-right">
                 <input class="input" type="number" v-model="invoice.amount">
-                <span class="icon is-small is-right"><i>BTC</i></span>
+                <span class="icon is-small is-right"><i>{{ getUnit }}</i></span>
               </p>
             </div>
             <div class="field is-expanded">
@@ -39,6 +39,7 @@
 <script>
 import axios from 'axios';
 import EventBus from '@/helpers/event-bus';
+import SystemData from '@/data/system';
 import {satsToBtc, btcToSats} from '@/helpers/units';
 
 export default {
@@ -47,6 +48,7 @@ export default {
     return {
       satPerByte: 5,
       txData: {amount: 0},
+      system: SystemData,
       invoice: {},
       balance: {}
     };
@@ -61,9 +63,23 @@ export default {
   },
 
   computed: {
-    getDollarValue: function() {
-      return (this.invoice.amount * this.txData.inFiat).toFixed(2);
-    }
+    getDollarValue() {
+      let amount = this.invoice.amount;
+
+      if(this.system.displayUnit === 'sats') {
+        amount = satsToBtc(amount);
+      }
+
+      return (amount * this.txData.inFiat).toFixed(2);
+    },
+
+    getUnit() {
+      if(this.system.displayUnit === 'btc') {
+        return 'BTC';
+      } else if(this.system.displayUnit === 'sats') {
+        return 'sats';
+      }
+    },
   },
 
   methods: {
@@ -71,7 +87,12 @@ export default {
     async newInvoice() {
       EventBus.$emit('loading-start');
 
-      var invoiceData = {amt: btcToSats(this.invoice.amount), memo: this.invoice.memo};
+      let amount = this.invoice.amount;
+      if(this.system.displayUnit === 'btc') {
+        amount = btcToSats(amount);
+      }
+
+      var invoiceData = {amt: amount, memo: this.invoice.memo};
       try {
         var {data} = await this.$axios.post(`${this.$env.API_LND}/v1/lnd/lightning/addInvoice`, invoiceData);
         var paymentRequest = {...data, ...invoiceData};

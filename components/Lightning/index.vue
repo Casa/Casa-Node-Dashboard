@@ -8,7 +8,10 @@
 
         <span>Close</span>
       </a>
+
+      <UnitSwitch />
     </div>
+
     <div class="app-slideout lnd">
       <div class="app-title">
         <img src="~assets/lightning.png" alt="Lightning">
@@ -19,14 +22,14 @@
       <div class="stats">
         <div class="stats-col">
           <h1>{{lightning.channels.open.length}} Channel<template v-if="lightning.channels.open.length != 1">s</template></h1>
-          <h2>{{lightning.balance.confirmed | btc}} BTC in Channels</h2>
+          <h2>{{lightning.balance.confirmed | inUnits | withSuffix}} in Channels</h2>
         </div>
         <div class="stats-col">
           <h1>{{lightning.channels.pending.length}} Pending</h1>
-          <h2>{{lightning.balance.pending | btc}} BTC Pending</h2>
+          <h2>{{lightning.balance.pending | inUnits | withSuffix}} Pending</h2>
         </div>
         <div class="stats-col">
-          <h1>{{lightning.quotient | btc}} BTC</h1>
+          <h1>{{lightning.quotient | inUnits | withSuffix}}</h1>
           <h2>Avg. Value per Channel</h2>
         </div>
       </div>
@@ -150,6 +153,7 @@
   import ConfirmSave from '@/components/Lightning/Alerts/ConfirmSave';
   import ConfirmCancel from '@/components/Lightning/Alerts/ConfirmCancel';
   import ConnectionCode from '@/components/Lightning/Modals/ConnectionCode';
+  import UnitSwitch from '@/components/Settings/UnitSwitch';
 
   export default {
     data() {
@@ -274,6 +278,10 @@
         await vueSlideoutPanelService.show({component: BitcoinTransactions, width: '100%'});
         this.$emit('closePanel');
       },
-    }
+    },
+
+    components: {
+      UnitSwitch
+    },
   };
   </script>

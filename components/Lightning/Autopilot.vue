@@ -8,6 +8,8 @@
 
         <span>Back</span>
       </a>
+
+      <UnitSwitch />
     </div>
 
     <div class="app-slideout channel">
@@ -41,14 +43,14 @@
         <div class="stats">
           <div class="stats-col">
             <h1>{{lightning.channels.open.length}} Channel<template v-if="lightning.channels.open.length != 1">s</template></h1>
-            <h2>{{lightning.balance.confirmed | btc}} BTC in Channels</h2>
+            <h2>{{lightning.balance.confirmed | inUnits | withSuffix}} in Channels</h2>
           </div>
           <div class="stats-col">
             <h1>{{lightning.channels.pending.length}} Pending</h1>
-            <h2>{{lightning.balance.pending | btc}} BTC Pending</h2>
+            <h2>{{lightning.balance.pending | inUnits | withSuffix}} Pending</h2>
           </div>
           <div class="stats-col">
-            <h1>{{lightning.quotient | btc}} BTC</h1>
+            <h1>{{lightning.quotient | inUnits | withSuffix}}</h1>
             <h2>Avg. Value per Channel</h2>
           </div>
         </div>
@@ -59,7 +61,7 @@
             <label class="label">
               Autopilot Settings
             </label>
-            <p>Allocate BTC to your Autopilot channels.</p>
+            <p>Allocate funds in your Autopilot channels.</p>
           </div>
 
           <div class="field-body">
@@ -100,7 +102,7 @@
                     <!-- TODO: handle active color with css-->
                     <h2 class="channel-status " v-bind:style="{color: ch.activeColor}">{{ch.status}}</h2>
                     <h3 class="channel-balance" v-if="ch.timeRemainingText">{{ch.timeRemainingText}}</h3>
-                    <h3 class="channel-balance" v-if="!ch.timeRemainingText">{{ch.localBalance | btc}} BTC</h3>
+                    <h3 class="channel-balance" v-if="!ch.timeRemainingText">{{ch.localBalance | inUnits | withSuffix}}</h3>
                   </div>
                 </div>
                 <hr>
@@ -137,6 +139,7 @@ import {satsToBtc, btcToSats} from '@/helpers/units';
 import ManageChannel from '@/components/Lightning/Modals/Channels/ManageChannel';
 import OpenChannel from '@/components/Lightning/Modals/Channels/OpenChannel';
 import AutopilotSettings from '@/components/Lightning/Modals/AutopilotSettings';
+import UnitSwitch from '@/components/Settings/UnitSwitch';
 
 export default {
   name: 'Autopilot',
@@ -310,6 +313,10 @@ export default {
         EventBus.$emit('loading-stop');
       }
     },
+  },
+
+  components: {
+    UnitSwitch
   },
 };
 </script>

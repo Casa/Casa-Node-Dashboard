@@ -24,3 +24,13 @@ export function satsToBtc(input, decimals = 8) {
 
   return btc.decimalPlaces(decimals).toString();
 }
+
+export function formatSats(input) {
+  const sats = new BigNumber(input);
+
+  if(isNaN(sats)) {
+    return 0;
+  }
+
+  return sats.toFormat(0);
+}

@@ -1,6 +1,21 @@
 # Changelog
 Notable changes to the Casa Node project will be documented in this file
 
+## 2019-04-30
+### Added
+
+- Added the ability to toggle between BTC and SATS.
+- A new route to determine boot status.
+
+### Changed
+
+- Added property chainstate error detected to status route. 
+
+### Fixed
+
+- Fixed a bug which prevented payments of 0 sat invoices.
+- Fixed a bug which blocked the manager from booting properly because of unexpected images.
+
 ## 2019-04-18
 ### Added
 

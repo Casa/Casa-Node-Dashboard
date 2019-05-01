@@ -11,6 +11,7 @@ const SystemData = {
   status: {},
   localAddress: false,
   torAddress: false,
+  displayUnit: 'btc',
 };
 
 // Variable to prevent requests from being made before setup and after teardown
@@ -91,6 +92,10 @@ const populate = {
 
     if(settings) {
       SystemData.settings = settings;
+
+      if(settings.system && settings.system.systemDisplayUnits) {
+        SystemData.displayUnit = settings.system.systemDisplayUnits;
+      }
     }
   },
 

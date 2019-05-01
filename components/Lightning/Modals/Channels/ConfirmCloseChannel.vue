@@ -12,8 +12,7 @@
       <section class="modal-card-body">
         <span class="info-light">The <strong>{{chData.name}}</strong> channel will be closed.</span>
 
-        <div class="request-amount" v-if="chData.localBalanceBtc">
-          <br>
+        <div class="request-amount" v-if="system.displayUnit === 'btc' && chData.localBalanceBtc">
           <div class="field is-grouped">
             <div class="field is-expanded input-wrapper">
               <p class="control is-expanded">
@@ -26,6 +25,23 @@
                 <input class="input" type="number" v-model="chData.remoteBalanceBtc">
               </p>
               <p class="help">BTC ON OTHER SIDE OF CHANNEL</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="request-amount" v-else-if="system.displayUnit === 'sats' && chData.localBalance">
+          <div class="field is-grouped">
+            <div class="field is-expanded input-wrapper">
+              <p class="control is-expanded">
+                <input class="input" type="number" v-model="chData.localBalance">
+              </p>
+              <p class="help">SATS ON YOUR SIDE</p>
+            </div>
+            <div class="field is-expanded input-wrapper">
+              <p class="control is-expanded">
+                <input class="input" type="number" v-model="chData.remoteBalance">
+              </p>
+              <p class="help">SATS ON OTHER SIDE OF CHANNEL</p>
             </div>
           </div>
         </div>
@@ -48,6 +64,7 @@
 <script>
 import axios from 'axios';
 import EventBus from '@/helpers/event-bus';
+import SystemData from '@/data/system';
 
 export default {
   name: 'ConfirmCloseChannel',
@@ -59,6 +76,7 @@ export default {
   data() {
     return {
       isLoading: false,
+      system: SystemData,
     };
   },
 

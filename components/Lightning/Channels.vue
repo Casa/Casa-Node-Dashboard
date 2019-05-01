@@ -47,7 +47,7 @@
                   <!-- TODO: handle active color with css-->
                   <h2 class="channel-status " v-bind:style="{color: ch.activeColor}">{{ch.status}}</h2>
                   <h3 class="channel-balance" v-if="ch.timeRemainingText">{{ch.timeRemainingText}}</h3>
-                  <h3 class="channel-balance" v-if="!ch.timeRemainingText">{{ch.localBalance | btc}} BTC</h3>
+                  <h3 class="channel-balance" v-if="!ch.timeRemainingText">{{ch.localBalance | inUnits | withSuffix}}</h3>
                 </div>
               </div>
               <hr>

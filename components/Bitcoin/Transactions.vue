@@ -8,6 +8,8 @@
 
         <span>Close</span>
       </a>
+
+      <UnitSwitch />
     </div>
 
     <div class="app-slideout btc transactions">
@@ -20,7 +22,7 @@
 
       <div class="stats">
         <div class="stats-col">
-          <h1>{{bitcoin.wallet.totalBalance | btc}} BTC</h1>
+          <h1>{{bitcoin.wallet.totalBalance | inUnits | withSuffix}}</h1>
           <h2>Bitcoin Balance</h2>
         </div>
       </div>
@@ -63,7 +65,7 @@
                     </h3>
                   </div>
                   <div class="tx-col-3">
-                    <h2><span>{{transaction.amount | btc}}</span> BTC</h2>
+                    <h2><span>{{transaction.amount | inUnits | withSuffix}}</span></h2>
                     <h3>${{ transaction.amount | usd }}</h3>
                   </div>
                 </div>
@@ -102,7 +104,7 @@
                     </h3>
                   </div>
                   <div class="tx-col-3">
-                    <h2><span>{{transaction.amount | btc}}</span> BTC</h2>
+                    <h2><span>{{transaction.amount | inUnits | withSuffix}}</span></h2>
                     <h3>${{ transaction.amount | usd }}</h3>
                   </div>
                 </div>
@@ -132,6 +134,7 @@ import BitcoinData from '@/data/bitcoin';
 
 import Deposit from '@/components/Bitcoin/Modals/Deposit/Deposit';
 import Withdraw from '@/components/Bitcoin/Modals/Withdraw/Withdraw';
+import UnitSwitch from '@/components/Settings/UnitSwitch';
 
 export default {
   name: 'Wallet',
@@ -188,7 +191,10 @@ export default {
         this.showErrorMessage(err);
       }
     }
-  }
+  },
 
+  components: {
+    UnitSwitch
+  },
 };
 </script>

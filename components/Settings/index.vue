@@ -121,6 +121,7 @@ import EventBus from '@/helpers/event-bus';
 import ConfirmUpdate from '@/components/Settings/Alerts/ConfirmUpdate';
 import ConfirmShutdown from '@/components/Settings/Alerts/ConfirmShutdown';
 import ConfirmFactoryReset from '@/components/Settings/Alerts/ConfirmFactoryReset';
+import SystemData from '@/data/system';
 
 export default {
   name: 'Settings',
@@ -132,6 +133,7 @@ export default {
       stats: { cpu: 22, ram: 3.25, hd: 1.25 },
       downloadUrl: this.$env.API_MANAGER + '/v1/logs/download',
       downloadStarted: false,
+      system: SystemData,
     }
   },
 
@@ -204,6 +206,6 @@ export default {
     onError: function(e) {
       console.log('Failed to copy address text', e);
     }
-  }
+  },
 };
 </script>
