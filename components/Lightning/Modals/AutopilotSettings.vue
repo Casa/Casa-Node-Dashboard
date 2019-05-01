@@ -7,30 +7,31 @@
         <!-- Channel Settings -->
         <div class="btc-calc">
           <b-field grouped>
-            <b-field :message="['Value Per Channel']" expanded>
-              <vue-numeric class="input" v-model="maxChanSize" :precision="3" name="maxChanSize" v-validate="'max_value:' + constants.MAX_CHANNEL_SIZE_BTC"></vue-numeric>
+            <b-field :message="'Value Per Channel'" expanded>
+              <vue-numeric v-if="system.displayUnit === 'btc'" class="input" v-model="maxChanSize" :precision="3" name="maxChanSize" v-validate="'max_value:' + constants.MAX_CHANNEL_SIZE_BTC"></vue-numeric>
+              <vue-numeric v-else class="input" v-model="maxChanSize" name="maxChanSize" v-validate="'max_value:' + constants.MAX_CHANNEL_SIZE_SATS"></vue-numeric>
             </b-field>
             <b-field expanded>
               <p class="operator">x</p>
             </b-field>
-            <b-field :message="['Number of Channels']" expanded>
+            <b-field :message="'Number of Channels'" expanded>
               <vue-numeric class="input" v-model="system.settings.lnd.maxChannels" :precision="0" name="maxChannels" v-validate="'max_value:' + constants.MAX_CHANNELS"></vue-numeric>
             </b-field>
             <b-field expanded>
               <p class="operator">=</p>
             </b-field>
-            <b-field :message="['BTC in Autopilot']" expanded>
+            <b-field :message="getUnit + ' in Autopilot'" expanded>
               <b-input class="hide-input-box" :value="getTotal"></b-input>
             </b-field>
           </b-field>
 
           <b-field grouped class="bitcoin-balance">
-            <b-field :message="['BTC IN NODE WALLET']" expanded>
-              <p class="bitcoin-in-wallet">{{bitcoin.wallet.totalBalance | btc}}</p>
+            <b-field :message="getUnit + ' IN NODE WALLET'" expanded>
+              <p class="bitcoin-in-wallet">{{bitcoin.wallet.totalBalance | inUnits}}</p>
             </b-field>
             <b-field expanded>
               <p>
-                Total BTC in your Lightning Node's wallet.<br>
+                Total {{ getUnit }} in your Lightning Node's wallet.<br>
                 <a class="link" @click="showBitcoinTransactions">Add or remove funds</a>
               </p>
             </b-field>
@@ -74,20 +75,26 @@ export default {
 
   computed: {
     getTotal() {
-      var btc = (this.maxChanSize * this.system.settings.lnd.maxChannels).toFixed(3);
-      if(isNaN(btc)) {
-        btc = 0;
+      let value = this.maxChanSize * this.system.settings.lnd.maxChannels;
+
+      if(isNaN(value)) {
+        value = 0;
       }
-      return btc;
-    }
+
+      return value;
+    },
+
+    getUnit() {
+      if(this.system.displayUnit === 'btc') {
+        return 'BTC';
+      } else if(this.system.displayUnit === 'sats') {
+        return 'sats';
+      }
+    },
   },
 
   created() {
-    if(this.system.settings.lnd.maxChanSize) {
-      this.maxChanSize = satsToBtc(this.system.settings.lnd.maxChanSize);
-    } else {
-      this.maxChanSize = 0;
-    }
+    this.setMaxChanSize();
   },
 
   methods: {
@@ -97,13 +104,33 @@ export default {
       this.$emit('closePanel');
     },
 
+    getMaxChanSize() {
+      if(this.system.displayUnit === 'btc') {
+        return btcToSats(this.maxChanSize);
+      } else if(this.system.displayUnit === 'sats') {
+        return this.maxChanSize;
+      }
+    },
+
+    setMaxChanSize() {
+      if(this.system.settings.lnd.maxChanSize) {
+        if(this.system.displayUnit === 'btc') {
+          this.maxChanSize = satsToBtc(this.system.settings.lnd.maxChanSize);
+        } else if(this.system.displayUnit === 'sats') {
+          this.maxChanSize = this.system.settings.lnd.maxChanSize;
+        }
+      } else {
+        this.maxChanSize = 0;
+      }
+    },
+
     saveChannelSettings() {
       this.$validator.validate().then(valid => {
         if(valid) {
           const data = {
             autopilot: this.system.settings.lnd.autopilot,
             maxChannels: parseInt(this.system.settings.lnd.maxChannels) || 0,
-            maxChanSize: parseInt(btcToSats(this.maxChanSize)) || 0,
+            maxChanSize: parseInt(this.getMaxChanSize()) || 0,
           };
 
           this.saveSettings(data, 'Autopilot settings saved');

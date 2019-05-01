@@ -71,7 +71,23 @@
           <div class="field is-grouped">
             <div class="field is-expanded">
               <p class="control is-expanded">
-                <input type="text" class="input" :class="{ 'is-danger': errors.has('fundingAmount')}" name="fundingAmount" v-model="fundingAmount" v-validate="'required|max_value:0.16'" placeholder="Funding amount (max 0.16 BTC)">
+                <vue-numeric v-if="system.displayUnit === 'btc'"
+                  class="input"
+                  :class="{ 'is-danger': errors.has('fundingAmount')}"
+                  name="fundingAmount"
+                  v-model="fundingAmount"
+                  v-validate="`max_value:${constants.MAX_CHANNEL_SIZE_BTC}`"
+                  :placeholder="`Funding amount (max ${constants.MAX_CHANNEL_SIZE_BTC} BTC)`">
+                </vue-numeric>
+
+                <vue-numeric v-else
+                  class="input"
+                  :class="{ 'is-danger': errors.has('fundingAmount')}"
+                  name="fundingAmount"
+                  v-model="fundingAmount"
+                  v-validate="`max_value:${constants.MAX_CHANNEL_SIZE_SATS}`"
+                  :placeholder="`Funding amount (max ${constants.MAX_CHANNEL_SIZE_SATS} sats)`">
+                </vue-numeric>
               </p>
             </div>
           </div>
@@ -88,6 +104,8 @@
 <script>
 import axios from 'axios';
 import EventBus from '@/helpers/event-bus';
+import SystemData from '@/data/system';
+import CONSTANTS from '@/helpers/constants';
 import {satsToBtc, btcToSats} from '@/helpers/units';
 
 export default {
@@ -102,6 +120,8 @@ export default {
       fundingAmount: null,
       name: null,
       purpose: null,
+      system: SystemData,
+      constants: CONSTANTS,
     };
   },
 
@@ -134,10 +154,14 @@ export default {
       EventBus.$emit('loading-start');
 
       var data = {
-        amt: btcToSats(this.fundingAmount),
+        amt: this.fundingAmount,
         name: this.name,
         purpose: this.purpose
       };
+
+      if(this.system.displayUnit === 'btc') {
+        data.amt = btcToSats(data.amt);
+      }
 
       if (this.manualEntry) {
         data.pubKey = this.pubKey;

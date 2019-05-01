@@ -16,7 +16,7 @@
                 <div class="field is-expanded">
                   <p class="control is-expanded has-icons-right">
                     <input class="input" type="number" v-model="customAmount">
-                    <span class="icon is-small is-right"><i>BTC</i></span>
+                    <span class="icon is-small is-right"><i><span v-if="system.displayUnit === 'btc'">BTC</span><span v-else>sats</span></i></span>
                   </p>
                 </div>
                 <div class="field is-expanded">
@@ -41,7 +41,7 @@
               <span class="info-label">Sending</span>
             </div>
             <div class="equalFlexCol eqFlexField">
-              <span class="info-light">{{payment.numSatoshis | btc}} BTC</span>
+              <span class="info-light">{{payment.numSatoshis | inUnits | withSuffix}}</span>
             </div>
           </template>
 
@@ -50,7 +50,7 @@
               <span class="info-label">Max Potential Payment</span>
             </div>
             <div class="equalFlexCol eqFlexField">
-              <span class="info-light">{{lightning.maxPaymentOut | btc}} BTC</span>
+              <span class="info-light">{{lightning.maxPaymentOut | inUnits | withSuffix}}</span>
             </div>
           </template>
 
@@ -58,7 +58,7 @@
             <span class="info-label">New Lightning Balance</span>
           </div>
           <div class="equalFlexCol eqFlexField">
-            <span class="info-light">{{getBalance | btc}} BTC</span>
+            <span class="info-light">{{getBalance | inUnits | withSuffix}}</span>
           </div>
 
         </div>
@@ -76,6 +76,8 @@ import axios from 'axios';
 import EventBus from '@/helpers/event-bus';
 import BitcoinData from '@/data/bitcoin';
 import LightningData from '@/data/lightning';
+import SystemData from '@/data/system';
+import {satsToBtc, btcToSats} from '@/helpers/units';
 
 export default {
   name: 'ConfirmInvoice',
@@ -86,14 +88,22 @@ export default {
 
   computed: {
     getDollarValue: function() {
-      return (this.customAmount * this.bitcoin.price).toFixed(2);
+      if(this.system.displayUnit === 'btc') {
+        return (this.customAmount * this.bitcoin.price).toFixed(2);
+      } else {
+        return (satsToBtc(this.customAmount) * this.bitcoin.price).toFixed(2);
+      }
     },
 
     getBalance: function() {
       if(parseInt(this.payment.numSatoshis) > 0) {
         return parseInt(this.lightning.balance.confirmed) - parseInt(this.payment.numSatoshis);
       } else {
-        return parseInt(this.lightning.balance.confirmed) - btcToSats(this.customAmount);
+        if(this.system.displayUnit === 'btc') {
+          return parseInt(this.lightning.balance.confirmed) - btcToSats(this.customAmount);
+        } else {
+          return parseInt(this.lightning.balance.confirmed) - parseInt(this.customAmount);
+        }
       }
     },
   },
@@ -102,6 +112,7 @@ export default {
     return {
       bitcoin: BitcoinData,
       lightning: LightningData,
+      system: SystemData,
       payment: {},
       newBalance: 0,
       customAmount: 0,
@@ -126,7 +137,11 @@ export default {
         var payload = {paymentRequest: this.invoice}
 
         if(this.customAmount > 0) {
-          payload.amt = btcToSats(this.customAmount);
+          if(this.system.displayUnit === 'btc') {
+            payload.amt = btcToSats(this.customAmount);
+          } else {
+            payload.amt = parseInt(this.customAmount);
+          }
         }
 
         var pay = await this.$axios.post(`${this.$env.API_LND}/v1/lnd/lightning/payInvoice`, payload);

@@ -8,6 +8,8 @@
 
         <span>Close</span>
       </a>
+
+      <UnitSwitch />
     </div>
 
     <div class="app-slideout lnd transactions">
@@ -20,12 +22,12 @@
 
       <div class="stats">
         <div class="stats-col">
-          <h1>{{lightning.balance.confirmed | btc}} BTC</h1>
+          <h1>{{lightning.balance.confirmed | inUnits | withSuffix}}</h1>
           <h2>in Lightning Channels</h2>
         </div>
 
         <div class="stats-col">
-          <h1>{{lightning.maxPaymentIn | btc}} BTC</h1>
+          <h1>{{lightning.maxPaymentIn | inUnits | withSuffix}}</h1>
           <h2>
             Max Incoming Payment
 
@@ -38,7 +40,7 @@
         </div>
 
         <div class="stats-col">
-          <h1>{{lightning.maxPaymentOut | btc}} BTC</h1>
+          <h1>{{lightning.maxPaymentOut | inUnits | withSuffix}}</h1>
           <h2>
             Max Outgoing Payment
 
@@ -86,7 +88,7 @@
                   <h3>{{transaction.memo}}</h3>
                 </div>
                 <div class="tx-col-3">
-                  <h2><span>{{transaction.value | btc}}</span> BTC</h2>
+                  <h2><span>{{transaction.value | inUnits | withSuffix}}</span></h2>
                   <h3>${{ transaction.value | usd }}</h3>
                 </div>
               </div>
@@ -113,7 +115,7 @@
                   <h3>{{transaction.memo}}</h3>
                 </div>
                 <div class="tx-col-3">
-                  <h2><span>{{transaction.value | btc}}</span> BTC</h2>
+                  <h2><span>{{transaction.value | inUnits | withSuffix}}</span></h2>
                   <h3>${{ transaction.value | usd}}</h3>
                 </div>
               </div>
@@ -132,13 +134,13 @@ import axios from 'axios';
 import EventBus from '@/helpers/event-bus';
 import BitcoinData from '@/data/bitcoin';
 import LightningData from '@/data/lightning';
-import {satsToBtc, btcToSats} from '@/helpers/units';
 
 import Send from '@/components/Lightning/Modals/SendPayment/Send';
 import ConfirmPayment from '@/components/Lightning/Modals/SendPayment/ConfirmPayment';
 import Request from '@/components/Lightning/Modals/PaymentRequests/Request';
 import RequestLnd from '@/components/Lightning/Modals/PaymentRequests/RequestLnd';
 import ConfirmInvoice from '@/components/Lightning/Modals/PaymentRequests/ConfirmInvoice';
+import UnitSwitch from '@/components/Settings/UnitSwitch';
 
 export default {
   name: 'Wallet',
@@ -207,6 +209,10 @@ export default {
     showErrorMessage(err) {
       this.$toast.open({duration: 4000, message: `Error: ${err.response.data}`, type: 'is-danger'});
     }
+  },
+
+  components: {
+    UnitSwitch
   },
 };
 </script>
