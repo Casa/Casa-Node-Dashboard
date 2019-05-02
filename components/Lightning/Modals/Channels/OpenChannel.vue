@@ -50,7 +50,7 @@
         </div>
 
         <!-- Host Input Fields -->
-        <div class="request-amount" v-if="manualEntry">
+        <div v-if="manualEntry">
           <div class="field is-grouped">
             <div class="field is-expanded">
               <p class="control is-expanded">
@@ -67,31 +67,27 @@
 
         <!-- Amount Fields -->
         <h2>Channel Funding</h2>
-        <div class="request-amount">
           <div class="field is-grouped">
-            <div class="field is-expanded">
-              <p class="control is-expanded">
-                <vue-numeric v-if="system.displayUnit === 'btc'"
-                  class="input"
-                  :class="{ 'is-danger': errors.has('fundingAmount')}"
-                  name="fundingAmount"
-                  v-model="fundingAmount"
-                  v-validate="`max_value:${constants.MAX_CHANNEL_SIZE_BTC}`"
-                  :placeholder="`Funding amount (max ${constants.MAX_CHANNEL_SIZE_BTC} BTC)`">
-                </vue-numeric>
+            <div class="control is-expanded">
+              <input v-if="system.displayUnit === 'btc'"
+                type="text"
+                class="input"
+                :class="{ 'is-danger': errors.has('fundingAmount')}"
+                name="fundingAmount"
+                v-model="fundingAmount"
+                v-validate="`required|max_value:${constants.MAX_CHANNEL_SIZE_BTC}`"
+                :placeholder="`Funding amount (max ${constants.MAX_CHANNEL_SIZE_BTC} BTC)`" />
 
-                <vue-numeric v-else
-                  class="input"
-                  :class="{ 'is-danger': errors.has('fundingAmount')}"
-                  name="fundingAmount"
-                  v-model="fundingAmount"
-                  v-validate="`max_value:${constants.MAX_CHANNEL_SIZE_SATS}`"
-                  :placeholder="`Funding amount (max ${constants.MAX_CHANNEL_SIZE_SATS} sats)`">
-                </vue-numeric>
-              </p>
+              <input v-else
+                type="text"
+                class="input"
+                :class="{ 'is-danger': errors.has('fundingAmount')}"
+                name="fundingAmount"
+                v-model="fundingAmount"
+                v-validate="`required|max_value:${constants.MAX_CHANNEL_SIZE_SATS}`"
+                :placeholder="`Funding amount (max ${constants.MAX_CHANNEL_SIZE_SATS} sats)`" />
             </div>
           </div>
-        </div>
       </section>
       <footer class="modal-card-foot">
         <a class="button cancel" type="button" @click="$parent.close()">Go Back</a>

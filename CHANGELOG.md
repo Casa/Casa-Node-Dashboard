@@ -1,6 +1,11 @@
 # Changelog
 Notable changes to the Casa Node project will be documented in this file
 
+## 2019-05-02
+### Fixed
+
+- Fixed a bug which prevented opening channels with BTC amounts.
+
 ## 2019-04-30
 ### Added
 
