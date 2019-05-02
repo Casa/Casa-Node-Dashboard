@@ -1,0 +1,32 @@
+.welcome h2 {
+  font-size: 26px;
+  font-weight: 900;
+  text-align: center;
+  color: #0a0525;
+  margin-bottom: 1em;
+}
+
+.welcome .modal-card-head {
+  padding: 30px;
+}
+
+.welcome .alert-icon-container img {
+  position: absolute;
+  z-index: 999;
+  top: -32px;
+  left: calc(50% - 40px);
+  width: 80px;
+  height: 80px;
+}
+
+.welcome p {
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.45;
+  text-align: center;
+  color: #8d8e8e;
+}
+
+.welcome .button {
+  width: 220px;
+}
