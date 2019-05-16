@@ -184,6 +184,7 @@ import axios from 'axios';
 import { mapGetters } from 'vuex';
 import EventBus from '@/helpers/event-bus';
 import API from '@/helpers/api';
+import * as redirect from '@/helpers/redirects';
 
 // Dynamic data stores
 import BitcoinData, { BitcoinSetup, BitcoinTeardown } from '@/data/bitcoin';
@@ -207,8 +208,6 @@ import UpdateNotice from '@/components/Settings/Alerts/UpdateNotice';
 export default {
   name: 'Launcher',
   layout: 'default',
-  // Check Auth
-  middleware: 'auth',
   computed: {
     ...mapGetters(['isAuthenticated'])
   },
@@ -236,20 +235,8 @@ export default {
     }
   },
 
-  beforeMount() { // perform runtime injection
-    let url = this.$env.DEVICE_HOST;
-    if (window.location.href.includes('.onion')) {
-      url = this.$env.CASA_NODE_HIDDEN_SERVICE;
-    }
-    this.$env.API_MANAGER = `${url}:3000`;
-
-    this.$env.API_LND = `${url}:3002`;
-    this.$env.UPDATE_MANAGER = `${url}:3001`;
-  },
-
   // once view exists and data is observed
   async mounted () {
-    // force confirmation before updating device
     EventBus.$on('update', this.update);
     EventBus.$on('loading-start', this.showLoadingSpinner);
     EventBus.$on('loading-stop', this.hideLoadingSpinner);
@@ -266,17 +253,13 @@ export default {
       this.$snackbar.open({message: "Your node is taking longer than expected to load. Please wait...", position:'is-top', indefinite: true});
     }, 10000);
 
-    // Check to see if the user is registered. If the user is not registered, redirect them to the intro page.
-    const data = await API.get(axios, `${this.$env.API_MANAGER}/v1/accounts/registered`);
-
-    // If the registered route is unavailable, redirect the user to the login page and handle further errors there.
-    if (data === false) {
-      this.$router.push('/login');
+    // Check if we need to redirect the user to another page
+    // Check loading returns true when the node is loading, return to prevent any further processing
+    if(await redirect.checkLoading(this) === true) {
       return;
     }
 
-    if (data.registered === false) {
-      this.$router.push('/intro');
+    if(await redirect.checkAccount(this) === true) {
       return;
     }
 
@@ -294,6 +277,11 @@ export default {
       if(this.isLoading) {
         EventBus.$emit('loading-stop');
       }
+
+      // Start auto-populating dashboard data
+      BitcoinSetup(this);
+      LightningSetup(this);
+      SystemSetup(this);
     }
 
     this.$on('offline', function () {
@@ -308,10 +296,6 @@ export default {
       this.lightning.isLoading = false;
       this.lightning.isStarting = false;
     });
-
-    BitcoinSetup(this);
-    LightningSetup(this);
-    SystemSetup(this);
   },
 
   updated() {
@@ -375,10 +359,6 @@ export default {
     if(this.isLoading) {
       EventBus.$emit('loading-stop');
     }
-
-    BitcoinTeardown();
-    LightningTeardown();
-    SystemTeardown();
 
     // Remove slideout panel class from body when redirected to login
     document.body.classList.remove('slideout-panel-open');

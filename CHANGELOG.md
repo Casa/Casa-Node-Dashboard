@@ -1,6 +1,20 @@
 # Changelog
 Notable changes to the Casa Node project will be documented in this file
 
+## 2019-05-13
+### Added
+
+- Loading indicator during boot and upgrade.
+- Static Channel Backups to sd card.
+
+### Changed
+
+- LND to use version 0.6.0. 
+
+### Fixed
+
+- Fixed a bug which prevented boot when yml files were misaligned.
+
 ## 2019-05-02
 ### Fixed
 

@@ -5,18 +5,14 @@
 </template>
 
 <script>
+import updateEnv from '@/helpers/env';
+
 export default {
   name: 'login',
 
   beforeMount() { // perform runtime injection
-    let url = this.$env.DEVICE_HOST;
-    if (window.location.href.includes('.onion')) {
-      url = this.$env.CASA_NODE_HIDDEN_SERVICE;
-    }
+    updateEnv(this);
 
-    this.$env.API_MANAGER = `${url}:3000`;
-    this.$env.API_LND = `${url}:3002`;
-    this.$env.UPDATE_MANAGER = `${url}:3001`;
     this.$auth.strategies.local.options.endpoints.login = {
       url: `${this.$env.API_MANAGER}/v1/accounts/login`,
       method: 'post',
@@ -174,11 +170,11 @@ export default {
     margin-right: .5em;
   }
 
-  .field.is-horizontal {
+  .login-form-wrapper .field.is-horizontal {
     display: flex;
   }
 
-  .field-label {
+  .login-form-wrapper .field-label {
     flex-basis: 0;
     flex-grow: .5;
     flex-shrink: 0;
@@ -186,7 +182,7 @@ export default {
     text-align: right;
   }
 
-  .field-label.is-medium {
+  .login-form-wrapper .field-label.is-medium {
     font-size: 1.25rem;
     padding-top: 0.375em;
   }
