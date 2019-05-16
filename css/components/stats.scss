@@ -1,0 +1,58 @@
+/* Bitcoin and Lightning statistics */
+.stats {
+  padding: 0 0.5em;
+}
+
+.stats-col {
+  margin-top: 1em;
+}
+
+.stats-col * {
+  font-weight: bold;
+  letter-spacing: -0.2px;
+}
+
+.stats-col h1 {
+  font-size: 24px;
+  letter-spacing: -0.3px;
+  color: #0a0525;
+}
+
+.stats-col h2 {
+  font-size: 18px;
+  color: #8d8e8e;
+}
+
+.stats-col h3 {
+  font-size: 18px;
+  color: #d7d8d9;
+}
+
+
+/* Tablet */
+@media screen and (min-width: 769px) {
+  .stats {
+    display: flex;
+    justify-content: space-between;
+    padding: 2em 3em;
+  }
+
+  .stats-col {
+    margin-top: 0;
+  }
+}
+
+/* Desktop */
+@media screen and (min-width: 1088px) {
+  .stats-col h1 {
+    font-size: 30px;
+  }
+
+  .stats-col h2 {
+    font-size: 20px;
+  }
+
+  .stats-col h3 {
+    font-size: 20px;
+  }
+}

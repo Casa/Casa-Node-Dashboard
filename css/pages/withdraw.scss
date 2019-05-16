@@ -1,0 +1,47 @@
+.withdraw .field.hide-label .field-label {
+  display: none;
+}
+
+.withdrawal-amount .label {
+  display: none;
+}
+
+.withdrawal-amount p {
+  font-size: 18px;
+  line-height: 1.33;
+  letter-spacing: -0.2px;
+  color: #8d8e8e;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+.withdrawal-amount.request-amount h2 {
+  margin-bottom: 0.5em;
+}
+
+.withdrawal-amount.request-amount .control input {
+  font-size: 20px;
+}
+
+.withdrawal-amount.request-amount p {
+  padding-top: 0;
+}
+
+.withdraw .label, .withdraw h2 {
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 1.2;
+  color: #0a0525;
+}
+
+.withdraw .modal-card-foot {
+  background-color: #FFFFFF;
+  display: block;
+  border-top: none;
+  padding-top: 1em;
+}
+
+/* Send Lightning Payment */
+.send.withdraw input {
+  font-size: 1.25em;
+}
