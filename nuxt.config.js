@@ -69,7 +69,8 @@ module.exports = {
         endpoints: {
           login: false, // Configure at layout level
           user: false,  // Configure at layout level
-          logout: false
+          logout: false,
+          loading: false,
         },
         tokenType: 'JWT'
       }
@@ -111,7 +112,7 @@ module.exports = {
 
   /* Register middleware */
   router: {
-    // middleware: ['user-agent']
+    middleware: ['teardown']
   },
 
 }

@@ -7,7 +7,7 @@ const responsePending = {};
 // Helper methods for making API requests
 const API = {
   async get(axios, url) {
-    let response = false;
+    let response;
 
     if(responsePending[url] === undefined || responsePending[url] === false) {
       responsePending[url] = true;
@@ -20,7 +20,13 @@ const API = {
         responseTime[url] = (endTime.getTime() - startTime.getTime()) / 1000;
       } catch(error) {
         // TODO: Trigger the EventBus to display user friendly error messages
-        console.error(error);
+
+        // Only display error messages in the browser console
+        if(process.browser) {
+          console.error(error);
+        }
+
+        response = false;
       } finally {
         responsePending[url] = false;
       }
