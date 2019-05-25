@@ -150,12 +150,7 @@
 
       <update-notice v-if="system.updatesAvailable">A software update is available for your Casa Node. Click here to begin the update, or run it later from the Settings panel.</update-notice>
 
-      <template v-else-if="displayPromo">
-        <div class="extension-promo desktop-only">
-          <a href="https://chrome.google.com/webstore/detail/casa-extension/lnaedehiikghclgaikolambpbpeknpef/" target="_blank" rel="noopener"></a>
-          <div class="close" @click="dismissPromo"></div>
-        </div>
-      </template>
+      <extension-promo v-else-if="displayPromo" @closeClick="dismissPromo" />
 
       <section class="footer-links">
         <div class="container is-fluid">
@@ -204,6 +199,8 @@ import Welcome from '@/components/Lightning/Alerts/Welcome';
 import Unlock from '@/components/Lightning/Alerts/Unlock';
 import ConfirmUpdate from '@/components/Settings/Alerts/ConfirmUpdate';
 import UpdateNotice from '@/components/Settings/Alerts/UpdateNotice';
+import ExtensionPromo from "@/components/ExtensionPromo";
+
 
 export default {
   name: 'Launcher',
@@ -213,7 +210,8 @@ export default {
   },
 
   components: {
-    'update-notice': UpdateNotice
+    'update-notice': UpdateNotice,
+    "extension-promo": ExtensionPromo
   },
 
   data() {

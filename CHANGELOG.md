@@ -1,6 +1,11 @@
 # Changelog
 Notable changes to the Casa Node project will be documented in this file
 
+## 2019-05-25
+### Changed
+
+- Extension Promo will now direct users of Firefox to the Firefox Casa extention page instead of Chrome.
+
 ## 2019-05-13
 ### Added
 

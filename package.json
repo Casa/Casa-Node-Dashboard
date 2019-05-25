@@ -21,6 +21,7 @@
     "@nuxtjs/axios": "^5.3.3",
     "@nuxtjs/dotenv": "^1.1.1",
     "bignumber.js": "^8.0.1",
+    "detect-browser": "^4.5.0",
     "node-sass": "^4.11.0",
     "nuxt": "^1.0.0",
     "nuxt-buefy": "^0.1.0",
