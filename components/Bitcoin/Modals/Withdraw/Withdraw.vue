@@ -102,6 +102,11 @@ export default {
 
       if(this.system.displayUnit === 'btc') {
         payload.amt = btcToSats(this.txData.amount);
+      } else if(this.system.displayUnit === 'sats') {
+        if(parseInt(this.txData.amount) != parseFloat(this.txData.amount) || payload.amt < 0) {
+          this.$toast.open({duration: 10000, message: "Sats amounts can't be negative or decimal numbers - positive whole numbers only.", position: 'is-top', type: 'is-danger'});
+          return;
+        }
       }
 
       this.$emit('close');

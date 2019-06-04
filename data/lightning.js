@@ -10,17 +10,12 @@ const LightningData = {
   blockHeight: 0,
   balance: {
     confirmed: 0,
-    pending: 0
+    pending: 0,
   },
-  channels: {
-    open: [],
-    pending: [],
-    custom: [],
-  },
+  channels: [],
   maxPaymentOut: 0,
   maxPaymentIn: 0,
   pubkey: false,
-  quotient: 0,
   address: {},
   transactions: [],
   pending: [],
@@ -139,11 +134,7 @@ const populate = {
           pending: 0,
         };
 
-        LightningData.channels = {
-          open: [],
-          pending: [],
-          custom: [],
-        };
+        LightningData.channels = [];
 
         // Loop through channels to determine pending balance, max payment amount, and sort channels by type
         channels.forEach((channel) => {
@@ -151,7 +142,7 @@ const populate = {
           const remoteBalance = parseInt(channel.remoteBalance) || 0;
 
           if (channel.type === 'OPEN') {
-            LightningData.channels.open.push(channel);
+            channel.status = 'open';
 
             if(remoteBalance > LightningData.maxPaymentIn) {
               LightningData.maxPaymentIn = remoteBalance;
@@ -162,22 +153,17 @@ const populate = {
             }
           } else if (['WAITING_CLOSING_CHANNEL', 'FORCE_CLOSING_CHANNEL', 'PENDING_CLOSING_CHANNEL', 'PENDING_OPEN_CHANNEL'].indexOf(channel.type) > -1) {
             LightningData.balance.pending += localBalance;
-            LightningData.channels.pending.push(channel);
+            channel.status = 'pending';
+          } else {
+            channel.status = 'unknown';
           }
 
-          if (channel.managed) {
-            LightningData.channels.custom.push(channel);
-          }
+          LightningData.channels.push(channel);
         });
 
         // If lnd detected our external IP, we are online
         if(externalIP.length) {
           LightningData.isOnline = true;
-        }
-
-        // If there are any open channels, determine average balance per channel
-        if(LightningData.channels.open.length) {
-          LightningData.quotient = LightningData.balance.confirmed / LightningData.channels.open.length;
         }
 
         // Determine lightning connection code
