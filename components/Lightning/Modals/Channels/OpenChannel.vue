@@ -84,7 +84,7 @@
                 :class="{ 'is-danger': errors.has('fundingAmount')}"
                 name="fundingAmount"
                 v-model="fundingAmount"
-                v-validate="`required|max_value:${constants.MAX_CHANNEL_SIZE_SATS}`"
+                v-validate="`required|integer|min_value:1|max_value:${constants.MAX_CHANNEL_SIZE_SATS}`"
                 :placeholder="`Funding amount (max ${constants.MAX_CHANNEL_SIZE_SATS} sats)`" />
             </div>
           </div>

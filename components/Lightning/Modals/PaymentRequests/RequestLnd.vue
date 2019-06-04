@@ -85,14 +85,19 @@ export default {
   methods: {
     // add invoice
     async newInvoice() {
-      EventBus.$emit('loading-start');
-
       let amount = this.invoice.amount;
       if(this.system.displayUnit === 'btc') {
         amount = btcToSats(amount);
+      } else if(this.system.displayUnit === 'sats') {
+        if(!Number.isInteger(amount) && amount > 0) {
+          this.$toast.open({duration: 10000, message: "Sats amounts can't be negative or decimal numbers - positive whole numbers only.", position: 'is-top', type: 'is-danger'});
+          return;
+        }
       }
 
+      EventBus.$emit('loading-start');
       var invoiceData = {amt: amount, memo: this.invoice.memo};
+
       try {
         var {data} = await this.$axios.post(`${this.$env.API_LND}/v1/lnd/lightning/addInvoice`, invoiceData);
         var paymentRequest = {...data, ...invoiceData};

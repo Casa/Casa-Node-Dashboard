@@ -21,15 +21,15 @@
       <!-- Lightning Stats Section -->
       <div class="stats">
         <div class="stats-col">
-          <h1>{{lightning.channels.open.length}} Channel<template v-if="lightning.channels.open.length != 1">s</template></h1>
+          <h1>{{openChannels.length}} Channel<template v-if="openChannels.length != 1">s</template></h1>
           <h2>{{lightning.balance.confirmed | inUnits | withSuffix}} in Channels</h2>
         </div>
         <div class="stats-col">
-          <h1>{{lightning.channels.pending.length}} Pending</h1>
+          <h1>{{pendingChannels.length}} Pending</h1>
           <h2>{{lightning.balance.pending | inUnits | withSuffix}} Pending</h2>
         </div>
         <div class="stats-col">
-          <h1>{{lightning.quotient | inUnits | withSuffix}}</h1>
+          <h1>{{channelAverage | inUnits | withSuffix}}</h1>
           <h2>Avg. Value per Channel</h2>
         </div>
       </div>
@@ -80,7 +80,7 @@
             <p>Open and close channels with specific nodes.</p>
 
 
-            <div v-if="lightning.channels.custom.length" class="button no-hover is-success is-rounded">{{ lightning.channels.custom.length }} open</div>
+            <div v-if="customChannels.length" class="button no-hover is-success is-rounded">{{ customChannels.length }} open</div>
             <div v-else class="button no-hover is-light is-rounded">0 open</div>
           </div>
 
@@ -97,6 +97,25 @@
         </div>
         <hr>
 
+        <!-- Incoming Channel Size -->
+        <div class="field toggle-settings is-horizontal">
+          <div class="field-label is-normal">
+            <label class="label">Minimum Incoming Channel Size</label>
+            <p v-if="system.displayUnit === 'btc'">0.0002 BTC - 0.16 BTC are the current channel size limits set by the Lightning Network.</p>
+            <p v-else>20,000 sats - 16,000,000 sats are the current channel size limits set by the Lightning Network.</p>
+          </div>
+
+          <div class="field-body">
+            <div class="field">
+              <div class="control is-clearfix">
+                <input v-if="system.displayUnit === 'btc'" placeholder="BTC" type="text" autocomplete="on" class="input" v-model="system.settings.lnd.minChanSize" :class="{ 'is-danger': errors.has('chansize')}" name="chansize" v-validate="'decimal'">
+                <input v-else type="text" placeholder="sats" autocomplete="on" class="input" v-model="system.settings.lnd.minChanSize" :class="{ 'is-danger': errors.has('chansize')}" name="chansize" v-validate="'integer'">
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr>
+
         <!-- Node Alias -->
         <div class="field toggle-settings is-horizontal">
           <div class="field-label is-normal">
@@ -108,6 +127,24 @@
             <div class="field">
               <div class="control is-clearfix">
                 <input type="text" autocomplete="on" class="input" v-model="system.settings.lnd.nickName" :class="{ 'is-danger': errors.has('nickname')}" name="nickname" v-validate="'max:32'">
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr>
+
+        <!-- Node Color -->
+        <div class="field toggle-settings is-horizontal">
+          <div class="field-label is-normal">
+            <label class="label">Node Color</label>
+            <p>Customize your node color in the Lightning Explorer with a hex code.</p>
+          </div>
+
+          <div class="field-body">
+            <div class="field custom-color">
+              <div class="control is-clearfix">
+                <input type="text" autocomplete="on" class="input" placeholder="#8865DF" v-model="system.settings.lnd.color" @input="formatColor" :class="{ 'is-danger': errors.has('color')}" name="color" v-validate="{regex: /^#[0-9a-f]{6}$/}">
+                <div class="color-output" :style="{'background-color': system.settings.lnd.color}"></div>
               </div>
             </div>
           </div>
@@ -188,6 +225,61 @@
       EventBus.$off('save');
     },
 
+    computed: {
+      channelAverage() {
+        // If there are any open channels, determine average balance per channel
+        const open = [];
+
+        this.lightning.channels.forEach((channel) => {
+          if(channel.status === 'open') {
+            open.push(channel);
+          }
+        });
+
+        if(open.length) {
+          return this.lightning.balance.confirmed / open.length;
+        }
+
+        return 0;
+      },
+
+      openChannels() {
+        const open = [];
+
+        this.lightning.channels.forEach((channel) => {
+          if(channel.status === 'open') {
+            open.push(channel);
+          }
+        });
+
+        return open;
+      },
+
+      pendingChannels() {
+        const pending = [];
+
+        this.lightning.channels.forEach((channel) => {
+          if(channel.status === 'pending') {
+            pending.push(channel);
+          }
+        });
+
+        return pending;
+      },
+
+      customChannels() {
+        const custom = [];
+
+        this.lightning.channels.forEach((channel) => {
+          if(channel.managed || !channel.initiator) {
+            custom.push(channel);
+          }
+        });
+
+        return custom;
+      },
+    },
+
     methods: {
       closePanel() {
         this.$emit('closePanel');
@@ -226,13 +318,22 @@
         })
       },
 
+      formatColor() {
+        // Prepend # symbol if none is included
+        if(this.system.settings.lnd.color.length && this.system.settings.lnd.color[0] != '#') {
+          this.system.settings.lnd.color = '#' + this.system.settings.lnd.color;
+        }
+
+        // Remove duplicate # symbols if necessary
+        this.system.settings.lnd.color = this.system.settings.lnd.color.replace(/#+/, '#');
+      },
+
       validateSettings() {
         this.$validator.validate().then(valid => {
           if(valid) {
             this.saveSettings();
           } else {
-            // TODO: Make this error message more generic if we add any other fields to the index page?
-            this.$toast.open({duration: 3000, type: 'is-danger', message: 'Unable to save settings. Node nickname must be less than or equal to 32 characters.'});
+            this.$toast.open({duration: 3000, type: 'is-danger', message: 'Unable to save settings. Check that all of your settings are valid.'});
           }
         });
       },
@@ -242,7 +343,15 @@
 
         const data = {
           nickName: this.system.settings.lnd.nickName,
+          color: this.system.settings.lnd.color
         };
+
+        // Convert minimum channel size to sats
+        if(this.system.displayUnit === 'btc') {
+          data.minChanSize = parseInt(btcToSats(this.txData.amount));
+        } else if(this.system.displayUnit === 'sats') {
+          data.minChanSize = parseInt(this.system.settings.lnd.minChanSize);
+        }
 
         try {
           await this.$axios.post(`${this.$env.API_MANAGER}/v1/settings/save`, data);

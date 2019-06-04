@@ -42,15 +42,15 @@
         <!-- Lightning Stats Section -->
         <div class="stats">
           <div class="stats-col">
-            <h1>{{lightning.channels.open.length}} Channel<template v-if="lightning.channels.open.length != 1">s</template></h1>
-            <h2>{{lightning.balance.confirmed | inUnits | withSuffix}} in Channels</h2>
+            <h1>{{openAutopilot.length}} Channel<template v-if="openAutopilot.length != 1">s</template></h1>
+            <h2>{{balanceTotal | inUnits | withSuffix}} in Autopilot</h2>
           </div>
           <div class="stats-col">
-            <h1>{{lightning.channels.pending.length}} Pending</h1>
-            <h2>{{lightning.balance.pending | inUnits | withSuffix}} Pending</h2>
+            <h1>{{pendingAutopilot.length}} Pending</h1>
+            <h2>{{balancePending | inUnits | withSuffix}} Pending</h2>
           </div>
           <div class="stats-col">
-            <h1>{{lightning.quotient | inUnits | withSuffix}}</h1>
+            <h1>{{autopilotAverage | inUnits | withSuffix}}</h1>
             <h2>Avg. Value per Channel</h2>
           </div>
         </div>
@@ -119,7 +119,8 @@
               <img src="~assets/channel.svg" alt="channel">
             </span>
 
-            <h2>Autopilot is currently inactive.</h2>
+            <h2 v-if="system.settings.lnd.autopilot">Configure your settings so Autopilot can start.</h2>
+            <h2 v-else>Autopilot is currently inactive.</h2>
           </div>
         </div>
       </template>
@@ -161,6 +162,8 @@ export default {
       lightning: LightningData,
       system: SystemData,
       channelList: [],
+      balanceTotal: 0,
+      balancePending: 0,
     }
   },
 
@@ -169,6 +172,55 @@ export default {
     EventBus.$off('cancel');
     EventBus.$off('openChannel');
     EventBus.$off('closeChannel');
+  },
+
+  computed: {
+    autopilotAverage() {
+      // If there are any open channels, determine average balance per channel
+      const open = [];
+
+      this.lightning.channels.forEach((channel) => {
+        if(!channel.managed && channel.initiator) {
+          if(channel.status === 'open') {
+            open.push(channel);
+          }
+        }
+      });
+
+      if(open.length) {
+        return this.lightning.balance.confirmed / open.length;
+      }
+
+      return 0;
+    },
+
+    openAutopilot() {
+      const open = [];
+
+      this.lightning.channels.forEach((channel) => {
+        if(!channel.managed && channel.initiator) {
+          if(channel.status === 'open') {
+            open.push(channel);
+          }
+        }
+      });
+
+      return open;
+    },
+
+    pendingAutopilot() {
+      const pending = [];
+
+      this.lightning.channels.forEach((channel) => {
+        if(!channel.managed && channel.initiator) {
+          if(channel.status === 'pending') {
+            pending.push(channel);
+          }
+        }
+      });
+
+      return pending;
+    },
   },
 
   methods: {
@@ -243,43 +295,44 @@ export default {
       for (const channel of channels) {
 
         // We should ignore channels not created by autopilot
-        if (channel.managed) {
+        if (channel.managed || !channel.initiator) {
           continue;
         }
 
         if (channel.type === 'OPEN') {
           if (channel.active) {
-
             channel.activeColor = '#2dcccd';
             channel.status = 'Online';
-          } else {
 
+            this.balanceTotal += parseInt(channel.localBalance) || 0;
+          } else {
             channel.activeColor = '#f0649e'; //  medium-pink
             channel.status = 'Offline';
+            this.balancePending += parseInt(channel.localBalance) || 0;
           }
           // Closing channels that are unconfirmed
         } else if (channel.type === 'WAITING_CLOSING_CHANNEL') {
-
           channel.activeColor = '#f7bd00'; //  golden
           channel.status = 'Closing';
+          this.balancePending += parseInt(channel.localBalance) || 0;
 
         // Non cooperative closes that have at least one confirmation
         } else if (channel.type === 'FORCE_CLOSING_CHANNEL') {
-
           channel.activeColor = '#f7bd00'; //  golden
           channel.status = 'Closing';
+          this.balancePending += parseInt(channel.localBalance) || 0;
 
         // Cooperative closes that have at least one confirmation
         } else if (channel.type === 'PENDING_CLOSING_CHANNEL') {
-
           channel.activeColor = '#f7bd00'; //  golden
           channel.status = 'Closing';
+          this.balancePending += parseInt(channel.localBalance) || 0;
 
         // Pending open channels could be confirmed or unconfirmed
         } else if (channel.type === 'PENDING_OPEN_CHANNEL') {
-
           channel.activeColor = '#f7bd00'; //  golden
           channel.status = 'Opening';
+          this.balancePending += parseInt(channel.localBalance) || 0;
         }
 
         if (channel.remainingConfirmations) {

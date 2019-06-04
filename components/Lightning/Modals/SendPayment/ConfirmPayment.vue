@@ -131,19 +131,24 @@ export default {
 
   methods: {
     async confirm() {
+      var payload = {paymentRequest: this.invoice}
+
+      if(this.customAmount > 0) {
+        if(this.system.displayUnit === 'btc') {
+          payload.amt = btcToSats(this.customAmount);
+        } else if(this.system.displayUnit === 'sats') {
+          if(!Number.isInteger(this.customAmount)) {
+            this.$toast.open({duration: 10000, message: "Sats amounts can't be negative or decimal numbers - positive whole numbers only.", position: 'is-top', type: 'is-danger'});
+            return;
+          }
+
+          payload.amt = parseInt(this.customAmount);
+        }
+      }
+
       EventBus.$emit('loading-start');
 
       try {
-        var payload = {paymentRequest: this.invoice}
-
-        if(this.customAmount > 0) {
-          if(this.system.displayUnit === 'btc') {
-            payload.amt = btcToSats(this.customAmount);
-          } else {
-            payload.amt = parseInt(this.customAmount);
-          }
-        }
-
         var pay = await this.$axios.post(`${this.$env.API_LND}/v1/lnd/lightning/payInvoice`, payload);
         EventBus.$emit('confirmedPayment', pay.data);
       } catch(error) {

@@ -30,6 +30,27 @@
     }
   }
 
+  .custom-color {
+    .control {
+      text-align: right;
+      position: relative;
+    }
+
+    input {
+      padding-left: 4em !important;
+    }
+
+    .color-output {
+      position: absolute;
+      top: 1px;
+      bottom: 1px;
+      width: 3em;
+      background-color: #8865DF;
+      border-top-left-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+  }
+
   /* Tablet */
   @media screen and (min-width: 769px) {
     .transaction-list-wrap {
@@ -43,6 +64,16 @@
 
       .stats-col {
         display: block;
+      }
+    }
+
+    .custom-color {
+      input {
+        width: calc(100% - 3em) !important;
+      }
+
+      .color-output {
+        left: calc(3em + 1px);
       }
     }
   }

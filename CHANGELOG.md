@@ -1,6 +1,23 @@
 # Changelog
 Notable changes to the Casa Node project will be documented in this file
 
+## 2019-06-03
+### Added
+
+- Added LND setting color.
+- Added LND setting minimum channel size.
+
+### Changed
+
+- Updated LND to use version 0.6.1.
+- Distiguish inbound and outbound channels.
+
+### Fixed
+
+- Fixed alignment issue where channel data was misaligned.
+- Fixed mobile styling.
+- Correctly categorize autopilot channels and managed channels. 
+
 ## 2019-05-13
 ### Added
 

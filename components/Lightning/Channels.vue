@@ -8,52 +8,65 @@
 
         <span>Back</span>
       </a>
+
+      <UnitSwitch />
     </div>
 
-    <div class="app-slideout channel">
+    <div class="app-slideout channel custom">
 
       <div class="app-title">
         <img src="~assets/lightning.png" alt="Lightning">
         <h2> Manage Custom Channels</h2>
+
+        <a class="button is-casa desktop-only" @click="openChannel()">+ New Channel</a>
+      </div>
+
+      <a class="button is-casa mobile-only" @click="openChannel()">+ New Channel</a>
+
+      <div class="filter-buttons">
+        <a class="button is-rounded" :class="{'is-active': display === 'all'}" @click="displayChannels('all')">All</a>
+        <a class="button is-rounded" :class="{'is-active': display === 'inbound'}" @click="displayChannels('inbound')">Inbound</a>
+        <a class="button is-rounded" :class="{'is-active': display === 'outbound'}" @click="displayChannels('outbound')">Outbound</a>
       </div>
       <hr>
-      <section class="transaction-settings">
-        <!-- BTC Wallet -->
-        <a class="button is-fullwidth" @click="openChannel()">
-          <span class="icon">
-            <img src="~assets/channel.svg" alt="channel">
-          </span>
-          <span>Open New Custom Channel</span>
-        </a>
-        <hr>
 
+      <section>
         <!-- Transactions -->
-        <div class="tx-list">
-          <ul class="pending-tx">
-            <li class="tx-item" v-for="(ch, index) in channelList" :key="index">
-              <div class="tx-row" @click="manageChannel(ch)">
-                <div class="tx-col-1">
-                  <div class="channel-icon">
-                    <img src="~assets/channel.svg" alt="channel">
-                  </div>
-                </div>
-                <div class="tx-col-2">
-                  <h2>{{ch.name}}</h2>
-                  <h3>
-                    <a href="#">{{ch.purpose}}</a>
-                  </h3>
-                </div>
-                <div class="tx-col-3">
-                  <!-- TODO: handle active color with css-->
-                  <h2 class="channel-status " v-bind:style="{color: ch.activeColor}">{{ch.status}}</h2>
-                  <h3 class="channel-balance" v-if="ch.timeRemainingText">{{ch.timeRemainingText}}</h3>
-                  <h3 class="channel-balance" v-if="!ch.timeRemainingText">{{ch.localBalance | inUnits | withSuffix}}</h3>
-                </div>
+        <ul>
+          <li class="tx-item" v-for="(channel, index) in displayedChannels" :key="index">
+            <div class="tx-row" @click="manageChannel(channel)">
+              <div class="tx-col-2">
+                <h2>
+                  {{channel.name}}
+
+                  <a class="button is-rounded" v-if="channel.initiator">Outbound</a>
+                  <a class="button is-rounded" v-else>Inbound</a>
+
+                </h2>
+                <h3>
+                  <a href="#">{{channel.purpose}}</a>
+                </h3>
               </div>
-              <hr>
-            </li>
-          </ul>
-        </div>
+              <div class="tx-col-3">
+                <!-- TODO: handle active color with css-->
+                <h2 class="channel-status " v-bind:style="{color: channel.activeColor}">{{channel.status}}</h2>
+                <h3 class="channel-balance" v-if="channel.timeRemainingText">{{channel.timeRemainingText}}</h3>
+
+                <template v-else>
+                  <div class="channel-balance">
+                    <strong>Send</strong> <span>{{channel.localBalance | inUnits | withSuffix}}</span>
+                  </div>
+
+                  <div class="channel-balance">
+                    <strong>Receive</strong> <span>{{channel.remoteBalance | inUnits | withSuffix}}</span>
+                  </div>
+                </template>
+              </div>
+            </div>
+            <hr>
+          </li>
+        </ul>
+
         <p class="autopilot-link">This doesn't include your Autopilot channels. You can
           <a @click.prevent="closePanel">edit them in your Lightning Node's primary settings.</a>
         </p>
@@ -69,6 +82,7 @@ import axios from 'axios';
 import EventBus from '@/helpers/event-bus';
 import ManageChannel from '@/components/Lightning/Modals/Channels/ManageChannel';
 import OpenChannel from '@/components/Lightning/Modals/Channels/OpenChannel';
+import UnitSwitch from '@/components/Settings/UnitSwitch';
 import {satsToBtc, btcToSats} from '@/helpers/units';
 
 export default {
@@ -83,8 +97,9 @@ export default {
 
   data() {
     return {
-      canSync: true,
-      channelList: [],
+      display: 'all',
+      channels: [],
+      displayedChannels: [],
     }
   },
 
@@ -99,6 +114,7 @@ export default {
       this.$emit('closePanel');
       this.$destroy();
     },
+
     manageChannel(data) {
       data.localBalanceBtc = satsToBtc(data.localBalance);
       data.remoteBalanceBtc = satsToBtc(data.remoteBalance);
@@ -118,6 +134,7 @@ export default {
         hasModalCard: true
       })
     },
+
     blocksToTime(blocks) {
       // TODO: find a library for this
       const minutes = (blocks * 10);
@@ -133,6 +150,7 @@ export default {
       }
       return '~' + hours.toFixed(0) + ' hours';
     },
+
     openChannel() {
       this.$modal.open({
         parent: this,
@@ -140,24 +158,37 @@ export default {
         hasModalCard: true
       })
     },
+
     channelPending() {
       this.$toast.open({duration: 3000, message:`New Channel Pending`});
-      this.setChannelData();
+      this.refreshChannelData();
     },
+
     channelClosing() {
       this.$toast.open({duration: 3000, message:`New Channel Closing`});
+      this.refreshChannelData();
+    },
+
+    async refreshChannelData() {
+      this.channels = (await this.$axios.get(`${this.$env.API_LND}/v1/lnd/channel`)).data;
       this.setChannelData();
     },
+
     async setChannelData() {
-      const channels = (await this.$axios.get(`${this.$env.API_LND}/v1/lnd/channel`)).data;
+      this.displayedChannels = [];
 
-      // The determins the order
-      this.channelList = [];
-
-      for (const channel of channels) {
+      for (const channel of this.channels) {
 
         // We should ignore channels created by autopilot
-        if (!channel.managed) {
+        if (!channel.managed && channel.initiator) {
+          continue;
+        }
+
+        if (this.display === 'inbound' && channel.initiator) {
+          continue;
+        }
+
+        if (this.display === 'outbound' && !channel.initiator) {
           continue;
         }
 
@@ -200,14 +231,27 @@ export default {
           channel.timeRemainingText = this.blocksToTime(channel.remainingConfirmations);
         }
 
-        this.channelList.push(channel);
+        if(channel.name === '' && !channel.initiator) {
+          channel.name = 'Incoming Channel';
+          channel.purpose = 'A channel that another node has opened to your node';
+        }
+
+        this.displayedChannels.push(channel);
       }
+    },
+
+    displayChannels(mode) {
+      this.display = mode;
+      this.setChannelData();
     }
   },
 
   async created() {
-    this.setChannelData();
-  }
+    this.refreshChannelData();
+  },
 
+  components: {
+    UnitSwitch
+  },
 };
 </script>
