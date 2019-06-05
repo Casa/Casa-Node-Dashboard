@@ -14,6 +14,7 @@
 
 <script>
 import SystemData from '@/data/system';
+import EventBus from '@/helpers/event-bus';
 
 export default {
   data() {
@@ -29,6 +30,8 @@ export default {
       } else {
         this.system.displayUnit = 'btc';
       }
+
+      EventBus.$emit('unit-switched');
 
       try {
         await this.$axios.post(`${this.$env.API_MANAGER}/v1/settings/save`, {systemDisplayUnits: this.system.displayUnit});

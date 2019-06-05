@@ -108,8 +108,8 @@
           <div class="field-body">
             <div class="field">
               <div class="control is-clearfix">
-                <input v-if="system.displayUnit === 'btc'" placeholder="BTC" type="text" autocomplete="on" class="input" v-model="system.settings.lnd.minChanSize" :class="{ 'is-danger': errors.has('chansize')}" name="chansize" v-validate="'decimal'">
-                <input v-else type="text" placeholder="sats" autocomplete="on" class="input" v-model="system.settings.lnd.minChanSize" :class="{ 'is-danger': errors.has('chansize')}" name="chansize" v-validate="'integer'">
+                <input v-if="system.displayUnit === 'btc'" placeholder="BTC" type="text" autocomplete="on" class="input" v-model="minChanSizeBtc" :class="{ 'is-danger': errors.has('chansize')}" name="chansize" v-validate="'decimal'">
+                <input v-else type="text" placeholder="sats" autocomplete="on" class="input" v-model="minChanSizeSats" :class="{ 'is-danger': errors.has('chansize')}" name="chansize" v-validate="'integer'">
               </div>
             </div>
           </div>
@@ -176,11 +176,13 @@
   if (process.browser) {
     var {vueSlideoutPanelService} = require('vue2-slideout-panel');
   }
+
   import axios from 'axios';
   import EventBus from '@/helpers/event-bus';
   import BitcoinData from '@/data/bitcoin';
   import LightningData from '@/data/lightning';
   import SystemData from '@/data/system';
+  import {satsToBtc, btcToSats} from '@/helpers/units';
 
   import Autopilot from '@/components/Lightning/Autopilot';
   import Channels from '@/components/Lightning/Channels';
@@ -200,11 +202,17 @@
         bitcoin: BitcoinData,
         lightning: LightningData,
         system: SystemData,
+        minChanSizeBtc: null,
+        minChanSizeSats: null,
       };
     },
 
     created() {
       EventBus.$emit('load-lightning-stats');
+      EventBus.$on('unit-switched', () => this.formatMinChanSize());
+
+      this.minChanSizeBtc = satsToBtc(this.system.settings.lnd.minChanSize);
+      this.minChanSizeSats = this.system.settings.lnd.minChanSize;
     },
 
     mounted() {
@@ -281,6 +289,14 @@
     },
 
     methods: {
+      formatMinChanSize() {
+        if(this.system.displayUnit === 'btc') {
+          this.minChanSizeBtc = parseFloat(satsToBtc(this.minChanSizeSats));
+        } else if(this.system.displayUnit === 'sats') {
+          this.minChanSizeSats = parseInt(btcToSats(this.minChanSizeBtc));
+        }
+      },
+
       closePanel() {
         this.$emit('closePanel');
         this.$destroy();
@@ -343,21 +359,21 @@
 
         const data = {
           nickName: this.system.settings.lnd.nickName,
-          color: this.system.settings.lnd.color
+          color: this.system.settings.lnd.color,
         };
 
         // Convert minimum channel size to sats
-        if(this.system.displayUnit === 'btc') {
-          data.minChanSize = parseInt(btcToSats(this.txData.amount));
-        } else if(this.system.displayUnit === 'sats') {
-          data.minChanSize = parseInt(this.system.settings.lnd.minChanSize);
+        if(this.system.displayUnit === 'btc' && this.minChanSizeBtc) {
+          data.minChanSize = parseInt(btcToSats(this.minChanSizeBtc));
+        } else if(this.system.displayUnit === 'sats' && this.minChanSizeSats) {
+          data.minChanSize = parseInt(this.minChanSizeSats);
         }
 
         try {
           await this.$axios.post(`${this.$env.API_MANAGER}/v1/settings/save`, data);
           this.$toast.open({duration: 3000, message:`Settings Saved`});
-        } catch (err) {
-          this.showErrorMessage(err);
+        } catch (error) {
+          this.showErrorMessage(error.response.data);
         } finally {
           EventBus.$emit('loading-stop');
           this.closePanel();
