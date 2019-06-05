@@ -1,0 +1,245 @@
+/* Channels */
+.channel .transaction-settings .button {
+  width: 100%;
+  color: #3e3b53;
+  font-weight: bold;
+  height: 48px;
+  font-size: 18px;
+  border-radius: 4px;
+  box-shadow: 0 3px 5px 0 #0000000c;
+  background-color: #ffffff;
+  border: solid 1px #d7d8d9;
+}
+
+.channel .tx-col-2 h2 {
+  font-weight: bold;
+  color: #0a0525;
+}
+
+.channel .tx-col-3 {
+  text-align: right;
+}
+
+.channel-status {
+  height: 24px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #2dcccd;
+}
+
+.channel.custom .channel-status {
+  margin-left: 90px;
+  margin-bottom: 5px;
+}
+
+.channel-balance {
+  text-align: right;
+  color: #95939f;
+
+  span {
+    color: #8d8e8e;
+    display: inline-block;
+    width: 120px;
+  }
+
+  strong {
+    display: inline-block;
+    margin-right: 8px;
+    width: 80px;
+  }
+}
+
+.channel-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12.5px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.channel-icon img {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.channel-online-status {
+  border-radius: 16.5px;
+  border: solid 2px #2dcccd;
+}
+
+.channel-offline-status {
+  border-radius: 16.5px;
+  border: solid 2px #f0649e;
+}
+
+.channel-online-status > span {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  text-align: center;
+  color: #2dcccd;
+  padding: 1em;
+}
+
+.channel-offline-status > span {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  text-align: center;
+  color: #f0649e;
+  padding: 1em;
+}
+
+.channel-manager h2 {
+  margin-bottom: 0.5em;
+}
+
+.channel-manager a.is-pink {
+  border-radius: 4px;
+  background-color: #f0649e;
+  font-size: 20px;
+}
+
+.channel-manager a.is-pink:hover {
+  border-radius: 4px;
+  background-color: #f0649e;
+  font-size: 20px;
+}
+
+.channel-manager .input-wrapper {
+  margin: 0;
+}
+
+.channel-manager .peer-name {
+  font-size: 20px;
+}
+
+.channel-manager .channel-purpose {
+  font-size: 20px;
+}
+
+.channel-manager .input-wrapper input {
+  font-size: 40px;
+  font-weight: 700;
+  text-align: center;
+  border: none;
+  box-shadow: none;
+  height: 2em;
+}
+
+.channel-manager .input-wrapper .help {
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  text-align: center;
+  color: #0a0525;
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+.channel-manager .input-wrapper {
+  border-radius: 4px;
+  background-color: #ffffff;
+  border: solid 1px #d7d8d9;
+}
+
+.request-amount {
+  .field.is-grouped {
+    display: block;
+
+    .is-expanded {
+      margin: 0.5em 0;
+    }
+  }
+}
+
+.channel {
+  .tx-row {
+    cursor: pointer;
+  }
+
+  .is-casa {
+    margin-left: auto;
+    padding: 1.5em;
+  }
+
+  .is-casa.mobile-only {
+    margin: 1em 0.5em 0.5em 0.5em;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .filter-buttons {
+    a {
+      margin-top: 1em;
+      border-width: 3px;
+      margin-right: 0.75em;
+      color: #0a0525;
+      font-weight: 900;
+      text-transform: uppercase;
+      font-size: 14px;
+    }
+
+    a.is-active {
+      border-color: #0a0525;
+      background-color: #0a0525;
+      color: #fff;
+    }
+  }
+
+  .tx-row {
+    a.button {
+      color: #c3c5c7;
+      border-color: #e5e3e9;
+      border-width: 2px;
+      font-weight: 900;
+      text-transform: uppercase;
+      font-size: 12px;
+      margin-left: -0.2em;
+      margin-bottom: 0.5em;
+      display: block;
+      max-width: 100px;
+    }
+  }
+}
+
+.channel.custom {
+  .tx-col-2 {
+    margin-left: 0;
+  }
+}
+
+/* Tablet */
+@media screen and (min-width: 768px) {
+  .channel.custom {
+    margin-left: 1.5em;
+  }
+
+  .request-amount {
+    .field.is-grouped {
+      display: flex;
+      justify-content: space-between;
+
+      .is-expanded:first-of-type {
+        margin-right: 1em;
+      }
+    }
+  }
+
+  .channel {
+    .tx-row {
+      a.button {
+        margin-left: 0.5em;
+        margin-top: -0.25em;
+        display: inline-block;
+      }
+    }
+  }
+}
