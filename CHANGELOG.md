@@ -1,6 +1,11 @@
 # Changelog
 Notable changes to the Casa Node project will be documented in this file
 
+## 2019-06-10
+### Fixed
+
+- Bug preventing generating invoices when sats preference is selected.
+
 ## 2019-06-03
 ### Added
 

@@ -137,7 +137,7 @@ export default {
         if(this.system.displayUnit === 'btc') {
           payload.amt = btcToSats(this.customAmount);
         } else if(this.system.displayUnit === 'sats') {
-          if(!Number.isInteger(this.customAmount)) {
+          if(parseInt(this.customAmount) != parseFloat(this.customAmount)) {
             this.$toast.open({duration: 10000, message: "Sats amounts can't be negative or decimal numbers - positive whole numbers only.", position: 'is-top', type: 'is-danger'});
             return;
           }
