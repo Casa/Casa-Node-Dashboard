@@ -1,0 +1,46 @@
+/* Status Colors  */
+.offline {
+  color: #f7bd00!important;
+}
+
+.syncing {
+  color: #3bccfc!important;
+}
+
+.locked {
+  color: #f0649e!important;
+}
+
+.synced {
+  color: #2dcccd!important;
+}
+
+.status-circle {
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  display: inline-block;
+  margin-left: 10px;
+}
+
+.status-syncing {
+  background-color: #3bccfc;
+}
+
+.status-locked {
+  background-color: #f0649e;
+}
+
+.status-synced {
+  background-color: #2dcccd;
+}
+
+.status-offline {
+  background-color: #f7bd00;
+}
+
+/* Text colors */
+a.blue {
+  color: #3bccfc;
+  font-weight: 500;
+}
