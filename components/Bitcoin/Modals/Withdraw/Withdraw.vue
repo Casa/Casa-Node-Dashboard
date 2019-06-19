@@ -17,26 +17,65 @@
       </header>
       <section class="modal-card-body">
         <b-field label="Recipient's BTC Address">
-          <b-input v-model="txData.address" type="text" required></b-input>
+          <b-input v-model="txData.address" @input="estimateFees" type="text" required></b-input>
         </b-field>
         <br>
         <div class="withdrawal-amount">
           <h2>Amount to Withdraw</h2>
-          <p class="desktop-only">You have {{balance.btc | inUnits | withSuffix}} available immediately from your wallet and {{balance.lnd | inUnits | withSuffix}} in the Lightning Network.</p>
-          <b-field grouped>
-            <b-field label="btc" expanded>
-              <b-input type="text" v-if="system.displayUnit === 'btc'" v-model="txData.amount" placeholder="BTC" required></b-input>
-              <b-input type="text" v-else v-model="txData.amount" placeholder="sats" required></b-input>
-            </b-field>
-            <b-field label="usd" expanded>
-              <b-input type="text" :value="getDollarValue" placeholder="USD"></b-input>
-            </b-field>
+          <p class="desktop-only">{{balance.btc | inUnits | withSuffix}} available.</p>
+          <b-field label="btc" expanded>
+            <b-input type="text" v-if="system.displayUnit === 'btc'" v-model="txData.amount" @input="estimateFees" class="btc-input"  :message="false" required></b-input>
+            <b-input type="text" v-else v-model="txData.amount" @input="estimateFees" class="sats-input" required></b-input>
           </b-field>
+          <b-field label="usd" expanded>
+            <b-input type="text" v-if="system.displayUnit === 'btc'" :value="$options.filters.usd(btcToSats(txData.amount))" class="usd-input"></b-input>
+            <b-input type="text" v-else :value="$options.filters.usd(txData.amount)" class="usd-input"></b-input>
+          </b-field>
+
+          <p v-if="fee[chosenFee].error === 'INSUFFICIENT_FUNDS'" class="help is-danger">
+            This transaction is too large. Make sure have enough funds to cover the amount plus a withdrawal fee.
+          </p>
+
+          <p v-if="fee[chosenFee].error === 'OUTPUT_IS_DUST'" class="help is-danger">
+            This transaction is too small and cannot be sent on-chain. Try increasing the amount to send or decrease the withdrawal fee.
+          </p>
+
+          <p v-if="fee[chosenFee].error === 'INVALID_ADDRESS'" class="help is-danger">
+            The address you entered is invalid. Make sure you are sending to a mainnet Bitcoin address.
+          </p>
+        </div>
+
+        <div class="withdrawal-fee">
+          <h2>Withdrawal Fee</h2>
+
+          <p>Set the on-chain fee you're willing to pay to withdraw funds.</p>
+
+          <div class="fee-options">
+            <div class="fee-option" :class="{active: chosenFee === 'fast'}" @click="setFee('fast')">
+              <div class="fee-cost">Fast: {{fee.fast.total | usd}}</div>
+              <div class="fee-time">~10 min</div>
+            </div>
+
+            <div class="fee-option" :class="{active: chosenFee === 'normal'}" @click="setFee('normal')">
+              <div class="fee-cost">Normal: {{fee.normal.total | usd}}</div>
+              <div class="fee-time">~60 min</div>
+            </div>
+
+            <div class="fee-option" :class="{active: chosenFee === 'slow'}" @click="setFee('slow')">
+              <div class="fee-cost">Slow: {{fee.slow.total | usd}}</div>
+              <div class="fee-time">~4 hours</div>
+            </div>
+
+            <div class="fee-option" :class="{active: chosenFee === 'cheapest'}" @click="setFee('cheapest')">
+              <div class="fee-cost">Cheapest: {{fee.cheapest.total | usd}}</div>
+              <div class="fee-time">~24 hours</div>
+            </div>
+          </div>
         </div>
       </section>
       <footer class="modal-card-foot">
-        <a class="button cancel" type="button" @click="$parent.close()">Go Back</a>
-        <a class="button is-casa" type="button" @click="save()">Continue</a>
+        <a class="button cancel" type="button" @click="$parent.close()">Cancel</a>
+        <a class="button is-casa" type="button" @click="confirmWithdrawal()">Continue</a>
       </footer>
     </div>
   </form>
@@ -45,19 +84,47 @@
 <script>
 import axios from 'axios';
 import EventBus from '@/helpers/event-bus';
+import API from '@/helpers/api';
+import {satsToBtc, btcToSats} from '@/helpers/units';
 import BitcoinData from '@/data/bitcoin';
 import SystemData from '@/data/system';
-import {satsToBtc, btcToSats} from '@/helpers/units';
+import Confirm from '@/components/Bitcoin/Modals/Withdraw/Confirm';
 
 export default {
   name: 'Withdraw',
 
   data() {
     return {
-      // TODO: we probably want to use target conf here too
+      feeTimeout: false,
+      chosenFee: 'normal',
+
+      fee: {
+        fast: {
+          total: '--',
+          perByte: '--',
+          error: false,
+        },
+        normal: {
+          total: '--',
+          perByte: '--',
+          error: false,
+        },
+        slow: {
+          total: '--',
+          perByte: '--',
+          error: false,
+        },
+        cheapest: {
+          total: '--',
+          perByte: '--',
+          error: false,
+        },
+      },
+
       txData: {
         amount: '',
       },
+
       balance: {
         lnd: null,
         lndPending: null,
@@ -65,18 +132,9 @@ export default {
         btcTotal: null,
         btcUnconfirmed: null,
       },
+
       bitcoin: BitcoinData,
       system: SystemData,
-    }
-  },
-
-  computed: {
-    getDollarValue: function() {
-      if(this.system.displayUnit === 'btc') {
-        return (this.txData.amount * this.bitcoin.price).toFixed(2);
-      } else {
-        return (satsToBtc(this.txData.amount) * this.bitcoin.price).toFixed(2);
-      }
     }
   },
 
@@ -93,12 +151,66 @@ export default {
     this.balance.btcTotal = btcValue.totalBalance; // 'total' includes unconfirmed
     this.balance.btcUnconfirmed = btcValue.totalBalance;
   },
+
   methods: {
-    save() {
+    // Pasthrough to helper function so we can use it in the template
+    btcToSats(value) {
+      return btcToSats(value);
+    },
+
+    async estimateFees() {
+      if(this.feeTimeout) {
+        clearTimeout(this.feeTimeout);
+      }
+
+      this.feeTimeout = setTimeout(async () => {
+        if(this.txData.address && this.txData.amount) {
+          const payload = {
+            address: this.txData.address,
+            confTarget: 0,
+            amt: this.txData.amount,
+          };
+
+          if(this.system.displayUnit === 'btc') {
+            payload.amt = btcToSats(this.txData.amount);
+          }
+
+          const estimates = await API.get(this.$axios, `${this.$env.API_LND}/v1/lnd/transaction/estimateFee`, payload);
+          let error = false;
+
+          if(estimates) {
+            for(const [speed, estimate] of Object.entries(estimates)) {
+              // If the API returned an error message
+              if(estimate.code) {
+                this.fee[speed].total = 'N/A';
+                this.fee[speed].perByte = 'N/A';
+                this.fee[speed].error = estimate.code;
+              } else {
+                this.fee[speed].total = estimate.feeSat;
+                this.fee[speed].perByte = estimate.feerateSatPerByte;
+                this.fee[speed].error = false;
+              }
+            }
+          }
+        }
+      }, 500);
+    },
+
+    setFee(choice) {
+      this.chosenFee = choice;
+    },
+
+    confirmWithdrawal() {
       const payload = {
         addr: this.txData.address,
         amt: parseInt(this.txData.amount),
+        satPerByte: parseInt(this.fee[this.chosenFee].perByte)
       };
+
+      if(!payload.addr || !payload.amt || !payload.satPerByte || this.error) {
+        this.$toast.open({duration: 4000, message: "Unable to continue. Please check that everything has been entered correctly.", position: 'is-top', type: 'is-danger'});
+        return;
+      }
 
       if(this.system.displayUnit === 'btc') {
         payload.amt = btcToSats(this.txData.amount);
@@ -109,9 +221,9 @@ export default {
         }
       }
 
+      this.$modal.open({component: Confirm, props: {payload, totalFee: this.fee[this.chosenFee].total}});
       this.$emit('close');
-      EventBus.$emit('withdraw', payload);
-    }
+    },
   }
 };
 </script>

@@ -11,7 +11,14 @@ Vue.filter('btc', value => satsToBtc(value));
 Vue.filter('sats', value => btcToSats(value));
 
 // Convert Satoshis to USD
-Vue.filter('usd', value => (satsToBtc(value) * BitcoinData.price).toFixed(2));
+Vue.filter('usd', value => {
+  // If the value passed is not a number, output it as is
+  if(isNaN(parseInt(value))) {
+    return value;
+  } else {
+    return '$' + (satsToBtc(value) * BitcoinData.price).toFixed(2);
+  }
+});
 
 // Display value in whatever unit that user has selected
 Vue.filter('inUnits', value => {

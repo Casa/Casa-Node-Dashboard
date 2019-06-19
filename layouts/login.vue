@@ -106,10 +106,11 @@ export default {
 }
 .login-form .field-label {
   text-align: left;
+  padding-top: 0;
 }
 
 .login-form .label {
-  padding-left: .5em;
+  padding-left: 1.75em;
 }
 
 .login-form-wrapper {
@@ -126,13 +127,13 @@ export default {
 }
 
 .login-form-wrapper .field.is-horizontal {
-  padding: 1em;
   margin: 0;
+  padding: 0.5em;
   border-bottom: 1px solid #eeeeee;
+  align-items: center;
 }
 
 .login-form-wrapper .field.is-horizontal:last-child {
-  padding: 1em;
   border-bottom: none;
 }
 
@@ -159,11 +160,7 @@ export default {
 @media screen and (max-width: 768px) {
 
   .login-form-wrapper .field.is-horizontal {
-    padding: 1em .25em;
-  }
-
-  .login-form-wrapper .field.is-horizontal:last-child {
-    padding: 1em .25em;
+    padding-left: 1em;
   }
 
   .login-form-wrapper .field-label.is-medium {
@@ -172,6 +169,7 @@ export default {
 
   .login-form-wrapper .field.is-horizontal {
     display: flex;
+    align-items: center;
   }
 
   .login-form-wrapper .field-label {
@@ -184,7 +182,6 @@ export default {
 
   .login-form-wrapper .field-label.is-medium {
     font-size: 1.25rem;
-    padding-top: 0.375em;
   }
 
 }

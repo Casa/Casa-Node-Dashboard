@@ -167,7 +167,6 @@
 
   .is-casa {
     margin-left: auto;
-    padding: 1.5em;
   }
 
   .is-casa.mobile-only {
@@ -178,7 +177,6 @@
 
   .filter-buttons {
     a {
-      margin-top: 1em;
       border-width: 3px;
       margin-right: 0.75em;
       color: #0a0525;
@@ -208,6 +206,11 @@
       max-width: 100px;
     }
   }
+
+  .help {
+    margin-top: 0.5em;
+    font-size: 16px;
+  }
 }
 
 .channel.custom {
@@ -216,10 +219,32 @@
   }
 }
 
+.channel.open {
+  section {
+    h2 {
+      font-size: 19px;
+      font-weight: bold;
+      color: #0a0525;
+      padding: 0.25em 0;
+    }
+
+    input {
+      padding: 1.75em 0.75em;
+    }
+
+    a.blue {
+      padding-top: 0.5em;
+    }
+  }
+}
+
 /* Tablet */
 @media screen and (min-width: 768px) {
   .channel.custom {
-    margin-left: 1.5em;
+    section {
+      margin-top: 1em;
+      margin-left: 3em;
+    }
   }
 
   .request-amount {

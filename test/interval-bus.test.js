@@ -41,5 +41,5 @@ test('Setting an invalid duration', t => {
 test('Getting the best interval', t => {
   t.is(IntervalBus.bestInterval(0.1), '10');
   t.is(IntervalBus.bestInterval(44), '60');
-  t.is(IntervalBus.bestInterval(90), '300');
+  t.is(IntervalBus.bestInterval(90), '180');
 });

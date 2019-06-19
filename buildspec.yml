@@ -18,6 +18,9 @@ phases:
       - chmod 755 qemu-arm-static
   build:
     commands:
+      - echo Running tests
+      - yarn run test
+
       - echo Building the Docker image ...
 
       # building
