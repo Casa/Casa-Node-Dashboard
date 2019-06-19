@@ -1,6 +1,6 @@
 <template>
   <section class="autopilot-settings">
-    <div class="slideout-header channel-header">
+    <div class="slideout-header">
       <a @click.prevent="closePanel">
         <span class="icon is-small">
           <font-awesome-icon :icon="['fas', 'chevron-left']"/>
@@ -12,7 +12,7 @@
       <UnitSwitch />
     </div>
 
-    <div class="app-slideout channel">
+    <div class="app-slideout lnd channel">
       <div class="app-title">
         <img src="~assets/lightning.png" alt="Lightning">
         <h2>
@@ -138,7 +138,6 @@ import SystemData from '@/data/system';
 import {satsToBtc, btcToSats} from '@/helpers/units';
 
 import ManageChannel from '@/components/Lightning/Modals/Channels/ManageChannel';
-import OpenChannel from '@/components/Lightning/Modals/Channels/OpenChannel';
 import AutopilotSettings from '@/components/Lightning/Modals/AutopilotSettings';
 import UnitSwitch from '@/components/Settings/UnitSwitch';
 
@@ -153,8 +152,6 @@ export default {
   mounted() {
     var vm = this; // avoid scope problems
     EventBus.$on('cancel', () => vm.closePanel());
-    EventBus.$on('openChannel', (data) => vm.channelPending(data));
-    EventBus.$on('closeChannel', (data) => vm.channelClosing(data));
   },
 
   data() {
@@ -170,8 +167,6 @@ export default {
   destroyed() {
     EventBus.$emit('stop-lightning-stats');
     EventBus.$off('cancel');
-    EventBus.$off('openChannel');
-    EventBus.$off('closeChannel');
   },
 
   computed: {
@@ -263,13 +258,6 @@ export default {
         return '~1 hour';
       }
       return '~' + hours.toFixed(0) + ' hours';
-    },
-    openChannel() {
-      this.$modal.open({
-        parent: this,
-        component: OpenChannel,
-        hasModalCard: true
-      })
     },
     openSettings() {
       this.$modal.open({

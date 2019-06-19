@@ -1,6 +1,6 @@
 <template>
-  <section>
-    <div class="slideout-header channel-header">
+  <section class="lightning-menu">
+    <div class="slideout-header">
       <a @click.prevent="closePanel">
         <span class="icon is-small">
           <font-awesome-icon :icon="['fas', 'chevron-left']"/>
@@ -12,26 +12,26 @@
       <UnitSwitch />
     </div>
 
-    <div class="app-slideout channel custom">
-
+    <div class="app-slideout lnd channel custom">
       <div class="app-title">
         <img src="~assets/lightning.png" alt="Lightning">
         <h2> Manage Custom Channels</h2>
 
-        <a class="button is-casa desktop-only" @click="openChannel()">+ New Channel</a>
+        <a class="button is-casa desktop-only is-padded" @click="openChannel()">+ New Channel</a>
       </div>
 
-      <a class="button is-casa mobile-only" @click="openChannel()">+ New Channel</a>
-
-      <div class="filter-buttons">
-        <a class="button is-rounded" :class="{'is-active': display === 'all'}" @click="displayChannels('all')">All</a>
-        <a class="button is-rounded" :class="{'is-active': display === 'inbound'}" @click="displayChannels('inbound')">Inbound</a>
-        <a class="button is-rounded" :class="{'is-active': display === 'outbound'}" @click="displayChannels('outbound')">Outbound</a>
-      </div>
-      <hr>
+      <a class="button is-casa mobile-only is-padded" @click="openChannel()">+ New Channel</a>
 
       <section>
-        <!-- Transactions -->
+        <div class="filter-buttons">
+          <a class="button is-rounded" :class="{'is-active': display === 'all'}" @click="displayChannels('all')">All</a>
+          <a class="button is-rounded" :class="{'is-active': display === 'inbound'}" @click="displayChannels('inbound')">Inbound</a>
+          <a class="button is-rounded" :class="{'is-active': display === 'outbound'}" @click="displayChannels('outbound')">Outbound</a>
+        </div>
+
+        <hr>
+
+        <!-- Channels -->
         <ul>
           <li class="tx-item" v-for="(channel, index) in displayedChannels" :key="index">
             <div class="tx-row" @click="manageChannel(channel)">
@@ -78,10 +78,14 @@
 </template>
 
 <script>
+if (process.browser) {
+  var {vueSlideoutPanelService} = require('vue2-slideout-panel');
+}
+
 import axios from 'axios';
 import EventBus from '@/helpers/event-bus';
 import ManageChannel from '@/components/Lightning/Modals/Channels/ManageChannel';
-import OpenChannel from '@/components/Lightning/Modals/Channels/OpenChannel';
+import OpenChannel from '@/components/Lightning/OpenChannel';
 import UnitSwitch from '@/components/Settings/UnitSwitch';
 import {satsToBtc, btcToSats} from '@/helpers/units';
 
@@ -151,12 +155,13 @@ export default {
       return '~' + hours.toFixed(0) + ' hours';
     },
 
-    openChannel() {
-      this.$modal.open({
-        parent: this,
+    async openChannel() {
+      await vueSlideoutPanelService.show({
         component: OpenChannel,
-        hasModalCard: true
-      })
+        width: '100%',
+        cssClass: 'casa-sld',
+        props: {data: {panel: 'open'}}
+      });
     },
 
     channelPending() {

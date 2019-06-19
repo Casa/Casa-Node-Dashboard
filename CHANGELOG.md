@@ -1,6 +1,21 @@
 # Changelog
 Notable changes to the Casa Node project will be documented in this file
 
+
+## 2019-06-19
+### Added
+- Added on chain fee estimates for withdrawing funds.
+- Added on chain fee estimates for opening channels.
+- Added api route to update channel policies. 
+
+### Changed
+
+- Changed bitcoind to allow low fee transactions to be relayed and created even if the local mempool is full.
+
+### Fixed
+- Fixed a problem with lnd restarting periodically during seed recovery.
+- Fixed a blocking bug with device reset. 
+
 ## 2019-06-10
 ### Fixed
 

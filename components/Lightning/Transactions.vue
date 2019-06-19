@@ -89,7 +89,7 @@
                 </div>
                 <div class="tx-col-3">
                   <h2><span>{{transaction.value | inUnits | withSuffix}}</span></h2>
-                  <h3>${{ transaction.value | usd }}</h3>
+                  <h3>{{ transaction.value | usd }}</h3>
                 </div>
               </div>
               <hr>
@@ -116,7 +116,7 @@
                 </div>
                 <div class="tx-col-3">
                   <h2><span>{{transaction.value | inUnits | withSuffix}}</span></h2>
-                  <h3>${{ transaction.value | usd}}</h3>
+                  <h3>{{ transaction.value | usd}}</h3>
                 </div>
               </div>
               <hr>

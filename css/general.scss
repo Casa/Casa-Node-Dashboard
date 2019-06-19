@@ -176,6 +176,46 @@ input[type=number]::-webkit-outer-spin-button {
   margin: 0;
 }
 
+input[type=text],
+input[type=password] {
+  height: 3em;
+}
+
+.btc-input,
+.sats-input,
+.usd-input {
+  position: relative;
+
+  &::after {
+    position: absolute;
+    right: 1em;
+    top: calc(50% - 0.65em);
+    z-index: 1;
+    color: #c3c5c7;
+    font-weight: 900;
+    font-size: 16px;
+  }
+}
+
+.btc-input {
+  &::after {
+    content: 'BTC';
+
+  }
+}
+
+.sats-input {
+  &::after {
+    content: 'sats';
+  }
+}
+
+.usd-input {
+  &::after {
+    content: 'USD';
+  }
+}
+
 .info-tooltip {
   background-image: url('~assets/info.svg');
   background-repeat: no-repeat;
@@ -377,6 +417,16 @@ input[type=number]::-webkit-outer-spin-button {
 .is-loading {
   opacity: 0.5;
 }
+
+.is-half {
+  width: 50%;
+}
+
+.is-padded,
+.is-padded:hover {
+  padding: 1.5em;
+}
+
 
 /* Mobile only */
 @media screen and (max-width: 768px) {

@@ -6,7 +6,7 @@ const responsePending = {};
 
 // Helper methods for making API requests
 const API = {
-  async get(axios, url) {
+  async get(axios, url, query = {}) {
     let response;
 
     if(responsePending[url] === undefined || responsePending[url] === false) {
@@ -14,7 +14,7 @@ const API = {
 
       try {
         const startTime = new Date();
-        response = (await axios.get(url)).data;
+        response = (await axios.get(url, {params: query})).data;
         const endTime = new Date();
 
         responseTime[url] = (endTime.getTime() - startTime.getTime()) / 1000;

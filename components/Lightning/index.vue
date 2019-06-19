@@ -45,7 +45,7 @@
               Autopilot Channel Settings
 
               <b-tooltip label="Autopilot automatically opens channels to other nodes in the background. This also shows any channels other nodes have opened to you." type="is-dark" multilined>
-                 <span class="icon is-small"><img src="~assets/icon-info-blue.svg" alt="info"></span>
+                  <span class="icon is-small"><img src="~assets/icon-info-blue.svg" alt="info"></span>
               </b-tooltip>
             </label>
             <p>Automatically connect your node to others in the network.</p>
