@@ -207,11 +207,6 @@ export default {
         satPerByte: parseInt(this.fee[this.chosenFee].perByte)
       };
 
-      if(!payload.addr || !payload.amt || !payload.satPerByte || this.error) {
-        this.$toast.open({duration: 4000, message: "Unable to continue. Please check that everything has been entered correctly.", position: 'is-top', type: 'is-danger'});
-        return;
-      }
-
       if(this.system.displayUnit === 'btc') {
         payload.amt = btcToSats(this.txData.amount);
       } else if(this.system.displayUnit === 'sats') {
@@ -219,6 +214,11 @@ export default {
           this.$toast.open({duration: 10000, message: "Sats amounts can't be negative or decimal numbers - positive whole numbers only.", position: 'is-top', type: 'is-danger'});
           return;
         }
+      }
+
+      if(!payload.addr || !payload.amt || !payload.satPerByte || this.error) {
+        this.$toast.open({duration: 4000, message: "Unable to continue. Please check that everything has been entered correctly.", position: 'is-top', type: 'is-danger'});
+        return;
       }
 
       this.$modal.open({component: Confirm, props: {payload, totalFee: this.fee[this.chosenFee].total}});

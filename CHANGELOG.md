@@ -2,6 +2,11 @@
 Notable changes to the Casa Node project will be documented in this file
 
 
+## 2019-06-24
+### Fixed
+
+- Bug preventing users from withdrawing funds when BTC preference is selected.
+
 ## 2019-06-19
 ### Added
 - Added on chain fee estimates for withdrawing funds.
