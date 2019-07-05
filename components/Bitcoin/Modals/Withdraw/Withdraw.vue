@@ -23,9 +23,12 @@
         <div class="withdrawal-amount">
           <h2>Amount to Withdraw</h2>
           <p class="desktop-only">{{balance.btc | inUnits | withSuffix}} available.</p>
+
+          <a class="send-max button is-rounded" @click="sendMax" :class="{'is-active': sweep}">Send Max</a>
+
           <b-field label="btc" expanded>
-            <b-input type="text" v-if="system.displayUnit === 'btc'" v-model="txData.amount" @input="estimateFees" class="btc-input"  :message="false" required></b-input>
-            <b-input type="text" v-else v-model="txData.amount" @input="estimateFees" class="sats-input" required></b-input>
+            <b-input type="text" v-if="system.displayUnit === 'btc'" v-model="txData.amount" @input.native="sendAmount" class="btc-input"  :message="false" required></b-input>
+            <b-input type="text" v-else v-model="txData.amount" @input.native="sendAmount" class="sats-input" required></b-input>
           </b-field>
           <b-field label="usd" expanded>
             <b-input type="text" v-if="system.displayUnit === 'btc'" :value="$options.filters.usd(btcToSats(txData.amount))" class="usd-input"></b-input>
@@ -135,6 +138,7 @@ export default {
 
       bitcoin: BitcoinData,
       system: SystemData,
+      sweep: false,
     }
   },
 
@@ -164,15 +168,20 @@ export default {
       }
 
       this.feeTimeout = setTimeout(async () => {
-        if(this.txData.address && this.txData.amount) {
+        if(this.txData.address && (this.txData.amount || this.sweep)) {
           const payload = {
             address: this.txData.address,
             confTarget: 0,
-            amt: this.txData.amount,
           };
 
-          if(this.system.displayUnit === 'btc') {
-            payload.amt = btcToSats(this.txData.amount);
+          if(this.sweep) {
+            payload.sweep = true;
+          } else {
+            if(this.system.displayUnit === 'btc') {
+              payload.amt = btcToSats(this.txData.amount);
+            } else {
+              payload.amt = this.txData.amount;
+            }
           }
 
           const estimates = await API.get(this.$axios, `${this.$env.API_LND}/v1/lnd/transaction/estimateFee`, payload);
@@ -188,20 +197,52 @@ export default {
               } else {
                 this.fee[speed].total = estimate.feeSat;
                 this.fee[speed].perByte = estimate.feerateSatPerByte;
+                this.fee[speed].sweepAmount = estimate.sweepAmount;
                 this.fee[speed].error = false;
               }
+            }
+
+            if(this.sweep) {
+              this.estimateSweep();
             }
           }
         }
       }, 500);
     },
 
+    estimateSweep() {
+      if(this.balance.btc && this.fee[this.chosenFee].total) {
+        if(this.system.displayUnit === 'btc') {
+          this.txData.amount = satsToBtc(this.fee[this.chosenFee].sweepAmount);
+        } else {
+          this.txData.amount = this.fee[this.chosenFee].sweepAmount;
+        }
+      }
+    },
+
     setFee(choice) {
       this.chosenFee = choice;
+
+      if(this.sweep) {
+        this.estimateSweep();
+      }
+    },
+
+    sendAmount() {
+      this.sweep = false;
+      this.estimateFees();
+    },
+
+    sendMax() {
+      this.sweep = true;
+      this.txData.amount = null;
+      this.estimateFees();
     },
 
     confirmWithdrawal() {
+
       const payload = {
+        sweep: this.sweep,
         addr: this.txData.address,
         amt: parseInt(this.txData.amount),
         satPerByte: parseInt(this.fee[this.chosenFee].perByte)

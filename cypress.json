@@ -1,0 +1,9 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "fixturesFolder": "test/browser/fixtures",
+  "integrationFolder": "test/browser/integration",
+  "pluginsFile": "test/browser/plugins/index.js",
+  "screenshotsFolder": "test/browser/screenshots",
+  "videosFolder": "test/browser/videos",
+  "supportFile": "test/browser/support/index.js"
+}
