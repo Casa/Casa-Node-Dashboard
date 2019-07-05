@@ -15,3 +15,9 @@ dist
 
 # IDE
 .idea
+
+reports/
+selenium-server.log
+
+test/cypress/screenshots/
+cypress.env.json

@@ -1,6 +1,18 @@
 # Changelog
 Notable changes to the Casa Node project will be documented in this file
 
+## 2019-07-05
+### Added
+- Added POST /channel/policy route for updating channel policies.
+- Added Send Max (sweep funds) button for widthdrawing on chain funds.  
+- Added first cypress GUI tests. 
+
+### Changed
+- Changed GET /estimateFee to use a binary search algorithm for sweeping funds. 
+
+### Fixed
+- Bug in displaying sending and receiving on chain transactions. 
+- Removed call to get volume data from GET /status route which resulted in many 500 errors.
 
 ## 2019-06-24
 ### Fixed

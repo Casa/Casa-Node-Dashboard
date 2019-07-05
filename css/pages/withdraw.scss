@@ -46,6 +46,25 @@
   display: none;
 }
 
+.withdraw {
+  .withdrawal-amount {
+    position: relative;
+  }
+
+  .send-max {
+    position: absolute;
+    z-index: 1;
+    top: 1.5em;
+    right: 0;
+    border-width: 2px;
+
+    &.is-active {
+      color: #fff;
+      background-color: #0a0525 !important;
+    }
+  }
+}
+
 .withdrawal-fee {
   margin-top: 2.5em;
 
