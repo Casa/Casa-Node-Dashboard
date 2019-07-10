@@ -1,0 +1,165 @@
+.connections {
+  h3 {
+    font-size: 23px;
+    font-weight: bold;
+    margin-top: 0.5em;
+  }
+
+  h4 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 0.75em;
+
+    img {
+      height: 1.5em;
+      vertical-align: middle;
+      margin-right: 0.25em;
+    }
+  }
+
+  hr {
+    margin-top: 2.5em !important;
+    margin-bottom: 2.5em !important;
+  }
+
+  p {
+    color: #8d8e8e;
+  }
+
+  .links {
+    a {
+      margin-right: 1.5em;
+    }
+  }
+
+  .column {
+    strong {
+      vertical-align: top;
+      line-height: 2em;
+    }
+
+    .field {
+      vertical-align: top;
+      margin-left: 1em;
+    }
+  }
+
+  .switch {
+    display: inline-block;
+  }
+
+  .tor-description {
+    margin: 1em 0;
+    border-radius: 4px;
+    border: 2px solid #f4f4f4;
+    align-items: center;
+    justify-content: center;
+
+    .column {
+      padding: 0 0.5em 1em 0.5em;
+      text-align: center;
+    }
+
+    .column.is-2 {
+      padding-top: 2em;
+    }
+
+    img {
+      max-height: 46px;
+    }
+  }
+}
+
+.connection-details section.modal-card-body {
+  padding-bottom: 0;
+}
+
+.connection-details h2 img {
+  vertical-align: middle;
+  margin-top: -4px;
+  margin-right: 0.5em;
+}
+
+.connection-details h2.is-danger {
+  color: #f0649e !important;
+  text-align: left;
+  line-height: 24px;
+  font-size: 20px;
+}
+
+.connection-details p.is-danger {
+  font-size: 1.2em !important;
+  text-align: left;
+  font-weight: normal !important;
+  color: #f0649e !important;
+}
+
+.connection-details .discovery-problem p {
+  text-align: left;
+  font-weight: normal !important;
+  font-size: 1.2em !important;
+  color: #636363;
+}
+
+.connection-details .modal-card-body .address {
+  display: inline-block;
+  max-width: 350px;
+  margin-left: 1em;
+  margin-top: -0.3em;
+}
+
+.connection-details .address-info .button {
+  float: none;
+  margin: 0 1em 1em 1em;
+}
+
+.connection-details hr {
+  background-color: #c3c5c7;
+  height: 1px;
+  clear: both;
+}
+
+.connection-details .modal-card-foot .button {
+  margin: 0;
+}
+
+/* Tablet */
+@media screen and (min-width: 769px) {
+  .connections {
+    h3 {
+      font-size: 27px;
+    }
+
+    h4 {
+      font-size: 23px;
+    }
+
+    .tor-description {
+      .column {
+        padding: 1.5em 1em;
+        text-align: left;
+      }
+
+      .column.is-2 {
+        padding-top: 1em;
+      }
+
+      img {
+        margin-left: 1em;
+      }
+    }
+  }
+
+  .connection-details .modal-card-foot {
+    display: flex;
+  }
+
+  .connection-details .modal-card-foot .button {
+    width: auto;
+    height: 60px;
+    font-size: 18px;
+    font-weight: bold;
+    flex-grow: 1;
+    margin: 0 0.5em;
+  }
+}
