@@ -210,6 +210,10 @@
                   {{ system.torAddress }}
                 </div>
 
+                <div class="links">
+                  <a class="blue" @click="openTorAddressModal()">View QR Code</a>
+                </div>
+
                 <p class="description">
                   To access your dashboard from outside your home network, download the Tor browser <a href="https://www.torproject.org/" class="blue" target="_blank" rel="noopener">here</a> and navigate to your Tor address listed above.
                 </p>
@@ -247,6 +251,7 @@ import BitcoinData from '@/data/bitcoin';
 import LightningData from '@/data/lightning';
 import SystemData from '@/data/system';
 
+import TorAddress from '@/components/Settings/Modals/TorAddress';
 import LightningConnectionCode from '@/components/Lightning/Modals/ConnectionCode';
 import LightningConnectionDetails from '@/components/Lightning/Modals/ConnectionDetails';
 import BitcoinConnectionDetails from '@/components/Bitcoin/Modals/ConnectionDetails';
@@ -366,6 +371,10 @@ export default {
 
     openBitcoinPortModal() {
       this.$modal.open({parent: this, component: BitcoinConnectionDetails, hasModalCard: true});
+    },
+
+    openTorAddressModal() {
+      this.$modal.open({parent: this, component: TorAddress, hasModalCard: true});
     },
 
     async saveSettings(changed) {

@@ -11,12 +11,12 @@
           <div class="address-info-left">
             <p>Send this code to others who want to open a custom channel with your Lightning node.</p>
 
-            <div
+            <div class="qr-code"
               v-clipboard:copy="lnAddress.code"
               v-clipboard:success="onCopy"
               v-clipboard:error="onError">
-              <qr-code :text="lnAddress.code" size="200" class="is-left-desktop"></qr-code>
-              <span class="address is-inline-block">{{lnAddress.code}}</span>
+              <qr-code :text="lnAddress.code" size="320"></qr-code>
+              <p>{{lnAddress.code}}</p>
             </div>
           </div>
           <br>
