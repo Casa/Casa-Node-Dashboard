@@ -39,7 +39,7 @@
       </section>
       <footer class="modal-card-foot">
         <a class="button cancel" type="button" @click="$parent.close()">Cancel</a>
-        <a class="button is-casa" type="button" @click="sendTransaction()">Confirm Widthdrawal</a>
+        <a class="button is-casa" type="button" @click="sendTransaction()">Confirm Withdrawal</a>
       </footer>
     </div>
   </form>

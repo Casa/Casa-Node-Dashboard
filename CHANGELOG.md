@@ -1,6 +1,14 @@
 # Changelog
 Notable changes to the Casa Node project will be documented in this file
 
+
+## 2019-07-09
+### Added
+- Added QR code for the public dashboard. 
+
+### Fixed
+- Fixed withdrawal spelling on Withdrawal Confirmation page. 
+
 ## 2019-07-05
 ### Added
 - Added POST /channel/policy route for updating channel policies.

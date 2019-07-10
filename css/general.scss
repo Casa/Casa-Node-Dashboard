@@ -355,6 +355,15 @@ input[type=password] {
 
 .qr-code {
   margin-top: 0.5em;
+  text-align: center;
+
+  p {
+    padding-top: 2em;
+    padding-bottom: 0;
+    max-width: 400px;
+    display: inline-block;
+    overflow-wrap: break-word;
+  }
 }
 
 .is-left-desktop {
