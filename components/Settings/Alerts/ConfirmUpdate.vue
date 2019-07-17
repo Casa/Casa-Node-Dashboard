@@ -50,7 +50,8 @@ export default {
         // Close Modal and Settings Panel
         this.$emit('close');
         EventBus.$emit('updating');
-        this.$snackbar.open({message:'Software is updating. Please reload this window in 5 minutes.', type:'is-success', position:'is-top', indefinite: true});
+        this.$snackbar.open({message:'Software is updating. Please check back in a few minutes.', type:'is-success', position:'is-top', indefinite: true});
+        this.$router.push('/loading');
       } catch (err) {
         this.$snackbar.open({message:`Update failed: ${err.response.data}`, type:'is-danger', position:'is-top', indefinite: true});
       } finally {

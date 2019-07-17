@@ -15,7 +15,7 @@
               v-clipboard:copy="lnAddress.code"
               v-clipboard:success="onCopy"
               v-clipboard:error="onError">
-              <qr-code :text="lnAddress.code" size="320"></qr-code>
+              <qriously :value="lnAddress.code" :size="320"></qriously>
               <p>{{lnAddress.code}}</p>
             </div>
           </div>
@@ -26,7 +26,7 @@
           <hr>
 
           <h2 class="is-danger">
-            <img src="~assets/icon-circle-warning.svg" alt="error">
+            <img src="~assets/icon-circle-warning.svg" alt="">
 
             There's a Discovery Problem
           </h2>

@@ -1,6 +1,6 @@
 <template>
   <div class="node-loading">
-    <img src="~assets/logo-casa-white.svg" alt="Casa Logo">
+    <img src="~assets/logo-casa-white.svg" alt="">
 
     <div class="loading-bar">
       <div class="loading-progress" :style="{ width: percent + '%' }"></div>

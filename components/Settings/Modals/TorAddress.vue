@@ -10,10 +10,10 @@
         <div class="address-info">
           <div class="address-info-left">
             <template v-if="system.torAddress">
-              <p>Scan this QR code with the Sats app to access your Casa Node remotely. Note: The QR does not currently display in the Tor browser - this will be fixed in the next update.</p>
+              <p>Scan this QR code with the Sats app to access your Casa Node remotely.</p>
 
               <div class="qr-code" v-clipboard:copy="system.torAddress">
-                <qr-code :text="system.torAddress" size="320"></qr-code>
+                <qriously :value="system.torAddress" :size="320"></qriously>
                 <p>{{system.torAddress}}</p>
               </div>
             </template>

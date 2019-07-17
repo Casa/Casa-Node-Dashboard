@@ -15,7 +15,7 @@
       </div>
 
       <div class="intro-form wide" v-if="step === 'lets-talk'">
-        <div class="intro-icon"><img src="~assets/icon-password.svg" alt="Password input"></div>
+        <div class="intro-icon"><img src="~assets/icon-password.svg" alt=""></div>
         <span class="intro-heading">Let's talk about your seed phrase.</span><br>
         <span class="intro-text">
           Do you want to generate a new seed phrase or <br>
@@ -26,7 +26,7 @@
       </div>
 
       <div class="intro-form" v-if="step === 'new-seed' && seedInit">
-        <div class="intro-icon"><img src="~assets/lightning.png" alt="Lightning"></div>
+        <div class="intro-icon"><img src="~assets/lightning.png" alt=""></div>
         <span class="intro-heading">Okay, let's create your key.</span><br>
         <span class="intro-text">
           It's imperative that you write these 24 words in the proper order and store in a safe place.<br>
@@ -71,7 +71,7 @@
       </div>
 
       <div class="intro-form wide" v-if="step === 'import-seed'">
-        <div class="intro-icon"><img src="~assets/icon-password.svg" alt="Password input"></div>
+        <div class="intro-icon"><img src="~assets/icon-password.svg" alt=""></div>
         <span class="intro-heading">Okay, let's import your seed phrase.</span><br>
         <span class="intro-text small">
           Important: you can only import seed phrases from LND wallets.
@@ -123,7 +123,7 @@
       </div>
 
       <div class="intro-form" v-if="step === 'got-it'">
-        <div class="intro-icon"><img src="~assets/green-check.svg" alt="Success"></div>
+        <div class="intro-icon"><img src="~assets/green-check.svg" alt=""></div>
         <span class="intro-heading">Got it.</span><br>
         <span class="intro-text">Make sure you store your login credentials in a safe place. There is no "Forgot Password" button.</span><br>
         <nuxt-link :to="'?step=sync-time'" class="button is-casa">Continue Setup</nuxt-link>
@@ -226,6 +226,17 @@ export default {
       let {data} = await this.$axios.get(`${this.$env.API_LND}/v1/bitcoind/info/sync`);
       this.setup.btcSync = data.percent;
     }
+
+    // Preload images that will be displayed during the intro and on the dashboard after logging in
+    this.preload([
+      require('~/assets/icon-password.svg'),
+      require('~/assets/green-check.svg'),
+      require('~/assets/icon-circle-warning.svg'),
+      require('~/assets/bitcoin.svg'),
+      require('~/assets/chevron.svg'),
+      require('~/assets/lightning.png'),
+      require('~/assets/settings.svg'),
+    ]);
   },
 
   // Renders some magic on the backend. Allows us to use step from query sting.
@@ -430,8 +441,17 @@ export default {
       el.style.position = 'fixed';
       el.style.top = rect.top + 'px';
       el.style.left = rect.left + 'px';
-    }
+    },
 
+    preload(imageArray) {
+      imageArray.forEach(function(imageURL) {
+        // Use setTimeout all images load in parallel
+        setTimeout(function() {
+          const img = new Image();
+          img.src = imageURL;
+        }, 0);
+      });
+    },
   }
 
 }

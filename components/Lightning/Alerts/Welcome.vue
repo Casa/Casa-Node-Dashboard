@@ -1,7 +1,7 @@
 <template>
   <form class="welcome" action="">
     <div class="alert-icon-container">
-      <img src="~assets/hand.png" alt="Success">
+      <img src="~assets/hand.png" alt="">
     </div>
     <div class="alert modal-card" style="width: auto">
       <header class="modal-card-head"></header>

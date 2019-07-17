@@ -14,7 +14,7 @@
 
     <div class="app-slideout lnd channel custom open">
       <div class="app-title">
-        <img src="~assets/lightning.png" alt="Lightning">
+        <img src="~assets/lightning.png" alt="">
         <h2>Open Custom Channel</h2>
       </div>
 
@@ -88,8 +88,8 @@
                 name="fundingAmount"
                 v-model="fundingAmount"
                 @input="estimateFees"
-                v-validate="`required|min_value:0.0002|max_value:${constants.MAX_CHANNEL_SIZE_BTC}`"
-                :placeholder="`Funding amount (max ${constants.MAX_CHANNEL_SIZE_BTC} BTC)`" />
+                v-validate="`required|min_value:0.0002|max_value:${maxBtc}`"
+                :placeholder="`Funding amount (max ${maxBtc} BTC)`" />
             </div>
 
             <div class="control is-half sats-input" v-else>
@@ -100,12 +100,16 @@
                 name="fundingAmount"
                 v-model="fundingAmount"
                 @input="estimateFees"
-                v-validate="`required|integer|min_value:20000|max_value:${constants.MAX_CHANNEL_SIZE_SATS}`"
-                :placeholder="`Funding amount (max ${constants.MAX_CHANNEL_SIZE_SATS} sats)`" />
+                v-validate="`required|integer|min_value:20000|max_value:${maxSats}`"
+                :placeholder="`Funding amount (max ${maxSats} sats)`" />
             </div>
 
             <p v-if="fee[chosenFee].error === 'INSUFFICIENT_FUNDS'" class="help is-danger">
               You don't have enough funds to open a channel of this size. Make sure you have enough funds to cover the channel size plus an on-chain fee.
+            </p>
+
+            <p v-if="fee[chosenFee].error === 'FEE_RATE_TOO_LOW'" class="help is-danger">
+              The fee to open this channel is too small and cannot currently be sent on-chain. Try increasing the fee or the size of the channel.
             </p>
 
             <p v-if="fee[chosenFee].error === 'OUTPUT_IS_DUST'" class="help is-danger">
@@ -153,6 +157,7 @@
 <script>
 import axios from 'axios';
 import EventBus from '@/helpers/event-bus';
+import BitcoinData from '@/data/bitcoin';
 import SystemData from '@/data/system';
 import UnitSwitch from '@/components/Settings/UnitSwitch';
 import API from '@/helpers/api';
@@ -198,7 +203,7 @@ export default {
       name: null,
       purpose: null,
       system: SystemData,
-      constants: CONSTANTS,
+      bitcoin: BitcoinData,
     };
   },
 
@@ -207,6 +212,24 @@ export default {
 
     // Close this window on successful channel opening
     EventBus.$on('openChannel', () => {this.$emit('close');});
+  },
+
+  computed: {
+    maxBtc() {
+      if(this.bitcoin.wallet.totalBalance < CONSTANTS.MAX_CHANNEL_SIZE_SATS) {
+        return satsToBtc(this.bitcoin.wallet.totalBalance);
+      } else {
+        return CONSTANTS.MAX_CHANNEL_SIZE_BTC;
+      }
+    },
+
+    maxSats() {
+      if(this.bitcoin.wallet.totalBalance < CONSTANTS.MAX_CHANNEL_SIZE_SATS) {
+        return this.bitcoin.wallet.totalBalance;
+      } else {
+        return CONSTANTS.MAX_CHANNEL_SIZE_SATS;
+      }
+    }
   },
 
   methods: {

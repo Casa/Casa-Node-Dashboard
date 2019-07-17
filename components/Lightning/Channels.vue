@@ -14,7 +14,7 @@
 
     <div class="app-slideout lnd channel custom">
       <div class="app-title">
-        <img src="~assets/lightning.png" alt="Lightning">
+        <img src="~assets/lightning.png" alt="">
         <h2> Manage Custom Channels</h2>
 
         <a class="button is-casa desktop-only is-padded" @click="openChannel()">+ New Channel</a>

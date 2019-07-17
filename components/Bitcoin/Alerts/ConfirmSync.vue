@@ -1,7 +1,7 @@
 <template>
   <form action="caution" class="resync">
     <div class="alert-icon-container">
-      <img src="~assets/red-excl.svg" alt="Alert">
+      <img src="~assets/red-excl.svg" alt="">
     </div>
     <div class="alert modal-card" style="width: auto">
       <header class="modal-card-head">

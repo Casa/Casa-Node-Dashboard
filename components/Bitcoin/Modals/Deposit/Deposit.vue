@@ -21,7 +21,7 @@
         </div>
         <b-loading :is-full-page="false" :active.sync="isLoading"></b-loading>
         <div class="clear">
-          <qr-code :text="address"></qr-code>
+          <qriously :value="address" :size="320"></qriously>
         </div>
       </section>
       <footer class="modal-card-foot">

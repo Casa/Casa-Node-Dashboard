@@ -6,7 +6,7 @@
           <div class="column is-12">
             <div class="container content auth-header">
               <h1 class="title is-spaced">
-                <img src="~assets/logo.svg" alt="Casa Logo">
+                <img src="~assets/logo.svg" alt="">
               </h1>
               <h3 class="subtitle">Welcome home.</h3>
             </div>
@@ -38,12 +38,12 @@
                       <!-- Error Message Component -->
                       <div v-if="this.wrongPassword" class="auth-error">
                         <div class="level-item">
-                          <img src="~/assets/icon-circle-warning.svg" alt="error"> <p>Wrong password</p>
+                          <img src="~/assets/icon-circle-warning.svg" alt=""> <p>Wrong password</p>
                         </div>
                       </div>
                       <div v-if="this.error" class="auth-error">
                         <div class="level-item">
-                          <img src="~/assets/icon-circle-warning.svg" alt="error"> <div>Your node's internal IP address has changed. Please restart the device to continue.</div>
+                          <img src="~/assets/icon-circle-warning.svg" alt=""> <div>Your node's internal IP address has changed. Please restart the device to continue.</div>
                         </div>
                       </div>
                     </div>
@@ -63,7 +63,7 @@
       <div class="container is-fluid">
         <div class="columns is-mobile is-centered">
           <div class="column is-three-quarters-mobile is-two-thirds-tablet is-half-desktop is-one-third-widescreen is-one-third-fullhd">
-            <img class="footer-logo" src="~/assets/gray-logo.svg" alt="footer logo">
+            <img class="footer-logo" src="~/assets/gray-logo.svg" alt="">
             <p class="resources">
               <a href="https://keys.casa" target="_blank" rel="noopener">Home</a>   ∙   <a href="https://keys.casa/support/" target="_blank" rel="noopener">Support</a>   ∙   <a href="https://keys.casa/legal" target="_blank" rel="noopener">Legal</a>
             </p>
@@ -98,6 +98,17 @@ export default {
     };
   },
 
+  mounted() {
+    // Preload images that will be displayed on the dashboard after logging in
+    this.preload([
+      require('~/assets/icon-circle-warning.svg'),
+      require('~/assets/bitcoin.svg'),
+      require('~/assets/chevron.svg'),
+      require('~/assets/lightning.png'),
+      require('~/assets/settings.svg'),
+    ]);
+  },
+
   async created() {
     await redirect.checkLoading(this);
   },
@@ -117,6 +128,16 @@ export default {
           this.error = true;
         }
       }
+    },
+
+    preload(imageArray) {
+      imageArray.forEach(function(imageURL) {
+        // Use setTimeout all images load in parallel
+        setTimeout(function() {
+          const img = new Image();
+          img.src = imageURL;
+        }, 0);
+      });
     }
   }
 

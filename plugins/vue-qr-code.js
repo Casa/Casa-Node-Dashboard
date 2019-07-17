@@ -1,4 +1,4 @@
 import Vue from 'vue';
-import VueQRCodeComponent from 'vue-qrcode-component';
+import VueQriously from 'vue-qriously';
 
-Vue.component('qr-code', VueQRCodeComponent);
+Vue.use(VueQriously);

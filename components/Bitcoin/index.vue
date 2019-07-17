@@ -13,7 +13,7 @@
 
       <!--  BTC Stats Section -->
       <div class="app-title">
-        <img src="~assets/bitcoin.svg" alt="Bitcoin">
+        <img src="~assets/bitcoin.svg" alt="">
         <h2> Bitcoin Node</h2>
       </div>
       <div class="stats">

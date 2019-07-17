@@ -4,7 +4,7 @@
       <div class="columns is-mobile">
         <div class="column">
           <p class="title center">
-            <img class="launcher-logo" src="~assets/logo.svg" alt="Casanode">
+            <img class="launcher-logo" src="~assets/logo.svg" alt="">
           </p>
         </div>
       </div>
@@ -15,7 +15,7 @@
           <div class="card rounded">
             <header class="card-header">
               <h2 class="card-header-title has-text-centered">
-                <img src="~assets/bitcoin.svg" alt="Bitcoin">
+                <img src="~assets/bitcoin.svg" alt="">
                 <span>Bitcoin</span>
               </h2>
             </header>
@@ -41,7 +41,7 @@
               <p class="card-footer-title">Manage</p>
               <a class="card-header-icon" aria-label="more options">
                 <span class="icon">
-                  <img src="~assets/chevron.svg" alt="open">
+                  <img src="~assets/chevron.svg" alt="">
                 </span>
               </a>
             </footer>
@@ -50,7 +50,7 @@
               <p class="card-footer-title">Transactions</p>
               <a class="card-header-icon" aria-label="transactions">
                 <span class="icon">
-                  <img src="~assets/chevron.svg" alt="open">
+                  <img src="~assets/chevron.svg" alt="">
                 </span>
               </a>
             </footer>
@@ -62,7 +62,7 @@
           <div class="card rounded">
             <header class="card-header">
               <h2 class="card-header-title has-text-centered">
-                <img src="~assets/lightning.png" alt="Lightning">
+                <img src="~assets/lightning.png" alt="">
                 <span>Lightning</span>
               </h2>
             </header>
@@ -91,7 +91,7 @@
               <p class="card-footer-title">Manage</p>
               <a href="#" class="card-header-icon" aria-label="manage node">
                 <span class="icon">
-                  <img src="~assets/chevron.svg" alt="open">
+                  <img src="~assets/chevron.svg" alt="">
                 </span>
               </a>
             </footer>
@@ -100,7 +100,7 @@
               <p class="card-footer-title">Transactions</p>
               <a href="#" class="card-header-icon" aria-label="transactions">
                 <span class="icon">
-                  <img src="~assets/chevron.svg" alt="open">
+                  <img src="~assets/chevron.svg" alt="">
                 </span>
               </a>
             </footer>
@@ -112,7 +112,7 @@
           <div class="card settings rounded">
             <header class="card-header">
               <h2 class="card-header-title has-text-centered">
-                <img src="~assets/settings.svg" alt="Settings">
+                <img src="~assets/settings.svg" alt="">
                 <span> System</span>
               </h2>
             </header>
@@ -131,7 +131,7 @@
               <p class="card-footer-title">Connections</p>
               <a href="#" class="card-header-icon" aria-label="more options">
                 <span class="icon">
-                  <img src="~assets/chevron.svg" alt="open">
+                  <img src="~assets/chevron.svg" alt="">
                 </span>
               </a>
             </footer>
@@ -140,7 +140,7 @@
               <p class="card-footer-title">Settings</p>
               <a href="#" class="card-header-icon" aria-label="more options">
                 <span class="icon">
-                  <img src="~assets/chevron.svg" alt="open">
+                  <img src="~assets/chevron.svg" alt="">
                 </span>
               </a>
             </footer>
@@ -161,7 +161,7 @@
         <div class="container is-fluid">
           <div class="columns is-mobile is-centered">
             <div class="column is-three-quarters-mobile is-two-thirds-tablet is-half-desktop is-one-third-widescreen is-one-third-fullhd">
-              <img class="footer-logo" src="~/assets/gray-logo.svg" alt="footer logo">
+              <img class="footer-logo" src="~/assets/gray-logo.svg" alt="">
               <p class="resources">
                 <a href="https://keys.casa" target="_blank" rel="noopener">Home</a>   ∙   <a href="https://keys.casa/node-help" target="_blank" rel="noopener">Support</a>   ∙   <a href="https://keys.casa/legal" target="_blank" rel="noopener">Legal</a>
               </p>
@@ -296,6 +296,22 @@ export default {
       this.lightning.isLoading = false;
       this.lightning.isStarting = false;
     });
+
+    // Preload images that will be displayed in menus
+    this.preload([
+      require('~/assets/hand.png'),
+      require('~/assets/yellow-excl.svg'),
+      require('~/assets/red-excl.svg'),
+      require('~/assets/green-check.svg'),
+      require('~/assets/icon-info-blue.svg'),
+      require('~/assets/icon-close.svg'),
+      require('~/assets/paper-plane.svg'),
+      require('~/assets/qr-code.svg'),
+      require('~/assets/icon-tor.png'),
+      require('~/assets/logo-casa-extension.svg'),
+      require('~/assets/info.svg'),
+      require('~/assets/channel.svg'),
+    ]);
   },
 
   updated() {
@@ -484,6 +500,16 @@ export default {
 
     dismissPromo() {
       this.displayPromo = false;
+    },
+
+    preload(imageArray) {
+      imageArray.forEach(function(imageURL) {
+        // Use setTimeout all images load in parallel
+        setTimeout(function() {
+          const img = new Image();
+          img.src = imageURL;
+        }, 0);
+      });
     },
   }
 };

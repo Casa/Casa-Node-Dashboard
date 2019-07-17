@@ -14,7 +14,7 @@
 
     <div class="app-slideout lnd">
       <div class="app-title">
-        <img src="~assets/lightning.png" alt="Lightning">
+        <img src="~assets/lightning.png" alt="">
         <h2>Manage Lightning</h2>
       </div>
 
@@ -45,7 +45,7 @@
               Autopilot Channel Settings
 
               <b-tooltip label="Autopilot automatically opens channels to other nodes in the background. This also shows any channels other nodes have opened to you." type="is-dark" multilined>
-                  <span class="icon is-small"><img src="~assets/icon-info-blue.svg" alt="info"></span>
+                  <span class="icon is-small"><img src="~assets/icon-info-blue.svg" alt=""></span>
               </b-tooltip>
             </label>
             <p>Automatically connect your node to others in the network.</p>
@@ -74,7 +74,7 @@
               Custom Lightning Channels
 
               <b-tooltip label="Open &amp; manage channels with specific nodes on the network, giving you more control over who you connect with." type="is-dark" multilined>
-                 <span class="icon is-small"><img src="~assets/icon-info-blue.svg" alt="info"></span>
+                 <span class="icon is-small"><img src="~assets/icon-info-blue.svg" alt=""></span>
               </b-tooltip>
             </label>
             <p>Open and close channels with specific nodes.</p>

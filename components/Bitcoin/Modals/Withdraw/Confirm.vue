@@ -26,7 +26,7 @@
               Miner Fee
 
               <b-tooltip label="This is a network fee paid to BTC miners for confirming your transaction." type="is-dark" multilined>
-                 <span class="icon is-small"><img src="~assets/info.svg" alt="info"></span>
+                 <span class="icon is-small"><img src="~assets/info.svg" alt=""></span>
               </b-tooltip>
             </label>
           </div>

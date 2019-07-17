@@ -14,7 +14,7 @@
 
     <div class="app-slideout lnd transactions">
       <div class="app-title">
-        <img src="~assets/lightning.png" alt="Lightning">
+        <img src="~assets/lightning.png" alt="">
         <h2>Lightning Transactions</h2>
       </div>
 
@@ -33,7 +33,7 @@
 
             <span class="desktop-only">
               <b-tooltip label="Based on the largest amount of BTC in the other side of a channel opened with you. Multiple channels currently can't be combined to make larger payments." type="is-dark" position="is-left" multilined>
-                 <span class="icon is-small"><img src="~assets/icon-info-blue.svg" alt="info"></span>
+                 <span class="icon is-small"><img src="~assets/icon-info-blue.svg" alt=""></span>
               </b-tooltip>
             </span>
           </h2>
@@ -46,7 +46,7 @@
 
             <span class="desktop-only">
               <b-tooltip label="Based on the largest amount of BTC in your side of a channel. Multiple channels currently can't be combined to make larger payments." type="is-dark" position="is-left" multilined>
-                 <span class="icon is-small"><img src="~assets/icon-info-blue.svg" alt="info"></span>
+                 <span class="icon is-small"><img src="~assets/icon-info-blue.svg" alt=""></span>
               </b-tooltip>
             </span>
           </h2>
@@ -57,13 +57,13 @@
       <div class="tx-actions">
         <a class="button" @click="send()">
           <span class="icon">
-            <img src="~assets/paper-plane.svg" alt="send">
+            <img src="~assets/paper-plane.svg" alt="">
           </span>
           <span>Send Lightning Payment</span>
         </a>
         <a class="button" @click="requestInvoice()">
           <span class="icon">
-            <img src="~assets/qr-code.svg" alt="qr-code">
+            <img src="~assets/qr-code.svg" alt="">
           </span>
           <span>Request Lightning Payment</span>
         </a>
