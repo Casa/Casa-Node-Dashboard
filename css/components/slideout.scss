@@ -1,0 +1,253 @@
+.slideout {
+  width: 100vw;
+
+  hr {
+    margin: 0.75em 0;
+  }
+}
+
+.slideout-panel-open {
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+.slideout-panel-bg {
+  background-color: #01090c!important;
+  opacity: 0.8!important;
+}
+
+.slideout-header {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  background-color: #EEEEEE;
+  height: 70px;
+  padding: 0 1em;
+  border-bottom: 1px solid rgba(151, 151, 151, 0.21);
+}
+
+.slideout-header a {
+  text-decoration: none;
+  color: #9b9b9b;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.app-slideout {
+  padding: 1em;
+}
+
+.app-slideout > .app-title {
+  display: flex;
+  align-items: center;
+}
+
+.app-slideout .app-content {
+  margin-left: 0.25em;
+  margin-right: 0.25em;
+}
+
+.app-title img {
+  max-width: 2.5em;
+  margin-right: .4em;
+}
+
+.app-title h2 {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.btc .app-title h2 {
+  color: #f7941a;
+}
+
+.lnd .app-title h2 {
+  color: #0a0525;
+}
+
+.settings .app-title h2 {
+  color: #0a0525;
+}
+
+/* Input Fields and Buttons */
+.app-settings {
+  padding: 0 0.5em;
+}
+
+.app-settings .field {
+  padding: 0.25em 0;
+}
+
+.toggle-settings .field-label {
+  padding-top: 0;
+  text-align: left;
+  align-self: flex-start;
+  padding-right: 3em;
+}
+
+.app-slideout .field-label p {
+  color: #8d8e8e;
+  margin-bottom: 1em;
+}
+
+.app-slideout .field-label .button {
+  padding: 1em 2.5em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 13px;
+}
+
+.app-slideout .field-label .button.is-light {
+  color: #c3c5c7;
+}
+
+.app-slideout .field-label .button.is-danger {
+  border: 2px solid #f0649e;
+  background-color: #fff;
+  color: #f0649e;
+  font-weight: bold;
+}
+
+.app-slideout .field-label .button.is-success {
+  border: 2px solid #2fb4b5;
+  background-color: #fff;
+  color: #2fb4b5;
+  font-weight: bold;
+}
+
+.app-slideout .field-body input {
+  padding: 1.5em 1em;
+}
+
+.app-slideout .field-body .button {
+  padding: 1.5em;
+  width: 100%;
+}
+
+.toggle-settings .field-body {
+  flex-grow: 1;
+  justify-content: flex-end;
+}
+
+.toggle-settings .field-label label {
+  color: #0a0525;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.toggle-settings span {
+  color: #c3c5c7;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.toggle-settings .field-body {
+  flex-grow: unset;
+  flex-basis: auto;
+  justify-content: flex-end;
+}
+
+.toggle-settings .button.cancel,
+.toggle-settings .button.save {
+  width: 100%;
+  height: 60px;
+  font-size: 18px;
+  margin-top: 1rem;
+}
+
+.toggle-settings .button.is-light {
+  color: #8d8e8e;
+  font-weight: bold;
+}
+
+.menu-navigation a {
+  border-radius: 24px;
+  box-shadow: 0 3px 5px 0 #0000000c;
+  background-color: #ffffff;
+}
+
+.menu-navigation span {
+  color: #0a0525;
+}
+
+.menu-navigation .icon {
+  color: #8d8e8e;
+}
+
+.slideout-header > a > span {
+  padding: 1rem 0rem 1rem 0.5rem;
+  vertical-align: middle;
+}
+
+.slideout-panel .slideout-panel-bg {
+  z-index: 39;
+}
+
+.slideout-wrapper > #slide-out-panel {
+  z-index: 42;
+}
+
+/* Tablet */
+@media screen and (min-width: 769px) {
+  .app-slideout {
+    padding: 2em;
+  }
+
+  .app-slideout .app-content {
+    margin-left: 3em;
+    margin-right: 3em;
+  }
+
+  .app-settings {
+    padding: 0 3em;
+  }
+
+  .app-title h2 {
+    font-size: 34px;
+  }
+
+  .slideout-header {
+    padding: 0 2em;
+  }
+
+  .toggle-settings .is-casa:nth-child(2) {
+    float: right;
+  }
+
+  .field-body > div:nth-child(2) {
+    display: inline;
+    float: right;
+    flex-grow: unset!important;
+  }
+
+  .toggle-settings .button.cancel,
+  .toggle-settings .button.save {
+    width: 200px;
+  }
+}
+
+
+/* Desktop */
+@media screen and (min-width: 1088px) {
+  .slideout {
+    width: 900px;
+
+    hr {
+      margin: 1.5em 0;
+    }
+  }
+
+  .app-slideout .field-body .button {
+    width: auto;
+  }
+
+  .field-body > div:nth-child(1) {
+    display: inline-block;
+    float: right;
+    margin-right: 0;
+  }
+}
