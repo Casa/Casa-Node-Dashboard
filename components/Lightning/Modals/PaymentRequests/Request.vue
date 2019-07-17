@@ -18,7 +18,7 @@
         </div>
 
         <div class="qr-code">
-          <qr-code :text="invoice.paymentRequest" error-level="L"></qr-code>
+          <qriously :value="invoice.paymentRequest" :size="320"></qriously>
         </div>
       </section>
       <footer class="modal-card-foot">

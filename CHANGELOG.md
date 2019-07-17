@@ -1,6 +1,23 @@
 # Changelog
 Notable changes to the Casa Node project will be documented in this file
 
+## 2019-07-17
+### Added
+- Added commit fee to local/remote balances of the channel initiator.
+- Added a redirect to the loading page after update.
+- Added a redirect to the intro page after resetting the device.
+
+### Changed
+- Changed invoices to allow special characters and emojis.
+- Changed estimate fee to include FEE_RATE_TOO_LOW error. 
+- Changed LND to use version 0.7.0.
+- Changed Bitcoind to use version 0.18.0.
+- Changed max channel funding to be wallet size or 0.16 BTC, whichever is less.
+- Changed image assets to preload.
+
+### Fixed
+- Fixed bug with open channel transaction being mislabeled.
+- Fixed Tor QR code issues by replacing QR code library.  
 
 ## 2019-07-09
 ### Added

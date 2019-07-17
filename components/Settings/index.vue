@@ -12,7 +12,7 @@
     <div class="app-slideout settings">
 
       <div class="app-title">
-        <img src="~assets/settings.svg" alt="Settings">
+        <img src="~assets/settings.svg" alt="">
         <h2> System Settings</h2>
       </div>
 
@@ -81,7 +81,7 @@
         <div class="field toggle-settings menu-navigation is-horizontal">
           <div class="field-label is-normal">
             <label class="label">
-              <img src="~assets/logo-casa-extension.svg" alt="Casa Extension">
+              <img src="~assets/logo-casa-extension.svg" alt="">
             </label>
 
             <p>Unlock your Casa Node with the Casa Extension.</p>
@@ -184,14 +184,15 @@ export default {
     },
 
     async factoryReset() {
+      this.$toast.open({duration: 3000, message:`Resetting...`});
+
       try {
         await this.$axios.post(`${this.$env.API_MANAGER}/v1/device/user-reset`);
-        this.$toast.open({duration: 3000, message:`Resetting...`});
 
-        // Refresh the page after 3 seconds
-        setTimeout(function() {
-          location.reload();
-        }, 3000);
+        // Send the user back to the intro after 10 seconds
+        setTimeout(() => {
+          this.$router.push('/intro');
+        }, 10000);
       } catch (err) {
         this.$toast.open({duration: 3000, message: err});
       } finally {

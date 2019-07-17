@@ -14,7 +14,7 @@
 
     <div class="app-slideout btc transactions">
       <div class="app-title">
-        <img src="~assets/bitcoin.svg" alt="Bitcoin">
+        <img src="~assets/bitcoin.svg" alt="">
         <h2>Bitcoin Transactions</h2>
       </div>
 
@@ -31,13 +31,13 @@
       <div class="tx-actions">
         <a class="button" @click="withdraw()">
           <span class="icon">
-            <img src="~assets/paper-plane.svg" alt="send">
+            <img src="~assets/paper-plane.svg" alt="">
           </span>
           <span>Withdraw</span>
         </a>
         <a class="button" @click="deposit()">
           <span class="icon">
-            <img src="~assets/qr-code.svg" alt="qr-code">
+            <img src="~assets/qr-code.svg" alt="">
           </span>
           <span>Deposit</span>
         </a>

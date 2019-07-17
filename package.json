@@ -1,6 +1,6 @@
 {
   "name": "Casa-Node",
-  "version": "1.14.0",
+  "version": "1.15.0",
   "description": "Your Casa Home Node",
   "author": "Casa Inc.",
   "private": true,
@@ -33,7 +33,7 @@
     "vue-moment": "^4.0.0",
     "vue-numeric": "^2.3.0",
     "vue-offline": "^1.0.204",
-    "vue-qrcode-component": "^2.1.1",
+    "vue-qriously": "^1.1.1",
     "vue2-slideout-panel": "^0.11.0"
   },
   "devDependencies": {

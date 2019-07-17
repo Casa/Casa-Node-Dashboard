@@ -43,6 +43,10 @@
             This transaction is too small and cannot be sent on-chain. Try increasing the amount to send or decrease the withdrawal fee.
           </p>
 
+          <p v-if="fee[chosenFee].error === 'FEE_RATE_TOO_LOW'" class="help is-danger">
+            The fee for this transaction is too small and cannot currently be sent on-chain. Try increasing the fee or the amount to send.
+          </p>
+
           <p v-if="fee[chosenFee].error === 'INVALID_ADDRESS'" class="help is-danger">
             The address you entered is invalid. Make sure you are sending to a mainnet Bitcoin address.
           </p>

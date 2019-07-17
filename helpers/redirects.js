@@ -6,12 +6,16 @@ import API from '@/helpers/api';
 export async function checkLoading(context) {
   // Check to see if the node is still booting up
   const loading = await API.get(axios, `${context.$env.API_MANAGER}/v1/telemetry/boot`);
-  const session = sessionStorage.getItem('loading');
 
-  // This session data is used to bypass the loading page in case the node is unable to start
-  if(session === 'ignored') {
-    return false;
+  if(typeof sessionStorage !== 'undefined') {
+    const session = sessionStorage.getItem('loading');
+
+    // This session data is used to bypass the loading page in case the node is unable to start
+    if(session === 'ignored') {
+      return false;
+    }
   }
+
 
   // If there is a network failure, an exception will be thrown and loading will return false
   if(loading === false || (loading && parseInt(loading.percent) !== 100)) {

@@ -14,7 +14,7 @@
 
     <div class="app-slideout lnd channel">
       <div class="app-title">
-        <img src="~assets/lightning.png" alt="Lightning">
+        <img src="~assets/lightning.png" alt="">
         <h2>
           Manage Autopilot
         </h2>
@@ -89,7 +89,7 @@
                 <div class="tx-row" @click="manageChannel(ch)">
                   <div class="tx-col-1 desktop-only">
                     <div class="channel-icon">
-                      <img src="~assets/channel.svg" alt="channel">
+                      <img src="~assets/channel.svg" alt="">
                     </div>
                   </div>
                   <div class="tx-col-2">
@@ -116,7 +116,7 @@
         <div class="inactive-wrap">
           <div class="inactive">
             <span class="icon is-large">
-              <img src="~assets/channel.svg" alt="channel">
+              <img src="~assets/channel.svg" alt="">
             </span>
 
             <h2 v-if="system.settings.lnd.autopilot">Configure your settings so Autopilot can start.</h2>

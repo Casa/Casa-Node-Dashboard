@@ -1,7 +1,7 @@
 <template>
   <form action="">
       <div class="alert-icon-container">
-        <img src="~assets/green-check.svg" alt="Success">
+        <img src="~assets/green-check.svg" alt="">
       </div>
       <div class="alert alert-status modal-card">
         <header class="modal-card-head"></header>

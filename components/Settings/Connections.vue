@@ -12,7 +12,7 @@
 
     <div class="app-slideout connections">
       <div class="app-title">
-        <img src="~assets/settings.svg" alt="Settings">
+        <img src="~assets/settings.svg" alt="">
         <h2>Connections</h2>
       </div>
 
@@ -21,7 +21,7 @@
 
         <div class="tor-description columns">
           <div class="column is-2">
-            <img src="~assets/icon-tor.png" alt="Tor logo">
+            <img src="~assets/icon-tor.png" alt="">
           </div>
 
           <div class="column">
@@ -35,7 +35,7 @@
         <hr>
 
         <h4>
-          <img src="~assets/bitcoin.svg" alt="Bitcoin logo">
+          <img src="~assets/bitcoin.svg" alt="">
           Share Your Bitcoin Node
         </h4>
 
@@ -103,7 +103,7 @@
         <hr>
 
         <h4>
-          <img src="~assets/lightning.svg" alt="Lightning logo">
+          <img src="~assets/lightning.svg" alt="">
           Share Your Lightning Node
         </h4>
 
