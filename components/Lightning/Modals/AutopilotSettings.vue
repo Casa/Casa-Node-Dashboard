@@ -8,20 +8,22 @@
         <div class="btc-calc">
           <b-field grouped>
             <b-field :message="'Value Per Channel'" expanded>
-              <vue-numeric v-if="system.displayUnit === 'btc'" class="input" v-model="maxChanSize" :precision="3" name="maxChanSize" v-validate="'max_value:' + constants.MAX_CHANNEL_SIZE_BTC"></vue-numeric>
-              <vue-numeric v-else class="input" v-model="maxChanSize" name="maxChanSize" v-validate="'max_value:' + constants.MAX_CHANNEL_SIZE_SATS"></vue-numeric>
+              <input v-if="system.displayUnit === 'btc'" class="input" :class="Object.assign(inputSize(), {'is-danger': errors.has('maxChanSize')})" v-model="maxChanSize" name="maxChanSize" v-validate="`decimal|min_value:0.0002|max_value:${constants.MAX_CHANNEL_SIZE_BTC}`">
+              <input v-else class="input" :class="Object.assign(inputSize(), {'is-danger': errors.has('maxChanSize')})"  v-model="maxChanSize" name="maxChanSize" v-validate="`integer|min_value:20000|max_value:${constants.MAX_CHANNEL_SIZE_SATS}`">
             </b-field>
             <b-field expanded>
               <p class="operator">x</p>
             </b-field>
             <b-field :message="'Number of Channels'" expanded>
-              <vue-numeric class="input" v-model="system.settings.lnd.maxChannels" :precision="0" name="maxChannels" v-validate="'max_value:' + constants.MAX_CHANNELS"></vue-numeric>
+              <input class="input" :class="Object.assign(inputSize(), {'is-danger': errors.has('maxChannels')})"  v-model="maxChannels" name="maxChannels" v-validate="`integer|min_value:0|max_value:${constants.MAX_CHANNELS}`">
             </b-field>
             <b-field expanded>
               <p class="operator">=</p>
             </b-field>
             <b-field :message="getUnit + ' in Autopilot'" expanded>
-              <b-input class="hide-input-box" :value="getTotal"></b-input>
+              <div class="control hide-input-box">
+                <input class="input" :class="inputSize()" :value="getTotal">
+              </div>
             </b-field>
           </b-field>
 
@@ -57,7 +59,7 @@ import EventBus from '@/helpers/event-bus';
 import BitcoinData from '@/data/bitcoin';
 import CONSTANTS from '@/helpers/constants';
 import SystemData from '@/data/system';
-import {satsToBtc, btcToSats} from '@/helpers/units';
+import {satsToBtc, btcToSats, toPrecision} from '@/helpers/units';
 
 import BitcoinTransactions from '@/components/Bitcoin/Transactions';
 
@@ -67,6 +69,7 @@ export default {
   data() {
     return {
       maxChanSize: 0,
+      maxChannels: 0,
       bitcoin: BitcoinData,
       system: SystemData,
       constants: CONSTANTS,
@@ -75,13 +78,17 @@ export default {
 
   computed: {
     getTotal() {
-      let value = this.maxChanSize * this.system.settings.lnd.maxChannels;
+      let value = this.maxChanSize * this.maxChannels;
 
       if(isNaN(value)) {
         value = 0;
       }
 
-      return value;
+      if(this.system.displayUnit === 'btc') {
+        return toPrecision(value);
+      } else {
+        return value;
+      }
     },
 
     getUnit() {
@@ -95,9 +102,38 @@ export default {
 
   created() {
     this.setMaxChanSize();
+    this.maxChannels = this.system.settings.lnd.maxChannels || 0;
+  },
+
+  updated() {
+    // Automatically validate maxChanSize on change
+    if(this.system.displayUnit === 'btc') {
+      if(this.maxChanSize.match(/.[0-9]{9,}$/)) {
+        this.maxChanSize = toPrecision(this.maxChanSize);
+      }
+    } else if(this.system.displayUnit === 'sats') {
+      this.maxChanSize = parseInt(this.maxChanSize) || 0;
+    }
   },
 
   methods: {
+    inputSize() {
+      let longestInput = this.getTotal;
+
+      // Handle case where user has entered a channel size, but the number of channels is 0
+      if(this.maxChanSize > longestInput) {
+        longestInput = this.maxChanSize;
+      }
+
+      if(String(longestInput).length > 7) {
+        return {'small-text': true};
+      } else if(String(longestInput).length > 4) {
+        return {'medium-text': true};
+      }
+
+      return {};
+    },
+
     async showBitcoinTransactions() {
       this.$parent.close();
       await vueSlideoutPanelService.show({component: BitcoinTransactions, width: '100%'});
@@ -125,18 +161,28 @@ export default {
     },
 
     saveChannelSettings() {
+      // Remove any previously set errors
+      this.errors.clear();
+
       this.$validator.validate().then(valid => {
         if(valid) {
           const data = {
             autopilot: this.system.settings.lnd.autopilot,
-            maxChannels: parseInt(this.system.settings.lnd.maxChannels) || 0,
+            maxChannels: parseInt(this.maxChannels) || 0,
             maxChanSize: parseInt(this.getMaxChanSize()) || 0,
           };
 
           this.saveSettings(data, 'Autopilot settings saved');
         } else {
-          // TODO: Make this error message more generic if we add any other fields to the index page?
-          this.$toast.open({duration: CONSTANTS.TOAST_DURATION_LONG, type: 'is-danger', message: 'Unable to save settings. For your safety, the Casa Node will only allow ' + CONSTANTS.MAX_CHANNELS + ' channels at this time with a max channel size of ' + CONSTANTS.MAX_CHANNEL_SIZE_BTC + ' BTC'});
+          if(this.errors.items) {
+            this.errors.items.forEach((error) => {
+              if(error.msg) {
+                this.$toast.open({duration: 3000, type: 'is-danger', message: error.msg});
+              }
+            });
+          } else {
+            this.$toast.open({duration: CONSTANTS.TOAST_DURATION_LONG, type: 'is-danger', message: 'Unable to save settings. For your safety, the Casa Node will only allow ' + CONSTANTS.MAX_CHANNELS + ' channels at this time with a max channel size of ' + CONSTANTS.MAX_CHANNEL_SIZE_BTC + ' BTC'});
+          }
         }
       });
     },

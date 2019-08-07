@@ -34,3 +34,13 @@ export function formatSats(input) {
 
   return sats.toFormat(0);
 }
+
+export function toPrecision(input, decimals = 8) {
+  const number = new BigNumber(input);
+
+  if(isNaN(number)) {
+    return 0;
+  }
+
+  return number.decimalPlaces(decimals).toString();
+}

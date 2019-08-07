@@ -98,6 +98,10 @@ export default {
     };
   },
 
+  async created() {
+    await redirect.checkLoading(this);
+  },
+
   mounted() {
     // Preload images that will be displayed on the dashboard after logging in
     this.preload([
@@ -107,10 +111,12 @@ export default {
       require('~/assets/lightning.png'),
       require('~/assets/settings.svg'),
     ]);
-  },
 
-  async created() {
-    await redirect.checkLoading(this);
+    // Hide any modals that might be open
+    // TODO: Use the EventBus for this instead of DOM manipulation...
+    document.querySelectorAll('.modal.is-active').forEach(function(element) {
+      element.className = element.className.replace('is-active', '');
+    });
   },
 
   methods: {

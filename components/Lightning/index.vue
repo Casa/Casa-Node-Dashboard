@@ -108,8 +108,8 @@
           <div class="field-body">
             <div class="field">
               <div class="control is-clearfix">
-                <input v-if="system.displayUnit === 'btc'" placeholder="BTC" type="text" autocomplete="on" class="input" v-model="minChanSizeBtc" :class="{ 'is-danger': errors.has('chansize')}" name="chansize" v-validate="'decimal'">
-                <input v-else type="text" placeholder="sats" autocomplete="on" class="input" v-model="minChanSizeSats" :class="{ 'is-danger': errors.has('chansize')}" name="chansize" v-validate="'integer'">
+                <input v-if="system.displayUnit === 'btc'" placeholder="BTC" type="text" autocomplete="on" class="input" v-model="minChanSizeBtc" :class="{ 'is-danger': errors.has('chansize')}" name="chansize" key="chansize-btc" v-validate="`decimal|min_value:0.0002|max_value:${constants.MAX_CHANNEL_SIZE_BTC}`">
+                <input v-else type="text" placeholder="sats" autocomplete="on" class="input" v-model="minChanSizeSats" :class="{ 'is-danger': errors.has('chansize')}" name="chansize" key="chansize-sats" v-validate="`integer|min_value:20000|max_value:${constants.MAX_CHANNEL_SIZE_SATS}`">
               </div>
             </div>
           </div>
@@ -126,7 +126,7 @@
           <div class="field-body">
             <div class="field">
               <div class="control is-clearfix">
-                <input type="text" autocomplete="on" class="input" v-model="system.settings.lnd.nickName" :class="{ 'is-danger': errors.has('nickname')}" name="nickname" v-validate="'max:32'">
+                <input type="text" autocomplete="on" class="input" v-model="system.settings.lnd.nickName" :class="{ 'is-danger': errors.has('nickname')}" name="nickname" v-validate="'max:32|max_bytes:32'">
               </div>
             </div>
           </div>
@@ -143,7 +143,7 @@
           <div class="field-body">
             <div class="field custom-color">
               <div class="control is-clearfix">
-                <input type="text" autocomplete="on" class="input" placeholder="#8865DF" v-model="system.settings.lnd.color" @input="formatColor" :class="{ 'is-danger': errors.has('color')}" name="color" v-validate="{regex: /^#[0-9a-f]{6}$/}">
+                <input type="text" autocomplete="on" class="input" placeholder="#8865DF" v-model="system.settings.lnd.color" @input="formatColor" :class="{ 'is-danger': errors.has('nodeColor')}" name="nodeColor" v-validate="{regex: /^#[0-9a-f]{6}$/}">
                 <div class="color-output" :style="{'background-color': system.settings.lnd.color}"></div>
               </div>
             </div>
@@ -183,6 +183,7 @@
   import LightningData from '@/data/lightning';
   import SystemData from '@/data/system';
   import {satsToBtc, btcToSats} from '@/helpers/units';
+  import CONSTANTS from '@/helpers/constants';
 
   import Autopilot from '@/components/Lightning/Autopilot';
   import Channels from '@/components/Lightning/Channels';
@@ -197,13 +198,13 @@
   export default {
     data() {
       return {
-        isLoading: true,
         lnExplorer: this.$env.LIGHTNING_EXPLORER,
         bitcoin: BitcoinData,
         lightning: LightningData,
         system: SystemData,
         minChanSizeBtc: null,
         minChanSizeSats: null,
+        constants: CONSTANTS,
       };
     },
 
@@ -219,12 +220,6 @@
       var vm = this;
       EventBus.$on('cancel', () => vm.closePanel());
       EventBus.$on('save', () => vm.validateSettings());
-    },
-
-    updated() {
-      if(this.lightning.pubkey) {
-        this.isLoading = false;
-      }
     },
 
     destroyed () {
@@ -345,11 +340,22 @@
       },
 
       validateSettings() {
-        this.$validator.validate().then(valid => {
+        // Remove any previously set errors
+        this.errors.clear();
+
+        this.$validator.validate().then((valid) => {
           if(valid) {
             this.saveSettings();
           } else {
-            this.$toast.open({duration: 3000, type: 'is-danger', message: 'Unable to save settings. Check that all of your settings are valid.'});
+            if(this.errors.items) {
+              this.errors.items.forEach((error) => {
+                if(error.msg) {
+                  this.$toast.open({duration: 5000, type: 'is-danger', message: error.msg});
+                }
+              });
+            } else {
+              this.$toast.open({duration: 5000, type: 'is-danger', message: 'Unable to save settings. Check that all of your settings are valid.'});
+            }
           }
         });
       },

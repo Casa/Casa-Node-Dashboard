@@ -12,13 +12,14 @@
           <div class="field is-grouped">
             <div class="field is-expanded">
               <p class="control is-expanded has-icons-right">
-                <input class="input" type="number" v-model="invoice.amount">
+                <input class="input" v-model="invoice.amount">
                 <span class="icon is-small is-right"><i>{{ getUnit }}</i></span>
               </p>
             </div>
             <div class="field is-expanded">
               <p class="control is-expanded has-icons-right">
-                <input class="input" type="number" :value="getDollarValue">
+                <input class="input" readonly v-if="system.displayUnit === 'btc'" :value="$options.filters.usd(btcToSats(invoice.amount))">
+                <input class="input" readonly v-else :value="$options.filters.usd(invoice.amount)">
                 <span class="icon is-small is-right"><i>USD</i></span>
               </p>
             </div>
@@ -58,21 +59,9 @@ export default {
     const value = await this.$axios.get(`${this.$env.API_LND}/v1/lnd/wallet/lightning`);
     this.balance.btc = value.data.balance;
     this.balance.lnd = value.data.pendingOpenBalance;
-    const {data: {USD}} = await axios.get('https://min-api.cryptocompare.com/data/price?fsym=BTC&tsyms=USD');
-    this.txData.inFiat = USD;
   },
 
   computed: {
-    getDollarValue() {
-      let amount = this.invoice.amount;
-
-      if(this.system.displayUnit === 'sats') {
-        amount = satsToBtc(amount);
-      }
-
-      return (amount * this.txData.inFiat).toFixed(2);
-    },
-
     getUnit() {
       if(this.system.displayUnit === 'btc') {
         return 'BTC';
@@ -83,6 +72,11 @@ export default {
   },
 
   methods: {
+    // Pasthrough to helper function so we can use it in the template
+    btcToSats(value) {
+      return btcToSats(value);
+    },
+
     // add invoice
     async newInvoice() {
       let amount = this.invoice.amount;

@@ -1,6 +1,24 @@
 # Changelog
 Notable changes to the Casa Node project will be documented in this file
 
+## 2019-08-01
+### Added
+- Added a warning message when non tor nodes attempt to open channels with tor nodes. 
+- Added an "Its now safe to unplug your node" page.
+- Added the ability to view old lightning payment requests.
+
+### Changed
+- Changed multiple input fields to handle invalid data more appropriately.
+- Changed several docker base images.
+- Changed the launch script to only recreate containers as needed.
+- Changed Connections tab to display Dashboard information at the top.
+
+### Fixed
+- Fixed a bug blocking users from easily resyncing bitcoind from Casa.
+- Removed increment toggles that were being displayed in tor browsers.
+- Fixed font size for various autopilot input fields.
+- Fixed alias overflow bug where emojis cause lnd to crash.
+
 ## 2019-07-17
 ### Added
 - Added commit fee to local/remote balances of the channel initiator.
