@@ -24,7 +24,7 @@
           <h2>Peer Name</h2>
           <div class="field is-grouped">
             <p class="control is-expanded">
-              <input type="text" class="input" :class="{ 'is-danger': errors.has('name')}" name="name" v-model="name" v-validate="'required'" placeholder="My Personal Node">
+              <input type="text" class="input" :class="{ 'is-danger': errors.has('peerName')}" name="peerName" v-model="name" v-validate="'required|max:100'" placeholder="My Personal Node">
             </p>
           </div>
 
@@ -32,7 +32,7 @@
           <h2>Channel Purpose</h2>
           <div class="field is-grouped">
             <p class="control is-expanded">
-              <input type="text" class="input" :class="{ 'is-danger': errors.has('purpose')}" name="purpose" v-model="purpose" v-validate="'required'" placeholder="Funding for Lunches">
+              <input type="text" class="input" :class="{ 'is-danger': errors.has('channelPurpose')}" name="channelPurpose" v-model="purpose" v-validate="'required|max:100'" placeholder="Funding for Lunches">
             </p>
           </div>
 
@@ -51,7 +51,7 @@
 
           <div class="field is-grouped" v-if="!manualEntry">
             <p class="control is-expanded">
-              <input type="text" class="input" :class="{ 'is-danger': errors.has('connectionCode')}" name="connectionCode" v-model="connectionCode" v-validate="'required'" placeholder="Peer connection code">
+              <input type="text" class="input" :class="{ 'is-danger': errors.has('connectionCode')}" name="connectionCode" v-model="connectionCode" v-validate="{required: true, regex: /^.*@.*$/}" placeholder="Peer connection code">
             </p>
           </div>
 
@@ -284,10 +284,21 @@ export default {
     },
 
     validate() {
+      // Remove any previously set errors
+      this.errors.clear();
+
       // Trigger validation to make sure all required fields are set
       this.$validator.validate().then(valid => {
         if(valid) {
           this.open();
+        } else {
+          if(this.errors.items) {
+            this.errors.items.forEach((error) => {
+              if(error.msg) {
+                this.$toast.open({duration: 3000, type: 'is-danger', message: error.msg});
+              }
+            });
+          }
         }
       });
     },
@@ -334,6 +345,12 @@ export default {
           EventBus.$emit('loading-stop');
           return;
         }
+      }
+
+      if(data.ip.match(/\.onion$/) && !this.system.settings.bitcoind.bitcoindTor && !this.system.settings.lnd.lndTor) {
+        this.$toast.open({duration: 10000, message: "You can't connect to a Tor node unless you are running Tor yourself. You can enable Tor from the Connections menu on your dashboard.", position: 'is-top', type: 'is-danger'});
+        EventBus.$emit('loading-stop');
+        return;
       }
 
       try {

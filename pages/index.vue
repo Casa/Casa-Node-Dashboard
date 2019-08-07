@@ -320,7 +320,7 @@ export default {
       // If the bitcoin container is running, but bitcoind is not operational, we must be rolling forward
       if(this.system.container.bitcoind === 'running' && this.bitcoin.operational === false && !this.alerted.rollingForward) {
         // If tor is being started, suppress this notification
-        if(this.system.startingTor) {
+        if(this.system.startingTor || this.system.shuttingDown) {
           return;
         }
 

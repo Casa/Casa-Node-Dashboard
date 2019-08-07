@@ -34,6 +34,67 @@
 
         <hr>
 
+        <h4>Sats App and Dashboard Connection</h4>
+
+        <div class="columns">
+          <div class="column is-half">
+            <strong>Local Dashboard IP Address</strong>
+
+            <div class="copyable" :class="{ copied: lastCopy === 'local'}"
+                v-clipboard:copy="system.localAddress"
+                @click="clickedCopy('local')">
+              {{ system.localAddress }}
+            </div>
+
+            <p>Access your Casa node from your home network.</p>
+          </div>
+
+          <div class="column is-half">
+            <strong>Sats App &amp; Tor Dashboard Address</strong>
+
+            <template v-if="system.settings.bitcoind.bitcoindTor || system.settings.lnd.lndTor">
+              <template v-if="loading.system">
+                <div class="loading-dots"></div>
+              </template>
+
+              <template v-else-if="system.torAddress">
+                <div class="copyable" :class="{ copied: lastCopy === 'localTor'}"
+                    v-clipboard:copy="system.torAddress"
+                    @click="clickedCopy('localTor')">
+                  {{ system.torAddress }}
+                </div>
+
+                <div class="links">
+                  <a class="blue" @click="openTorAddressModal()">View Sats App QR Code</a>
+                </div>
+
+                <p class="description">
+                  You can access your web dashboard from outside your home network using the <a href="https://www.torproject.org/" class="blue" target="_blank" rel="noopener">Tor browser</a> and the address above.
+                </p>
+              </template>
+
+              <template v-else>
+                <div class="copyable locked">
+                  Restart Needed
+                </div>
+
+                <p class="description">
+                  To fully activate your dashboard Tor address, we need to restart your node.
+                  <a class="blue" @click="confirmShutdown()">Shutdown Now</a>
+                </p>
+              </template>
+            </template>
+
+            <template v-else>
+              <p class="description">
+                You can access your Node Dashboard outside your home network if you enable Bitcoin or Lightning Tor Connections above.
+              </p>
+            </template>
+          </div>
+        </div> <!-- .columns -->
+
+        <hr>
+
         <h4>
           <img src="~assets/bitcoin.svg" alt="">
           Share Your Bitcoin Node
@@ -98,7 +159,7 @@
               </template>
             </template>
           </div>
-        </div>
+        </div> <!-- .columns -->
 
         <hr>
 
@@ -176,68 +237,7 @@
               </template>
             </template>
           </div>
-        </div>
-
-        <hr>
-
-        <h4>Accessing Your Node Dashboard</h4>
-
-        <div class="columns">
-          <div class="column is-half">
-            <strong>Local Dashboard IP Address</strong>
-
-            <div class="copyable" :class="{ copied: lastCopy === 'local'}"
-                v-clipboard:copy="system.localAddress"
-                @click="clickedCopy('local')">
-              {{ system.localAddress }}
-            </div>
-
-            <p>Access your Casa node from your home network.</p>
-          </div>
-
-          <div class="column is-half">
-            <strong>Public Dashboard Tor Address</strong>
-
-            <template v-if="system.settings.bitcoind.bitcoindTor || system.settings.lnd.lndTor">
-              <template v-if="loading.system">
-                <div class="loading-dots"></div>
-              </template>
-
-              <template v-else-if="system.torAddress">
-                <div class="copyable" :class="{ copied: lastCopy === 'localTor'}"
-                    v-clipboard:copy="system.torAddress"
-                    @click="clickedCopy('localTor')">
-                  {{ system.torAddress }}
-                </div>
-
-                <div class="links">
-                  <a class="blue" @click="openTorAddressModal()">View QR Code</a>
-                </div>
-
-                <p class="description">
-                  To access your dashboard from outside your home network, download the Tor browser <a href="https://www.torproject.org/" class="blue" target="_blank" rel="noopener">here</a> and navigate to your Tor address listed above.
-                </p>
-              </template>
-
-              <template v-else>
-                <div class="copyable locked">
-                  Restart Needed
-                </div>
-
-                <p class="description">
-                  To fully activate your dashboard Tor address, we need to restart your node.
-                  <a class="blue" @click="confirmShutdown()">Shutdown Now</a>
-                </p>
-              </template>
-            </template>
-
-            <template v-else>
-              <p class="description">
-                You can access your Node Dashboard outside your home network if you enable Bitcoin or Lightning Tor Connections above.
-              </p>
-            </template>
-          </div>
-        </div>
+        </div> <!-- .columns -->
       </div> <!-- .app-content -->
     </div> <!-- .app-slideout -->
 

@@ -34,9 +34,6 @@
         </div>
       </div>
 
-      <!-- Display loading status -->
-      <b-loading :is-full-page="false" :active.sync="isLoading"></b-loading><hr>
-
       <section class="app-settings">
         <!-- Incoming Connections -->
         <b-field class="toggle-settings" horizontal label="Allow Incoming Connections">
@@ -124,7 +121,6 @@ export default {
 
   data() {
     return {
-      isLoading: true,
       features: {
         syncStop: true
       },
@@ -139,12 +135,6 @@ export default {
   async created() {
     // Start auto-updating bitcoin stats
     EventBus.$emit('load-bitcoin-stats');
-  },
-
-  updated() {
-    if(this.bitcoin.address.external && Object.keys(this.bitcoin.connections).length) {
-      this.isLoading = false;
-    }
   },
 
   mounted() {

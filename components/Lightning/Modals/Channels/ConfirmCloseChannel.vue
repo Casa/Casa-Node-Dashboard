@@ -16,13 +16,13 @@
           <div class="field is-grouped">
             <div class="field is-expanded input-wrapper">
               <p class="control is-expanded">
-                <input class="input" type="number" v-model="chData.localBalanceBtc">
+                <input class="input" readonly v-model="chData.localBalanceBtc">
               </p>
               <p class="help">BTC ON YOUR SIDE</p>
             </div>
             <div class="field is-expanded input-wrapper">
               <p class="control is-expanded">
-                <input class="input" type="number" v-model="chData.remoteBalanceBtc">
+                <input class="input" readonly v-model="chData.remoteBalanceBtc">
               </p>
               <p class="help">BTC ON OTHER SIDE OF CHANNEL</p>
             </div>
@@ -33,13 +33,13 @@
           <div class="field is-grouped">
             <div class="field is-expanded input-wrapper">
               <p class="control is-expanded">
-                <input class="input" type="number" v-model="chData.localBalance">
+                <input class="input" readonly v-model="chData.localBalance">
               </p>
               <p class="help">SATS ON YOUR SIDE</p>
             </div>
             <div class="field is-expanded input-wrapper">
               <p class="control is-expanded">
-                <input class="input" type="number" v-model="chData.remoteBalance">
+                <input class="input" readonly v-model="chData.remoteBalance">
               </p>
               <p class="help">SATS ON OTHER SIDE OF CHANNEL</p>
             </div>

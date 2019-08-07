@@ -30,10 +30,14 @@
             <b-input type="text" v-if="system.displayUnit === 'btc'" v-model="txData.amount" @input.native="sendAmount" class="btc-input"  :message="false" required></b-input>
             <b-input type="text" v-else v-model="txData.amount" @input.native="sendAmount" class="sats-input" required></b-input>
           </b-field>
-          <b-field label="usd" expanded>
-            <b-input type="text" v-if="system.displayUnit === 'btc'" :value="$options.filters.usd(btcToSats(txData.amount))" class="usd-input"></b-input>
-            <b-input type="text" v-else :value="$options.filters.usd(txData.amount)" class="usd-input"></b-input>
-          </b-field>
+
+          <div class="field is-expanded">
+            <label class="label">usd</label>
+            <div class="control usd-input is-clearfix">
+              <input type="text" class="input" readonly v-if="system.displayUnit === 'btc'" :value="$options.filters.usd(btcToSats(txData.amount))">
+              <input type="text" class="input" readonly v-else :value="$options.filters.usd(txData.amount)">
+            </div>
+          </div>
 
           <p v-if="fee[chosenFee].error === 'INSUFFICIENT_FUNDS'" class="help is-danger">
             This transaction is too large. Make sure have enough funds to cover the amount plus a withdrawal fee.
@@ -92,7 +96,7 @@
 import axios from 'axios';
 import EventBus from '@/helpers/event-bus';
 import API from '@/helpers/api';
-import {satsToBtc, btcToSats} from '@/helpers/units';
+import {satsToBtc, btcToSats, toPrecision} from '@/helpers/units';
 import BitcoinData from '@/data/bitcoin';
 import SystemData from '@/data/system';
 import Confirm from '@/components/Bitcoin/Modals/Withdraw/Confirm';
@@ -158,6 +162,20 @@ export default {
     this.balance.btc = btcValue.totalBalance;
     this.balance.btcTotal = btcValue.totalBalance; // 'total' includes unconfirmed
     this.balance.btcUnconfirmed = btcValue.totalBalance;
+  },
+
+  updated() {
+    // Remove all non-numeric and decimal characters
+    this.txData.amount = this.txData.amount.replace(/[^0-9.]/, '');
+
+    // Automatically validate transaction based on current unit
+    if(this.system.displayUnit === 'btc') {
+      if(this.txData.amount.match(/.[0-9]{9,}$/)) {
+        this.txData.amount = toPrecision(this.txData.amount);
+      }
+    } else if(this.system.displayUnit === 'sats') {
+      this.txData.amount = parseInt(this.txData.amount) || 0;
+    }
   },
 
   methods: {

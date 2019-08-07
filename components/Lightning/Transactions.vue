@@ -75,7 +75,7 @@
           <h3>Pending</h3><br>
           <ul class="pending-tx">
             <li class="tx-item" v-for="(transaction, index) in lightning.pending" :key="index">
-              <div class="tx-row">
+              <div class="tx-row" @click="openTransaction(transaction)">
                 <div class="tx-col-1">
                   <div class="date-badge">
                     <span class="month">{{ (new Date(transaction.creationDate*1000)).toISOString() | moment("MMM") }}</span>
@@ -208,6 +208,18 @@ export default {
     },
     showErrorMessage(err) {
       this.$toast.open({duration: 4000, message: `Error: ${err.response.data}`, type: 'is-danger'});
+    },
+    openTransaction(transaction) {
+      // If this is a pending payment request
+      if(transaction.paymentRequest && transaction.state === "OPEN") {
+        const data = {
+          paymentRequest: transaction.paymentRequest,
+          amt: transaction.value,
+          memo: transaction.memo
+        };
+
+        this.showInvoice(data);
+      }
     }
   },
 

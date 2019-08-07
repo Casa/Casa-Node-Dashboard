@@ -15,13 +15,13 @@
               <div class="field is-grouped">
                 <div class="field is-expanded">
                   <p class="control is-expanded has-icons-right">
-                    <input class="input" type="number" v-model="customAmount">
+                    <input class="input" v-model="customAmount">
                     <span class="icon is-small is-right"><i><span v-if="system.displayUnit === 'btc'">BTC</span><span v-else>sats</span></i></span>
                   </p>
                 </div>
                 <div class="field is-expanded">
                   <p class="control is-expanded has-icons-right">
-                    <input class="input" type="number" :value="getDollarValue">
+                    <input class="input" :value="getDollarValue">
                     <span class="icon is-small is-right"><i>USD</i></span>
                   </p>
                 </div>

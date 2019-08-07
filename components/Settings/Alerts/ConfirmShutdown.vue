@@ -8,7 +8,7 @@
           <p>It's important to shut down before unplugging your node. Sudden power loss could cause your node to resync, which often takes several hours.</p><br>
           <p>Please enter your password to confirm the shutdown.</p><br>
           <b-field>
-            <b-input type="password" v-model="data.password" placeholder="Enter password" required></b-input>
+            <b-input type="password" v-model="password" placeholder="Enter password" required></b-input>
           </b-field>
         </section>
         <footer class="modal-card-foot">
@@ -22,16 +22,19 @@
 <script>
 import axios from 'axios';
 import EventBus from '@/helpers/event-bus';
+import BitcoinData from '@/data/bitcoin';
+import LightningData from '@/data/lightning';
+import SystemData from '@/data/system';
 
 export default {
   name: 'ConfirmShutdown',
 
   data() {
     return {
-      data: {
-        password: '',
-        isLoading: false
-      }
+      bitcoin: BitcoinData,
+      lightning: LightningData,
+      system: SystemData,
+      password: '',
     }
   },
 
@@ -41,14 +44,15 @@ export default {
       const basicAuthConfig = {
         method: 'post',
         url: `${this.$env.API_MANAGER}/v1/device/shutdown`,
-        auth: {username: 'user', password: this.data.password}
+        auth: {username: 'user', password: this.password}
       };
 
       try {
-        this.data.isLoading = true;
         EventBus.$emit('loading-start');
-
         this.$snackbar.open({message:'Shutting down...', type:'is-success', position:'is-top', duration: 5000});
+
+        // Prevent the rolling forward message from appearing
+        this.system.shuttingDown = true;
 
         // Shutdown process is blocking
         await axios(basicAuthConfig);
@@ -57,12 +61,13 @@ export default {
         this.$emit('close');
         EventBus.$emit('updating');
 
-        this.$snackbar.open({message:'It is now safe to unplug your node', type:'is-success', position:'is-top', indefinite: true});
+        // Redirect to shutdown screen after shutdown completes
+        this.$router.push('/shutdown');
       } catch (err) {
         this.$snackbar.open({message:`Shutdown failed: ${err.response.data}`, type:'is-danger', position:'is-top', indefinite: true});
+        this.system.shuttingDown = false;
       } finally {
-        this.data.isLoading = false;
-        this.data.password = '';
+        this.password = '';
 
         EventBus.$emit('loading-stop');
       }
