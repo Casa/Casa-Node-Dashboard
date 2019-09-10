@@ -1,6 +1,10 @@
 # Changelog
 Notable changes to the Casa Node project will be documented in this file
 
+## 2019-09-10
+### Changed
+- Changed LND to use version 0.7.1.
+
 ## 2019-08-01
 ### Added
 - Added a warning message when non tor nodes attempt to open channels with tor nodes. 
