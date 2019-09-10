@@ -1,0 +1,112 @@
+.btc-calc h2 {
+  font-size: 20px;
+  font-weight: bold;
+  color: #0a0525;
+}
+
+.btc-calc p.description {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.33;
+  color: #8d8e8e;
+}
+
+.btc-calc .field.is-grouped {
+  margin-top: 2em;
+}
+
+.btc-calc input {
+  font-size: 40px;
+  font-weight: 500;
+  text-align: center;
+  height: 90px;
+
+  &.medium-text {
+    font-size: 30px;
+  }
+
+  &.small-text {
+    font-size: 20px;
+  }
+}
+
+.btc-calc .hide-input-box input {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    padding-bottom: 10px;
+}
+
+.btc-calc p.total {
+  font-size: 40px;
+}
+
+.btc-calc p.operator {
+  font-size: 40px;
+  color: #d7d8d9;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.btc-calc p.help {
+  text-align: center;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.button.is-gray,
+.address-info .button {
+  float: right;
+  border-radius: 4px;
+  background-color: #eeeeee;
+  border-color: transparent;
+  color: #8d8e8e;
+  font-weight: bold;
+  width: 180px;
+  height: 60px;
+}
+
+.address-info p {
+  margin: 0 0 2em 0 !important;
+  font-weight: normal !important;
+  font-size: 1.2em !important;
+}
+
+
+.bitcoin-in-wallet {
+  font-size: 40px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.bitcoin-balance.is-grouped > div:nth-child(1) {
+  padding-right:1em;
+}
+
+.bitcoin-balance.is-grouped > div:nth-child(2) p {
+  margin-top: 1em;
+  padding-right: 1em;
+  text-align: center;
+}
+
+.plain-text-address {
+  display: inline-block;
+  float: left;
+}
+
+.address-copy {
+  display: inline-block;
+  margin: 0.5em 0 0 0.5em;
+}
+
+/* Tablet */
+@media screen and (min-width: 769px) {
+  .bitcoin-balance.is-grouped > div:nth-child(1) {
+    border-right: gray 1px solid;
+    width: 225px;
+  }
+
+  .bitcoin-balance.is-grouped > div:nth-child(2) p {
+    text-align: left;
+  }
+}

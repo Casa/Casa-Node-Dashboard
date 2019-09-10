@@ -1,0 +1,131 @@
+.autopilot-toggle {
+  padding-left: 0.5em;
+  padding-right: 1em;
+}
+
+.autopilot-toggle .field {
+  display: inline-block;
+  line-height: 3em;
+  vertical-align: middle;
+  padding: 0 0.5em;
+
+  &:first-child {
+    padding-top: 1em;
+  }
+}
+
+.autopilot-link {
+  max-width: 440px;
+  margin: 3em auto 0;
+}
+
+.autopilot-link a {
+  color: #3bccfc;
+}
+
+.autopilot-settings .modal-card-head {
+  font-size: 26px;
+  font-weight: bold;
+  color: #0a0525;
+}
+
+.autopilot-settings .description {
+  padding: 0 1em 0;
+  color: #8d8e8e;
+}
+
+.autopilot-settings .stats {
+  padding-top: 0;
+  padding-bottom: 1em;
+}
+
+.autopilot-settings .menu-navigation {
+  padding: 1em;
+}
+
+.autopilot-settings .tx-list {
+  padding: 1em;
+  margin: 0;
+}
+
+.autopilot-settings .tx-row {
+  display: block;
+}
+
+.autopilot-settings .tx-col-2 {
+  margin: 0;
+}
+
+.autopilot-settings .tx-col-2 h2,
+.autopilot-settings .tx-col-2 h3 {
+  max-width: 80%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.autopilot-settings .transaction-settings .section-title {
+  text-transform: uppercase;
+  color: #c3c5c7;
+  letter-spacing: 1px;
+  font-size: 13px;
+  padding-left: 1rem;
+  font-weight: bold;
+  padding-bottom: 0.5rem;
+}
+
+.autopilot-settings .inactive-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+}
+
+.autopilot-settings .inactive {
+  text-align: center;
+  color: #c3c5c7;
+  font-size: 26px;
+}
+
+.autopilot-settings .inactive h2 {
+  margin-top: 1em;
+  font-weight: bold;
+}
+
+.autopilot-settings .field.is-grouped {
+  display: block;
+}
+
+/* Tablet */
+@media screen and (min-width: 769px) {
+  .autopilot-toggle {
+    float: right;
+  }
+
+  .autopilot-settings .description {
+    padding: 1em 3em 0;
+  }
+
+  .autopilot-settings .transaction-settings .section-title {
+    padding-left: 3em;
+  }
+
+  .autopilot-settings .tx-list {
+    padding: 1em 3em;
+  }
+
+  .autopilot-settings .tx-row {
+    display: flex;
+  }
+
+  .autopilot-settings .tx-col-3 {
+    margin-left: -3em;
+  }
+
+  .autopilot-settings .menu-navigation {
+    padding: 1em 3em;
+  }
+
+  .autopilot-settings .field.is-grouped {
+    display: flex;
+  }
+}
