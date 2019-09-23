@@ -263,8 +263,9 @@ export default {
       return;
     }
 
-    // Make a JWT authenticated call to ensure we're still logged in
-    await API.get(this.$axios, `${this.$env.API_MANAGER}/v1/telemetry/serial`);
+    if(await redirect.checkLoggedIn(this) === true) {
+      return;
+    }
 
     if(this.$auth.loggedIn) {
       this.isActive = true;

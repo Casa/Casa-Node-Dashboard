@@ -181,6 +181,7 @@ export default {
 
   data() {
     return {
+      basicAuth: false,
       steps,
       setup: {
         progress: 0,
@@ -225,6 +226,20 @@ export default {
     if(steps.indexOf(this.$route.query.step) >= steps.indexOf('sync-time')) {
       let {data} = await this.$axios.get(`${this.$env.API_LND}/v1/bitcoind/info/sync`);
       this.setup.btcSync = data.percent;
+    }
+
+    // Query parameter to enable basicAuth user registration
+    // No reason for a user to do this, only useful for testing
+    if(String(this.$route.query.basicAuth) === 'true') {
+      this.basicAuth = true;
+      sessionStorage.setItem('basicAuth', 'true');
+    } else {
+      // Load basicAuth option from session storage to preserve between steps
+      const basicAuth = sessionStorage.getItem('basicAuth');
+
+      if(String(basicAuth) === 'true') {
+        this.basicAuth = true;
+      }
     }
 
     // Preload images that will be displayed during the intro and on the dashboard after logging in
@@ -358,7 +373,7 @@ export default {
     // Parse the error message from LND to determine what kind of wallet failure occured
     parseWalletError(error) {
       let errorMessage = error.response.data || 'Wallet Creation Failed';
-      let seedError = errorMessage.match(/^Unable to initialize wallet, word (.*) isn't a part of default word list$/);
+      let seedError = errorMessage.match(/^Unable to initialize wallet, word (.*) isn't a part of default word list/);
 
       if(seedError) {
         this.$router.push({ query: { step: 'import-seed' }, params: { seed: this.setup.seed, seedError }});
@@ -411,13 +426,26 @@ export default {
 
         // Register User
         try {
-          const basicAuth = 'Basic ' + btoa('disregarded:' + this.setup.password);
-          const headers = {headers: { 'Authorization': basicAuth }};
-          const user = await axios.post(`${this.$env.API_MANAGER}/v1/accounts/register`, {}, headers);
-          await this.$auth.loginWith('local', {auth: {password: this.setup.password, username: 'disregarded'}});
-          // returns jwt via user.data.jwt
-        } catch (err) {
-          this.$toast.open({duration: 3000, message: `Failed to Register Creation Failed`, type: 'is-danger'});
+          if(this.basicAuth) {
+            const basicAuth = 'Basic ' + btoa('disregarded:' + this.setup.password);
+            const headers = {headers: { 'Authorization': basicAuth }};
+            const user = await axios.post(`${this.$env.API_MANAGER}/v1/accounts/register`, {}, headers);
+
+            // returns jwt via user.data.jwt
+            await this.$auth.loginWith('local', {auth: {password: this.setup.password, username: 'disregarded'}});
+
+            // Remove basicAuth from session now that the account has been registered
+            sessionStorage.removeItem('basicAuth');
+          } else {
+            const data = {
+              password: this.setup.password,
+            };
+
+            await axios.post(`${this.$env.API_MANAGER}/v1/accounts/register`, data);
+            await this.$auth.loginWith('local', {data});
+          }
+        } catch (error) {
+          this.$toast.open({duration: 3000, message: `Failed to Register - ${error.response.data}`, type: 'is-danger'});
           this.isLoading = false;
           return false;
         }

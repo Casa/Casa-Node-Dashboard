@@ -15,6 +15,9 @@ const dictionary = {
       connectionCode: 'Connection Code',
       pubKey: 'Public Key',
       fundingAmount: 'Channel Funding',
+      currentPassword: 'Current Password',
+      newPassword: 'New Password',
+      confirmPassword: 'Confirm Password',
     },
 
     custom: {
@@ -34,7 +37,11 @@ const dictionary = {
       maxChanSize: {
         decimal: 'Value per channel must be a number',
         integer: 'Value per channel must be an integer',
-      }
+      },
+
+      confirmPassword: {
+        confirmed: 'Confirm Password does not match New Password',
+      },
     }
   }
 };

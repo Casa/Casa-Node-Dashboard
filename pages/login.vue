@@ -22,7 +22,7 @@
 
           <div class="column is-three-quarters-mobile is-two-thirds-tablet is-half-desktop is-one-half-widescreen is-one-half-fullhd">
 
-            <form @submit.prevent="handleLogin">
+            <form @submit.prevent="jsonLogin">
               <!-- Begin Login Form -->
               <div class="login-form-wrapper">
                 <!-- Password Field -->
@@ -120,11 +120,29 @@ export default {
   },
 
   methods: {
-    async handleLogin() {
-      // try setting auth endpoint here
+    async jsonLogin() {
       try {
-        await this.$auth.loginWith('local', {auth: {password: this.password, username: 'user'}});
+        await this.$auth.loginWith('local', {data: {password: this.password}});
         this.$router.push('/');
+      } catch (err) {
+        if(err && err.response && err.response.status === 401) {
+          // Try doing a basic auth login as a fallback
+          this.basicLogin();
+        } else {
+          this.wrongPassword = false;
+          this.error = true;
+        }
+      }
+    },
+
+    async basicLogin() {
+      try {
+        // If basic auth works but json didn't, redirect to the change password page
+        await this.$auth.loginWith('local', {auth: {password: this.password, username: 'user'}});
+
+        // That worked? Set the session storage
+        sessionStorage.setItem('basicAuth', 'true');
+        this.$router.push('/change-password');
       } catch (err) {
         if(err && err.response && err.response.status === 401) {
           this.wrongPassword = true;

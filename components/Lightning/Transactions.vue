@@ -115,8 +115,15 @@
                   <h3>{{transaction.memo}}</h3>
                 </div>
                 <div class="tx-col-3">
-                  <h2><span>{{transaction.value | inUnits | withSuffix}}</span></h2>
-                  <h3>{{ transaction.value | usd}}</h3>
+                  <template v-if="transaction.value == 0">
+                    <h2><span>{{transaction.amtPaidSat | inUnits | withSuffix}}</span></h2>
+                    <h3>{{ transaction.amtPaidSat | usd}}</h3>
+                  </template>
+
+                  <template v-else>
+                    <h2><span>{{transaction.value | inUnits | withSuffix}}</span></h2>
+                    <h3>{{ transaction.value | usd}}</h3>
+                  </template>
                 </div>
               </div>
               <hr>

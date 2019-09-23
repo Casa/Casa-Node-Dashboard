@@ -97,8 +97,29 @@
               </a>
             </div>
           </div>
-        </div>
-        <hr>
+        </div><hr>
+
+        <b-field class="toggle-settings menu-navigation" horizontal label="Device Password">
+          <a class="button is-rounded" @click="changePassword()">
+            <span>Change Password</span>
+            <span class="icon is-small">
+              <font-awesome-icon :icon="['fas', 'chevron-right']"/>
+            </span>
+          </a>
+        </b-field><hr>
+
+        <div class="field toggle-settings menu-navigation is-horizontal">
+          <div class="field-label is-normal">
+            <label class="label">
+              Versions
+            </label>
+
+            <p>
+              Bitcoin Core: {{system.version.bitcoind}}<br>
+              Lightning (LND): {{system.version.lnd}}
+            </p>
+          </div>
+        </div><hr>
 
         <b-field class="toggle-settings danger-sync" horizontal label="Danger Zone">
           <a class="button is-rounded" @click="confirmFactoryReset()">
@@ -142,6 +163,7 @@ export default {
     // force confirmation before updating device
     EventBus.$on('updating', () => vm.closePanel());
     EventBus.$on('factory-reset', () => vm.factoryReset());
+    EventBus.$on('load-version', () => vm.$forceUpdate());
   },
 
   destroyed() {
@@ -181,6 +203,10 @@ export default {
 
     confirmFactoryReset() {
       this.$modal.open({parent: this, component: ConfirmFactoryReset, hasModalCard: true});
+    },
+
+    changePassword() {
+      this.$router.push({path: '/change-password'})
     },
 
     async factoryReset() {

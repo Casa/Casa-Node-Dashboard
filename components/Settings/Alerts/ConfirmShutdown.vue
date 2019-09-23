@@ -35,18 +35,20 @@ export default {
       lightning: LightningData,
       system: SystemData,
       password: '',
+      basicAuth: false,
+    }
+  },
+
+  created() {
+    const basicAuth = sessionStorage.getItem('basicAuth');
+
+    if(String(basicAuth) === 'true') {
+      this.basicAuth = true;
     }
   },
 
   methods: {
-
     async shutdown() {
-      const basicAuthConfig = {
-        method: 'post',
-        url: `${this.$env.API_MANAGER}/v1/device/shutdown`,
-        auth: {username: 'user', password: this.password}
-      };
-
       try {
         EventBus.$emit('loading-start');
         this.$snackbar.open({message:'Shutting down...', type:'is-success', position:'is-top', duration: 5000});
@@ -54,8 +56,22 @@ export default {
         // Prevent the rolling forward message from appearing
         this.system.shuttingDown = true;
 
-        // Shutdown process is blocking
-        await axios(basicAuthConfig);
+        if(this.basicAuth) {
+          const basicAuthConfig = {
+            method: 'post',
+            url: `${this.$env.API_MANAGER}/v1/device/shutdown`,
+            auth: {username: 'user', password: this.password}
+          };
+
+          // Shutdown process is blocking
+          await axios(basicAuthConfig);
+        } else {
+          const data = {
+            password: this.password,
+          };
+
+          await axios.post(`${this.$env.API_MANAGER}/v1/device/shutdown`, data);
+        }
 
         // Close Modal and Settings Panel
         this.$emit('close');
