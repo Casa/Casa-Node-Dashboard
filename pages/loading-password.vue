@@ -6,10 +6,8 @@
       <div class="loading-progress" :style="{ width: percent + '%' }"></div>
     </div>
 
-    <div class="loading-error" v-if="error">
-      Having trouble? Contact help@team.casa with questions.
-
-      <a class="button" @click="ignoreLoading">View Dashboard</a>
+    <div class="loading-error">
+      Changing your password will take about a minute to complete.
     </div>
   </div>
 </template>
@@ -30,11 +28,6 @@ export default {
 
     // Periodically check for updates
     loadingInterval = setInterval(this.getLoadingPercent, 5000);
-
-    // If we have been on the loading screen for longer than 5 minutes, something is probably wrong
-    setTimeout(() => {
-      this.error = true;
-    }, 5 * 60 * 1000);
   },
 
   destroyed() {
@@ -44,37 +37,35 @@ export default {
   data() {
     return {
       percent: 1, // Always give the user a little something to see
-      error: false,
     };
   },
 
   methods: {
     async getLoadingPercent() {
-      const loading = await API.get(axios, `${this.$env.API_MANAGER}/v1/telemetry/boot`);
+      const loading = await API.get(this.$axios, `${this.$env.API_MANAGER}/v1/accounts/changePassword/status`);
 
-      // If the API returns a lower boot percent than we already had, something is probably wrong
-      if(this.percent > loading.percent) {
-        this.error = true;
-      }
+      if(loading) {
+        this.percent = loading.percent;
 
-      this.percent = loading.percent;
+        if(loading.forbidden) {
+          this.$router.push({path: 'change-password', query: { forbidden: true }});
+        } else if(loading.error) {
+          this.$router.push({path: 'change-password', query: { error: true }});
+        } else if(parseInt(this.percent) === 100) {
+          // Clear session variable after password has been changed
+          sessionStorage.removeItem('basicAuth');
 
-      if(loading && parseInt(this.percent) === 100) {
-        // Make sure we only redirect once
-        if(!redirectTimeout) {
-          // Wait 10 seconds to let the animation finish
-          redirectTimeout = setInterval(() => {
-            clearInterval(redirectTimeout);
-            this.$router.push('/');
-          }, 10000);
+          // Make sure we only redirect once
+          if(!redirectTimeout) {
+            // Wait 10 seconds to let the animation finish
+            redirectTimeout = setInterval(() => {
+              clearInterval(redirectTimeout);
+              this.$router.push('/');
+            }, 10000);
+          }
         }
       }
-    },
-
-    ignoreLoading() {
-      sessionStorage.setItem('loading', 'ignored');
-      this.$router.push('/');
-    },
+    }
   }
 }
 </script>

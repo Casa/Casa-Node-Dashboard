@@ -16,7 +16,6 @@ export async function checkLoading(context) {
     }
   }
 
-
   // If there is a network failure, an exception will be thrown and loading will return false
   if(loading === false || (loading && parseInt(loading.percent) !== 100)) {
     context.$router.push('/loading');
@@ -34,6 +33,19 @@ export async function checkAccount(context) {
 
   if(data && data.registered === false) {
     context.$router.push('/intro');
+    return true;
+  }
+
+  return false;
+}
+
+// Helper function to check if the user is logged in
+export async function checkLoggedIn(context) {
+  // Make a JWT authenticated call to check if we're logged in
+  const serial = await API.get(context.$axios, `${context.$env.API_MANAGER}/v1/telemetry/serial`);
+
+  if(serial === false) {
+    context.$router.push('/login');
     return true;
   }
 

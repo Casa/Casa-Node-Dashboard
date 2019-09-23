@@ -1,6 +1,15 @@
 # Changelog
 Notable changes to the Casa Node project will be documented in this file
 
+## 2019-09-19
+### Added
+- Added LND and bitcoind versions to the settings page.
+- Added change password feature.
+
+### Fixed
+- Fixed encoding issue with basic auth.
+- Fixed IP address discovery for routers using predictable names.
+
 ## 2019-09-10
 ### Changed
 - Changed LND to use version 0.7.1.

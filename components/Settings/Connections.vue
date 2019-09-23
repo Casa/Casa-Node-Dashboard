@@ -179,6 +179,10 @@
             <template v-else>
               <template v-if="loading.lnd || !lightning.address.code">
                 <div class="loading-dots"></div>
+
+                <div class="links">
+                  <a class="blue" @click="openLightningPortModal()">Configure Port</a>
+                </div>
               </template>
 
               <template v-else>

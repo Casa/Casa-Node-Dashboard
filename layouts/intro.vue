@@ -414,7 +414,8 @@ Mobile / Responsive styles
   }
 
   .intro-sync-status {
-    right: 3em;
+    left: 3em;
+    text-align: left;
   }
 
   .seed-phrase {

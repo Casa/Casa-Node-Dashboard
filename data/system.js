@@ -12,6 +12,7 @@ const SystemData = {
   localAddress: false,
   torAddress: false,
   displayUnit: 'btc',
+  version: {},
 };
 
 // Variable to prevent requests from being made before setup and after teardown
@@ -134,6 +135,29 @@ const populate = {
       });
     }
   },
+
+  async versions() {
+    if(!initialized) return;
+
+    const bitcoind = await API.get(this.$axios, `${this.$env.API_LND}/v1/bitcoind/info/version`);
+    const lnd = await API.get(this.$axios, `${this.$env.API_LND}/v1/lnd/info/version`);
+
+    if(bitcoind) {
+      SystemData.version.bitcoind = bitcoind.version;
+      EventBus.$emit('load-version');
+    }
+
+    if(lnd) {
+      SystemData.version.lnd = lnd.version;
+      EventBus.$emit('load-version');
+    }
+
+    if(!bitcoind || !lnd) {
+      IntervalBus.set(populate.versions, 10);
+    } else {
+      IntervalBus.clear(populate.versions);
+    }
+  }
 };
 
 // We need the scope of a Vue component to get the JWT for making API calls
@@ -148,6 +172,7 @@ function SystemSetup(scope) {
   populate.settings.call(scope);
   populate.status.call(scope);
   populate.addresses.call(scope);
+  populate.versions.call(scope);
 
   // Set a timeout to avoid race condition
   setTimeout(() => {
