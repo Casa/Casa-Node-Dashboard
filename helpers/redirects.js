@@ -29,9 +29,28 @@ export async function checkLoading(context) {
 // If no user account exists, redirect to the intro
 export async function checkAccount(context) {
   // Check to see if the user is registered. If the user is not registered, redirect them to the intro page.
-  const data = await API.get(axios, `${context.$env.API_MANAGER}/v1/accounts/registered`);
+  const registeredData = await API.get(axios, `${context.$env.API_MANAGER}/v1/accounts/registered`);
 
-  if(data && data.registered === false) {
+  if(registeredData && registeredData.registered === false) {
+
+    // Check the manager's version. If The manager is running on less than 1.15.0, we will instruct the user to restart.
+    // The user should have the latest version of the manager downloaded. Restarting will apply that new version.
+    const pingData = await API.get(axios, `${context.$env.API_MANAGER}/ping`);
+    
+    if(pingData && pingData.version) {
+
+      try {
+        const semverParts = pingData.version.split('-')[1].split('.');
+
+        if(semverParts[0] === '1' && semverParts[1] <= 14) {
+          context.$router.push('/please-restart');
+          return true;
+        }
+
+      // Ignore any parsing errors
+      } catch (e) {}
+    }
+
     context.$router.push('/intro');
     return true;
   }
