@@ -1,0 +1,20 @@
+.bitcoin-menu {
+  .transaction-list-wrap {
+    height: calc(100vh - 350px);
+    overflow: auto;
+  }
+
+  /* Tablet */
+  @media screen and (min-width: 769px) {
+    .transaction-list-wrap {
+      height: calc(100vh - 385px);
+    }
+  }
+
+  /* Desktop */
+  @media screen and (min-width: 1088px) {
+    .transaction-list-wrap {
+      height: calc(100vh - 440px);
+    }
+  }
+}
