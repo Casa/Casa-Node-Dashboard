@@ -1,6 +1,10 @@
 # Changelog
 Notable changes to the Casa Node project will be documented in this file
 
+## 2019-09-30
+### Added
+- Added warning message when the node needs to be restarted.
+
 ## 2019-09-19
 ### Added
 - Added LND and bitcoind versions to the settings page.
