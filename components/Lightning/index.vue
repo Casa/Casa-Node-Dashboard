@@ -20,7 +20,8 @@
 
       <!-- Lightning Stats Section -->
       <div class="stats">
-        <div class="stats-col">
+        <div class="stats-col" v-visibility-change="visibilityChange">
+
           <h1>{{openChannels.length}} Channel<template v-if="openChannels.length != 1">s</template></h1>
           <h2>{{lightning.balance.confirmed | inUnits | withSuffix}} in Channels</h2>
         </div>
@@ -289,6 +290,14 @@
           this.minChanSizeBtc = parseFloat(satsToBtc(this.minChanSizeSats));
         } else if(this.system.displayUnit === 'sats') {
           this.minChanSizeSats = parseInt(btcToSats(this.minChanSizeBtc));
+        }
+      },
+
+      visibilityChange(evt, hidden) {
+        if (hidden) {
+           EventBus.$emit('stop-lightning-stats');
+        } else {
+           EventBus.$emit('load-lightning-stats');
         }
       },
 

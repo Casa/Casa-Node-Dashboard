@@ -21,7 +21,7 @@
       <hr>
 
       <div class="stats">
-        <div class="stats-col">
+        <div class="stats-col" v-visibility-change="visibilityChange">
           <h1>{{lightning.balance.confirmed | inUnits | withSuffix}}</h1>
           <h2>in Lightning Channels</h2>
         </div>
@@ -197,6 +197,15 @@ export default {
     closePanel() {
       this.$emit('closePanel');
       this.$destroy();
+    },
+    visibilityChange(evt, hidden) {
+      if (hidden) {
+         EventBus.$emit('stop-lightning-stats');
+         EventBus.$emit('stop-lightning-transactions');
+      } else {
+         EventBus.$emit('load-lightning-stats');
+         EventBus.$emit('load-lightning-transactions');
+      }
     },
     send() {
       this.$modal.open({parent: this, component: Send, hasModalCard: true})
