@@ -101,7 +101,8 @@
         </h4>
 
         <div class="columns">
-          <div class="column is-half">
+          <div class="column is-half" v-visibility-change="visibilityChange">
+
             <strong>Bitcoin Node IP Address</strong>
 
             <template v-if="bitcoin.address.external">
@@ -363,6 +364,18 @@ export default {
     closePanel() {
       this.$emit('closePanel');
       this.$destroy();
+    },
+
+    visibilityChange(evt, hidden) {
+        if (hidden) {
+           EventBus.$emit('stop-bitcoin-stats');
+           EventBus.$emit('stop-lightning-stats');
+           EventBus.$emit('stop-system-addresses');
+        } else {
+           EventBus.$emit('load-bitcoin-stats');
+           EventBus.$emit('load-lightning-stats');
+           EventBus.$emit('load-system-addresses');
+        }
     },
 
     openLightningCodeModal() {
