@@ -193,6 +193,7 @@ function BitcoinSetup(scope) {
   });
 
   EventBus.$on('stop-bitcoin-stats', () => {
+    IntervalBus.clear(populate.addresses);
     IntervalBus.clear(populate.connections);
   });
 
