@@ -1,0 +1,63 @@
+{
+  "name": "Casa-Node",
+  "version": "1.18.0",
+  "description": "Your Casa Home Node",
+  "author": "Casa Inc.",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate",
+    "test:unit": "ava",
+    "test:browser": "cypress open",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "precommit": "npm run lint",
+    "deploy": "s3-deploy './dist/**' --cwd './dist/' --region us-east-1 --bucket spacefleet.com",
+    "ship": "nuxt build && s3-deploy './dist/**' --cwd './dist/' --region us-east-1 --bucket spacefleet.com"
+  },
+  "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^5.2.0",
+    "@nuxtjs/auth": "^4.5.2",
+    "@nuxtjs/axios": "^5.3.3",
+    "@nuxtjs/dotenv": "^1.1.1",
+    "bignumber.js": "^8.0.1",
+    "node-sass": "^4.11.0",
+    "nuxt": "^1.0.0",
+    "nuxt-buefy": "^0.1.0",
+    "nuxt-env": "^0.0.4",
+    "nuxt-fontawesome": "^0.3.0",
+    "sass-loader": "^7.1.0",
+    "vee-validate": "^2.1.1",
+    "vue-clipboard2": "^0.2.1",
+    "vue-moment": "^4.0.0",
+    "vue-numeric": "^2.3.0",
+    "vue-offline": "^1.0.204",
+    "vue-qriously": "^1.1.1",
+    "vue2-slideout-panel": "^0.11.0"
+  },
+  "devDependencies": {
+    "ava": "^1.0.1",
+    "babel-eslint": "^8.2.1",
+    "cross-env": "^5.0.1",
+    "cypress": "^3.3.1",
+    "eslint": "^5.0.1",
+    "eslint-loader": "^2.0.0",
+    "eslint-plugin-vue": "^4.0.0",
+    "jsdom": "^13.1.0",
+    "s3-deploy": "^1.1.1"
+  },
+  "ava": {
+    "require": [
+      "babel-register"
+    ],
+    "files": [
+      "test/unit/**/*"
+    ]
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  }
+}
