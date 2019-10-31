@@ -1,6 +1,10 @@
 # Changelog
 Notable changes to the Casa Node project will be documented in this file
 
+## 2019-10-28
+### Fixed
+- Fixed a cross origin bug with Tor Browser 9.0.0. 
+
 ## 2019-09-30
 ### Added
 - Added warning message when the node needs to be restarted.
