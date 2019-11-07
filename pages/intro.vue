@@ -431,9 +431,6 @@ export default {
             const headers = {headers: { 'Authorization': basicAuth }};
             const user = await axios.post(`${this.$env.API_MANAGER}/v1/accounts/register`, {}, headers);
 
-            // returns jwt via user.data.jwt
-            await this.$auth.loginWith('local', {auth: {password: this.setup.password, username: 'disregarded'}});
-
             // Remove basicAuth from session now that the account has been registered
             sessionStorage.removeItem('basicAuth');
           } else {
@@ -442,7 +439,6 @@ export default {
             };
 
             await axios.post(`${this.$env.API_MANAGER}/v1/accounts/register`, data);
-            await this.$auth.loginWith('local', {data});
           }
         } catch (error) {
           this.$toast.open({duration: 3000, message: `Failed to Register - ${error.response.data}`, type: 'is-danger'});
