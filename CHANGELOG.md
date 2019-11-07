@@ -1,6 +1,12 @@
 # Changelog
 Notable changes to the Casa Node project will be documented in this file
 
+## 2019-11-06
+### Changed
+- Changed LND to use version 0.8.0.
+- Changed Bitcoind to use version 0.18.1.
+- Changed front end to use updated packages. 
+
 ## 2019-10-28
 ### Fixed
 - Fixed a cross origin bug with Tor Browser 9.0.0. 
