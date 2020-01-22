@@ -34,6 +34,7 @@ module.exports = {
 
   /* Plugins to load before mounting the App */
   plugins: [
+    { src: '~/plugins/vue-visibility', ssr: false },
     { src: '~/plugins/vue-slideout', ssr: false },
     { src: '~/plugins/vue-qr-code', ssr: false },
     { src: '~/plugins/vue-moment', ssr: false },

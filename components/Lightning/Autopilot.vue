@@ -41,7 +41,8 @@
       <template v-if="system.settings.lnd.autopilot">
         <!-- Lightning Stats Section -->
         <div class="stats">
-          <div class="stats-col">
+          <div class="stats-col" v-visibility-change="visibilityChange">
+
             <h1>{{openAutopilot.length}} Channel<template v-if="openAutopilot.length != 1">s</template></h1>
             <h2>{{balanceTotal | inUnits | withSuffix}} in Autopilot</h2>
           </div>
@@ -222,6 +223,13 @@ export default {
     closePanel() {
       this.$emit('closePanel');
       this.$destroy();
+    },
+    visibilityChange(evt, hidden) {
+      if (hidden) {
+         EventBus.$emit('stop-lightning-stats');
+      } else {
+         EventBus.$emit('load-lightning-stats');
+      }
     },
     manageChannel(data) {
       data.localBalanceBtc = satsToBtc(data.localBalance);

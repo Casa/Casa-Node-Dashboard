@@ -22,7 +22,7 @@
           <h2>{{bitcoin.address.external}}</h2>
           <h3>Node Status</h3>
         </div>
-        <div class="stats-col">
+        <div class="stats-col" v-visibility-change="visibilityChange">
           <h1>{{bitcoin.percent | percentage}}</h1>
           <h2>{{bitcoin.currentBlock}} of {{bitcoin.blockHeight}}</h2>
           <h3>Blocks Synced</h3>
@@ -164,6 +164,14 @@ export default {
     closePanel() {
       this.$emit('closePanel');
       this.$destroy();
+    },
+
+    visibilityChange(evt, hidden) {
+        if (hidden) {
+           EventBus.$emit('stop-bitcoin-stats');
+        } else {
+           EventBus.$emit('load-bitcoin-stats');
+        }
     },
 
     save() {

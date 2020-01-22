@@ -21,7 +21,7 @@
       <hr>
 
       <div class="stats">
-        <div class="stats-col">
+        <div class="stats-col" v-visibility-change="visibilityChange">
           <h1>{{bitcoin.wallet.totalBalance | inUnits | withSuffix}}</h1>
           <h2>Bitcoin Balance</h2>
         </div>
@@ -167,6 +167,13 @@ export default {
   methods: {
     closePanel() {
       this.$emit('closePanel');
+    },
+    visibilityChange(evt, hidden) {
+        if (hidden) {
+           EventBus.$emit('stop-bitcoin-transactions');
+        } else {
+           EventBus.$emit('load-bitcoin-transactions');
+        }
     },
     deposit() {
       this.$modal.open({parent: this, component: Deposit, hasModalCard: true})

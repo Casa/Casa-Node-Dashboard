@@ -34,7 +34,8 @@
     "vue-numeric": "^2.3.0",
     "vue-offline": "^1.0.204",
     "vue-qriously": "^1.1.1",
-    "vue2-slideout-panel": "^0.11.0"
+    "vue2-slideout-panel": "^0.11.0",
+    "vue-visibility-change": "^1.2.1"
   },
   "devDependencies": {
     "ava": "^1.0.1",
